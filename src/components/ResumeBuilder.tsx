@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight, Eye, Download, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -10,7 +9,6 @@ import ExperienceForm from '@/components/forms/ExperienceForm';
 import EducationForm from '@/components/forms/EducationForm';
 import SkillsForm from '@/components/forms/SkillsForm';
 import ResumePreview from '@/components/ResumePreview';
-
 const ResumeBuilder = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState({
@@ -21,40 +19,41 @@ const ResumeBuilder = () => {
     skills: [],
     additionalSections: {}
   });
-
-  const steps = [
-    { title: 'Personal Information', component: PersonalInfoForm },
-    { title: 'Professional Summary', component: SummaryForm },
-    { title: 'Work Experience', component: ExperienceForm },
-    { title: 'Education', component: EducationForm },
-    { title: 'Skills & Certifications', component: SkillsForm },
-  ];
-
-  const progress = ((currentStep + 1) / steps.length) * 100;
-
+  const steps = [{
+    title: 'Personal Information',
+    component: PersonalInfoForm
+  }, {
+    title: 'Professional Summary',
+    component: SummaryForm
+  }, {
+    title: 'Work Experience',
+    component: ExperienceForm
+  }, {
+    title: 'Education',
+    component: EducationForm
+  }, {
+    title: 'Skills & Certifications',
+    component: SkillsForm
+  }];
+  const progress = (currentStep + 1) / steps.length * 100;
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     }
   };
-
   const handlePrevious = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
     }
   };
-
   const handleDataUpdate = (stepData: any) => {
     setFormData(prev => ({
       ...prev,
       ...stepData
     }));
   };
-
   const CurrentStepComponent = steps[currentStep].component;
-
-  return (
-    <div className="max-w-7xl mx-auto">
+  return <div className="max-w-7xl mx-auto">
       <div className="mb-8 text-center">
         <h2 className="text-3xl font-bold text-white mb-4">Resume Builder</h2>
         <div className="max-w-md mx-auto">
@@ -79,48 +78,30 @@ const ResumeBuilder = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <CurrentStepComponent 
-                data={formData}
-                onUpdate={handleDataUpdate}
-              />
+              <CurrentStepComponent data={formData} onUpdate={handleDataUpdate} />
             </CardContent>
           </Card>
 
           {/* Navigation */}
           <div className="flex justify-between">
-            <Button
-              variant="outline"
-              onClick={handlePrevious}
-              disabled={currentStep === 0}
-              className="border-white/30 text-white hover:bg-white/10"
-            >
+            <Button variant="outline" onClick={handlePrevious} disabled={currentStep === 0} className="border-white/30 text-zinc-900 bg-zinc-50">
               <ChevronLeft className="mr-2 h-4 w-4" />
               Previous
             </Button>
 
             <div className="flex gap-2">
-              <Button
-                variant="outline"
-                className="border-white/30 text-white hover:bg-white/10"
-              >
+              <Button variant="outline" className="border-white/30 text-zinc-900 bg-zinc-50">
                 <Save className="mr-2 h-4 w-4" />
                 Save Draft
               </Button>
               
-              {currentStep === steps.length - 1 ? (
-                <Button className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700">
+              {currentStep === steps.length - 1 ? <Button className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700">
                   <Download className="mr-2 h-4 w-4" />
                   Generate PDF
-                </Button>
-              ) : (
-                <Button
-                  onClick={handleNext}
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-                >
+                </Button> : <Button onClick={handleNext} className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
                   Next
                   <ChevronRight className="ml-2 h-4 w-4" />
-                </Button>
-              )}
+                </Button>}
             </div>
           </div>
         </div>
@@ -140,8 +121,6 @@ const ResumeBuilder = () => {
           </Card>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default ResumeBuilder;
