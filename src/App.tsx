@@ -10,6 +10,9 @@ import { ToastProvider } from "@/hooks/use-toast";
 import LandingPage from "./pages/LandingPage";
 import AuthPage from "./pages/AuthPage";
 import Dashboard from "./pages/Dashboard";
+import ChatPage from "./pages/ChatPage";
+import AnalyzePage from "./pages/AnalyzePage";
+import CreatePage from "./pages/CreatePage";
 import TemplateSelection from "./pages/TemplateSelection";
 import NotFound from "./pages/NotFound";
 
@@ -19,7 +22,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   
   if (loading) {
-    return <div className="min-h-screen bg-black flex items-center justify-center">
+    return <div className="min-h-screen bg-[#060315] flex items-center justify-center">
       <div className="text-purple-400">Loading...</div>
     </div>;
   }
@@ -35,7 +38,7 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   
   if (loading) {
-    return <div className="min-h-screen bg-black flex items-center justify-center">
+    return <div className="min-h-screen bg-[#060315] flex items-center justify-center">
       <div className="text-purple-400">Loading...</div>
     </div>;
   }
@@ -65,6 +68,21 @@ const App = () => (
               <Route path="/dashboard" element={
                 <ProtectedRoute>
                   <Dashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/chat" element={
+                <ProtectedRoute>
+                  <ChatPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/analyze" element={
+                <ProtectedRoute>
+                  <AnalyzePage />
+                </ProtectedRoute>
+              } />
+              <Route path="/create" element={
+                <ProtectedRoute>
+                  <CreatePage />
                 </ProtectedRoute>
               } />
               <Route path="/templates" element={

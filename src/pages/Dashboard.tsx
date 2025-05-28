@@ -5,27 +5,13 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import AnimatedBackground from '@/components/AnimatedBackground';
-import ChatBox from '@/components/ChatBox';
-import ResumeBuilder from '@/components/ResumeBuilder';
 import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/sidebar';
 import EnhancedSidebar from '@/components/EnhancedSidebar';
-import { MessageSquare, BarChart3, FileText, Plus, ChevronDown, Home } from 'lucide-react';
+import { MessageSquare, BarChart3, FileText, Home } from 'lucide-react';
 
 const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [showResumeBuilder, setShowResumeBuilder] = useState(false);
-  const resumeBuilderRef = useRef<HTMLDivElement>(null);
-
-  const scrollToResumeBuilder = () => {
-    setShowResumeBuilder(true);
-    setTimeout(() => {
-      resumeBuilderRef.current?.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
-      });
-    }, 100);
-  };
 
   const dashboardOptions = [
     {
@@ -35,6 +21,7 @@ const Dashboard = () => {
       description: 'Get instant help and guidance for your resume',
       color: 'bg-blue-600',
       hoverColor: 'hover:bg-blue-700',
+      route: '/chat'
     },
     {
       id: 'analyze',
@@ -43,6 +30,7 @@ const Dashboard = () => {
       description: 'Upload and get AI-powered analysis of your resume',
       color: 'bg-green-600',
       hoverColor: 'hover:bg-green-700',
+      route: '/analyze'
     },
     {
       id: 'create',
@@ -51,29 +39,26 @@ const Dashboard = () => {
       description: 'Start building your professional resume from scratch',
       color: 'bg-purple-600',
       hoverColor: 'hover:bg-purple-700',
-      action: scrollToResumeBuilder,
+      route: '/create'
     },
   ];
 
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+  const handleCardClick = (route: string) => {
+    navigate(route);
   };
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen bg-black relative overflow-hidden flex w-full">
+      <div className="min-h-screen bg-[#060315] relative overflow-hidden flex w-full">
         <AnimatedBackground />
         <EnhancedSidebar />
         
         <SidebarInset className="flex-1">
           {/* Header */}
-          <header className="sticky top-0 z-50 bg-black/80 backdrop-blur-sm border-b border-purple-500/20">
+          <header className="sticky top-0 z-50 bg-[#060315]/90 backdrop-blur-sm border-b border-purple-500/20">
             <div className="container mx-auto px-4 py-4 flex justify-between items-center">
               <div className="flex items-center space-x-4">
-                <SidebarTrigger className="text-white hover:bg-purple-600/20" />
+                <SidebarTrigger className="text-white hover:bg-purple-600/20 transition-all duration-300 hover:scale-110" />
                 <div className="flex items-center space-x-3">
                   <div className="p-2 rounded-lg bg-purple-600/20 border border-purple-500/30">
                     <FileText className="h-6 w-6 text-purple-400" />
@@ -85,7 +70,7 @@ const Dashboard = () => {
               <Button 
                 onClick={() => navigate('/')}
                 variant="outline"
-                className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10 hover:border-purple-400"
+                className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10 hover:border-purple-400 transition-all duration-300 hover:scale-105"
               >
                 <Home className="h-4 w-4 mr-2" />
                 Back to Home
@@ -109,13 +94,7 @@ const Dashboard = () => {
                   <Card 
                     key={option.id}
                     className="bg-purple-900/20 border-purple-500/30 hover:bg-purple-900/30 transition-all duration-300 cursor-pointer group hover:scale-105"
-                    onClick={() => {
-                      if (option.action) {
-                        option.action();
-                      } else {
-                        scrollToSection(option.id);
-                      }
-                    }}
+                    onClick={() => handleCardClick(option.route)}
                   >
                     <CardHeader className="text-center">
                       <div className="flex justify-center mb-4">
@@ -128,7 +107,7 @@ const Dashboard = () => {
                     <CardContent>
                       <p className="text-purple-300 text-center mb-4">{option.description}</p>
                       <Button 
-                        className={`w-full ${option.color} ${option.hoverColor} text-white`}
+                        className={`w-full ${option.color} ${option.hoverColor} text-white transition-all duration-300 hover:scale-105`}
                       >
                         Get Started
                       </Button>
@@ -137,54 +116,26 @@ const Dashboard = () => {
                 ))}
               </div>
               
-              {/* Feature Sections */}
-              <div className="space-y-20">
-                <section id="chatbox" className="scroll-mt-20">
-                  <Card className="bg-purple-900/20 border-purple-500/30 max-w-4xl mx-auto hover:scale-[1.02] transition-transform">
-                    <CardHeader>
-                      <CardTitle className="text-white text-2xl text-center">AI Resume Assistant</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-center text-purple-300 mb-6">
-                        Chat with our AI assistant for personalized resume advice and tips.
-                      </div>
-                      <ChatBox />
-                    </CardContent>
-                  </Card>
-                </section>
-                
-                <section id="analyze" className="scroll-mt-20">
-                  <Card className="bg-purple-900/20 border-purple-500/30 max-w-4xl mx-auto hover:scale-[1.02] transition-transform">
-                    <CardHeader>
-                      <CardTitle className="text-white text-2xl text-center">Resume Analysis</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-center text-purple-300 mb-6">
-                        Upload your resume to get detailed analysis and improvement suggestions.
-                      </div>
-                      <div className="bg-black/30 rounded-lg p-6 min-h-[300px] border border-purple-500/20">
-                        <p className="text-purple-400 text-center">Resume analysis tool will be implemented here</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </section>
-
-                {/* Resume Builder Section */}
-                {showResumeBuilder && (
-                  <section ref={resumeBuilderRef} className="scroll-mt-20">
-                    <Card className="bg-purple-900/20 border-purple-500/30">
-                      <CardHeader>
-                        <CardTitle className="text-white text-2xl text-center flex items-center justify-center gap-2">
-                          <FileText className="h-6 w-6" />
-                          Resume Builder
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <ResumeBuilder />
-                      </CardContent>
-                    </Card>
-                  </section>
-                )}
+              {/* AI Resume Assistant Section */}
+              <div className="max-w-4xl mx-auto">
+                <Card className="bg-purple-900/20 border-purple-500/30 hover:scale-[1.02] transition-transform">
+                  <CardHeader>
+                    <CardTitle className="text-white text-2xl text-center">AI Resume Assistant</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-center text-purple-300 mb-6">
+                      Chat with our AI assistant for personalized resume advice and tips.
+                    </div>
+                    <div className="bg-black/30 rounded-lg p-6 min-h-[200px] border border-purple-500/20 flex items-center justify-center">
+                      <Button 
+                        onClick={() => navigate('/chat')}
+                        className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 text-lg transition-all duration-300 hover:scale-105"
+                      >
+                        Start Chatting
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             </div>
           </div>
