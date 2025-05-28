@@ -5,12 +5,11 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import AnimatedBackground from '@/components/AnimatedBackground';
-import Header from '@/components/Header';
 import ChatBox from '@/components/ChatBox';
 import ResumeBuilder from '@/components/ResumeBuilder';
 import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/sidebar';
-import AppSidebar from '@/components/AppSidebar';
-import { MessageSquare, BarChart3, FileText, Plus, ChevronDown } from 'lucide-react';
+import EnhancedSidebar from '@/components/EnhancedSidebar';
+import { MessageSquare, BarChart3, FileText, Plus, ChevronDown, Home } from 'lucide-react';
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -67,29 +66,49 @@ const Dashboard = () => {
     <SidebarProvider>
       <div className="min-h-screen bg-black relative overflow-hidden flex w-full">
         <AnimatedBackground />
-        <AppSidebar />
+        <EnhancedSidebar />
         
         <SidebarInset className="flex-1">
-          <Header />
-          
-          <div className="relative z-10 pt-20">
-            <div className="container mx-auto px-4 py-12">
-              {/* Header with sidebar trigger */}
-              <div className="flex items-center gap-4 mb-8">
+          {/* Header */}
+          <header className="sticky top-0 z-50 bg-black/80 backdrop-blur-sm border-b border-purple-500/20">
+            <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+              <div className="flex items-center space-x-4">
                 <SidebarTrigger className="text-white hover:bg-purple-600/20" />
-                <div className="text-center flex-1">
-                  <h1 className="text-4xl font-bold text-white mb-4">
-                    Welcome back, {user?.user_metadata?.full_name || user?.email}!
-                  </h1>
-                  <p className="text-purple-300 text-lg">What would you like to do today?</p>
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 rounded-lg bg-purple-600/20 border border-purple-500/30">
+                    <FileText className="h-6 w-6 text-purple-400" />
+                  </div>
+                  <span className="text-xl font-bold text-white">ResumePro</span>
                 </div>
               </div>
               
-              <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+              <Button 
+                onClick={() => navigate('/')}
+                variant="outline"
+                className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10 hover:border-purple-400"
+              >
+                <Home className="h-4 w-4 mr-2" />
+                Back to Home
+              </Button>
+            </div>
+          </header>
+          
+          <div className="relative z-10 pt-8">
+            <div className="container mx-auto px-4 py-12">
+              {/* Welcome Section */}
+              <div className="text-center mb-12">
+                <h1 className="text-4xl font-bold text-white mb-4">
+                  Welcome back, {user?.user_metadata?.full_name || user?.email}!
+                </h1>
+                <p className="text-purple-300 text-lg">What would you like to do today?</p>
+              </div>
+              
+              {/* Dashboard Options */}
+              <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-20">
                 {dashboardOptions.map((option) => (
                   <Card 
                     key={option.id}
-                    className="bg-purple-900/20 border-purple-500/30 hover:bg-purple-900/30 transition-all duration-300 cursor-pointer group"
+                    className="bg-purple-900/20 border-purple-500/30 hover:bg-purple-900/30 transition-all duration-300 cursor-pointer group hover:scale-105"
                     onClick={() => {
                       if (option.action) {
                         option.action();
@@ -119,9 +138,9 @@ const Dashboard = () => {
               </div>
               
               {/* Feature Sections */}
-              <div className="mt-20 space-y-20">
+              <div className="space-y-20">
                 <section id="chatbox" className="scroll-mt-20">
-                  <Card className="bg-purple-900/20 border-purple-500/30 max-w-4xl mx-auto">
+                  <Card className="bg-purple-900/20 border-purple-500/30 max-w-4xl mx-auto hover:scale-[1.02] transition-transform">
                     <CardHeader>
                       <CardTitle className="text-white text-2xl text-center">AI Resume Assistant</CardTitle>
                     </CardHeader>
@@ -135,7 +154,7 @@ const Dashboard = () => {
                 </section>
                 
                 <section id="analyze" className="scroll-mt-20">
-                  <Card className="bg-purple-900/20 border-purple-500/30 max-w-4xl mx-auto">
+                  <Card className="bg-purple-900/20 border-purple-500/30 max-w-4xl mx-auto hover:scale-[1.02] transition-transform">
                     <CardHeader>
                       <CardTitle className="text-white text-2xl text-center">Resume Analysis</CardTitle>
                     </CardHeader>

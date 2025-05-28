@@ -19,6 +19,12 @@ import {
   Target,
   Zap
 } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 const LandingPage = () => {
   const [email, setEmail] = useState('');
@@ -33,6 +39,10 @@ const LandingPage = () => {
     } else {
       navigate('/auth');
     }
+  };
+
+  const handleCheckboxChange = (checked: boolean | "indeterminate") => {
+    setAgreedToTerms(checked === true);
   };
 
   return (
@@ -51,21 +61,40 @@ const LandingPage = () => {
 
             {/* Navigation */}
             <div className="hidden md:flex items-center space-x-8">
-              <div className="relative group">
-                <button className="flex items-center text-gray-300 hover:text-white transition-colors">
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center text-gray-300 hover:text-white transition-colors">
                   Platform <ChevronDown className="ml-1 h-4 w-4" />
-                </button>
-              </div>
-              <div className="relative group">
-                <button className="flex items-center text-gray-300 hover:text-white transition-colors">
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="bg-gray-800/95 backdrop-blur-sm border-purple-500/30 text-white">
+                  <DropdownMenuItem className="hover:bg-purple-600/20 focus:bg-purple-600/20">Resume Builder</DropdownMenuItem>
+                  <DropdownMenuItem className="hover:bg-purple-600/20 focus:bg-purple-600/20">Resume Analyzer</DropdownMenuItem>
+                  <DropdownMenuItem className="hover:bg-purple-600/20 focus:bg-purple-600/20">AI Career Advisor</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center text-gray-300 hover:text-white transition-colors">
                   Features <ChevronDown className="ml-1 h-4 w-4" />
-                </button>
-              </div>
-              <div className="relative group">
-                <button className="flex items-center text-gray-300 hover:text-white transition-colors">
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="bg-gray-800/95 backdrop-blur-sm border-purple-500/30 text-white">
+                  <DropdownMenuItem className="hover:bg-purple-600/20 focus:bg-purple-600/20">ATS Optimized Templates</DropdownMenuItem>
+                  <DropdownMenuItem className="hover:bg-purple-600/20 focus:bg-purple-600/20">Chat-Based Editing</DropdownMenuItem>
+                  <DropdownMenuItem className="hover:bg-purple-600/20 focus:bg-purple-600/20">Smart Suggestions</DropdownMenuItem>
+                  <DropdownMenuItem className="hover:bg-purple-600/20 focus:bg-purple-600/20">Version History</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center text-gray-300 hover:text-white transition-colors">
                   Resources <ChevronDown className="ml-1 h-4 w-4" />
-                </button>
-              </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="bg-gray-800/95 backdrop-blur-sm border-purple-500/30 text-white">
+                  <DropdownMenuItem className="hover:bg-purple-600/20 focus:bg-purple-600/20">Resume Tips</DropdownMenuItem>
+                  <DropdownMenuItem className="hover:bg-purple-600/20 focus:bg-purple-600/20">Career Paths</DropdownMenuItem>
+                  <DropdownMenuItem className="hover:bg-purple-600/20 focus:bg-purple-600/20">Blog</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              
               <button className="text-gray-300 hover:text-white transition-colors">
                 Pricing
               </button>
@@ -137,7 +166,7 @@ const LandingPage = () => {
               <div className="flex items-center space-x-2">
                 <Checkbox 
                   checked={agreedToTerms}
-                  onCheckedChange={setAgreedToTerms}
+                  onCheckedChange={handleCheckboxChange}
                   className="border-purple-500/30"
                 />
                 <span className="text-sm text-gray-400">
@@ -209,7 +238,7 @@ const LandingPage = () => {
 
         {showServices && (
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in">
-            <Card className="bg-gray-800/50 border-purple-500/20 hover:border-purple-500/40 transition-colors">
+            <Card className="bg-gray-800/50 border-purple-500/20 hover:border-purple-500/40 transition-colors hover:scale-105">
               <CardHeader>
                 <CardTitle className="flex items-center text-white">
                   <BarChart3 className="h-5 w-5 mr-2 text-purple-400" />
@@ -221,7 +250,7 @@ const LandingPage = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-gray-800/50 border-purple-500/20 hover:border-purple-500/40 transition-colors">
+            <Card className="bg-gray-800/50 border-purple-500/20 hover:border-purple-500/40 transition-colors hover:scale-105">
               <CardHeader>
                 <CardTitle className="flex items-center text-white">
                   <FileText className="h-5 w-5 mr-2 text-purple-400" />
@@ -233,7 +262,7 @@ const LandingPage = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-gray-800/50 border-purple-500/20 hover:border-purple-500/40 transition-colors">
+            <Card className="bg-gray-800/50 border-purple-500/20 hover:border-purple-500/40 transition-colors hover:scale-105">
               <CardHeader>
                 <CardTitle className="flex items-center text-white">
                   <MessageSquare className="h-5 w-5 mr-2 text-purple-400" />
@@ -245,7 +274,7 @@ const LandingPage = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-gray-800/50 border-purple-500/20 hover:border-purple-500/40 transition-colors">
+            <Card className="bg-gray-800/50 border-purple-500/20 hover:border-purple-500/40 transition-colors hover:scale-105">
               <CardHeader>
                 <CardTitle className="flex items-center text-white">
                   <Target className="h-5 w-5 mr-2 text-purple-400" />
@@ -268,7 +297,7 @@ const LandingPage = () => {
         </div>
 
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          <Card className="bg-gray-800/50 border-purple-500/20 p-8">
+          <Card className="bg-gray-800/50 border-purple-500/20 p-8 hover:scale-105 transition-transform">
             <CardHeader>
               <CardTitle className="text-2xl text-white">Professional</CardTitle>
               <div className="text-3xl font-bold text-purple-400">₹499<span className="text-lg text-gray-400">/month</span></div>
@@ -286,7 +315,7 @@ const LandingPage = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-purple-900/50 to-blue-900/50 border-purple-400/50 p-8 relative">
+          <Card className="bg-gradient-to-br from-purple-900/50 to-blue-900/50 border-purple-400/50 p-8 relative hover:scale-105 transition-transform">
             <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
               <span className="bg-purple-600 text-white px-4 py-1 rounded-full text-sm font-medium">Recommended</span>
             </div>
@@ -339,13 +368,13 @@ const LandingPage = () => {
             <div>
               <h3 className="text-xl font-semibold text-white mb-4">Follow Us</h3>
               <div className="flex space-x-4">
-                <a href="#" className="w-10 h-10 bg-purple-600/20 border border-purple-500/30 rounded-lg flex items-center justify-center text-purple-400 hover:bg-purple-600/30 transition-colors">
+                <a href="#" className="w-10 h-10 bg-purple-600/20 border border-purple-500/30 rounded-lg flex items-center justify-center text-purple-400 hover:bg-purple-600/30 transition-colors hover:scale-105">
                   <Users className="h-5 w-5" />
                 </a>
-                <a href="#" className="w-10 h-10 bg-purple-600/20 border border-purple-500/30 rounded-lg flex items-center justify-center text-purple-400 hover:bg-purple-600/30 transition-colors">
+                <a href="#" className="w-10 h-10 bg-purple-600/20 border border-purple-500/30 rounded-lg flex items-center justify-center text-purple-400 hover:bg-purple-600/30 transition-colors hover:scale-105">
                   <MessageSquare className="h-5 w-5" />
                 </a>
-                <a href="#" className="w-10 h-10 bg-purple-600/20 border border-purple-500/30 rounded-lg flex items-center justify-center text-purple-400 hover:bg-purple-600/30 transition-colors">
+                <a href="#" className="w-10 h-10 bg-purple-600/20 border border-purple-500/30 rounded-lg flex items-center justify-center text-purple-400 hover:bg-purple-600/30 transition-colors hover:scale-105">
                   <BookOpen className="h-5 w-5" />
                 </a>
               </div>
