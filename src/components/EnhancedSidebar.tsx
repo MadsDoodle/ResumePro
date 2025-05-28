@@ -1,10 +1,11 @@
 
 import { useState } from 'react';
-import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter } from '@/components/ui/sidebar';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { FileText, MessageSquare, Bookmark, User, Settings, Home, Plus, Edit, Download } from 'lucide-react';
+import { Sidebar, SidebarContent, SidebarHeader, SidebarFooter } from '@/components/ui/sidebar';
+import { FileText, MessageSquare, Bookmark, User, Settings, Home } from 'lucide-react';
+import LibraryModal from './sidebar/LibraryModal';
+import ChatModal from './sidebar/ChatModal';
+import BookmarksModal from './sidebar/BookmarksModal';
+import SidebarMenuComponent from './sidebar/SidebarMenu';
 
 const EnhancedSidebar = () => {
   const [activeItem, setActiveItem] = useState('dashboard');
@@ -119,50 +120,21 @@ const EnhancedSidebar = () => {
         </SidebarHeader>
 
         <SidebarContent className="bg-[#060315]/95">
-          <SidebarGroup>
-            <SidebarGroupLabel className="text-purple-300 text-sm font-medium px-2 mb-2">
-              Main Menu
-            </SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {mainItems.map((item) => (
-                  <SidebarMenuItem key={item.id}>
-                    <SidebarMenuButton 
-                      onClick={() => handleItemClick(item)}
-                      isActive={activeItem === item.id}
-                      className={`text-gray-300 hover:text-white hover:bg-purple-600/20 transition-all duration-300 hover:scale-105 ${
-                        activeItem === item.id ? 'bg-purple-600/30 text-white border-r-2 border-purple-400' : ''
-                      }`}
-                    >
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
+          <SidebarMenuComponent 
+            items={mainItems}
+            activeItem={activeItem}
+            onItemClick={handleItemClick}
+            label="Main Menu"
+          />
 
-          <SidebarGroup className="mt-auto">
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {bottomItems.map((item) => (
-                  <SidebarMenuItem key={item.id}>
-                    <SidebarMenuButton 
-                      onClick={() => handleItemClick(item)}
-                      isActive={activeItem === item.id}
-                      className={`text-gray-300 hover:text-white hover:bg-purple-600/20 transition-all duration-300 hover:scale-105 ${
-                        activeItem === item.id ? 'bg-purple-600/30 text-white border-r-2 border-purple-400' : ''
-                      }`}
-                    >
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
+          <div className="mt-auto">
+            <SidebarMenuComponent 
+              items={bottomItems}
+              activeItem={activeItem}
+              onItemClick={handleItemClick}
+              label=""
+            />
+          </div>
         </SidebarContent>
 
         <SidebarFooter className="p-4 bg-gradient-to-r from-purple-600/20 to-blue-600/20 border-t border-purple-500/20">
@@ -172,113 +144,23 @@ const EnhancedSidebar = () => {
         </SidebarFooter>
       </Sidebar>
 
-      {/* My Library Modal with Glassmorphism */}
-      <Dialog open={isLibraryOpen} onOpenChange={setIsLibraryOpen}>
-        <DialogContent className="bg-black/70 backdrop-blur-xl border-purple-500/30 text-white max-w-4xl animate-scale-in">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-white flex items-center">
-              <FileText className="h-6 w-6 mr-2 text-purple-400" />
-              My Resume Library
-            </DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Button className="bg-purple-600 hover:bg-purple-700 mb-4 transition-all duration-300 hover:scale-105">
-              <Plus className="h-4 w-4 mr-2" />
-              Create New Resume
-            </Button>
-            <div className="grid md:grid-cols-2 gap-4">
-              {resumeLibrary.map((resume) => (
-                <Card key={resume.id} className="bg-gray-800/50 border-purple-500/20 hover:scale-105 transition-all duration-300 cursor-pointer backdrop-blur-sm">
-                  <CardHeader>
-                    <CardTitle className="text-white text-lg">{resume.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-300 text-sm mb-2">{resume.description}</p>
-                    <p className="text-gray-500 text-xs mb-4">Last modified: {resume.lastModified}</p>
-                    <div className="flex space-x-2">
-                      <Button size="sm" variant="outline" className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-all duration-300">
-                        <Edit className="h-3 w-3 mr-1" />
-                        Edit
-                      </Button>
-                      <Button size="sm" variant="outline" className="border-green-500/30 text-green-400 hover:bg-green-500/10 transition-all duration-300">
-                        <Download className="h-3 w-3 mr-1" />
-                        Download
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <LibraryModal 
+        isOpen={isLibraryOpen}
+        onOpenChange={setIsLibraryOpen}
+        resumeLibrary={resumeLibrary}
+      />
 
-      {/* Chat Responses Modal with Glassmorphism */}
-      <Dialog open={isChatOpen} onOpenChange={setIsChatOpen}>
-        <DialogContent className="bg-black/70 backdrop-blur-xl border-purple-500/30 text-white max-w-4xl animate-scale-in">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-white flex items-center">
-              <MessageSquare className="h-6 w-6 mr-2 text-purple-400" />
-              Chat History
-            </DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            {chatHistory.map((chat) => (
-              <Card key={chat.id} className="bg-gray-800/50 border-purple-500/20 hover:scale-105 transition-all duration-300 cursor-pointer backdrop-blur-sm">
-                <CardContent className="p-4">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="text-white font-semibold">{chat.topic}</h3>
-                      <p className="text-gray-300 text-sm mt-1">{chat.lastMessage}</p>
-                      <p className="text-gray-500 text-xs mt-2">{chat.date}</p>
-                    </div>
-                    <Button size="sm" className="bg-purple-600 hover:bg-purple-700 transition-all duration-300 hover:scale-105">
-                      Continue
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </DialogContent>
-      </Dialog>
+      <ChatModal 
+        isOpen={isChatOpen}
+        onOpenChange={setIsChatOpen}
+        chatHistory={chatHistory}
+      />
 
-      {/* Bookmarked Paths Modal with Glassmorphism */}
-      <Dialog open={isBookmarksOpen} onOpenChange={setIsBookmarksOpen}>
-        <DialogContent className="bg-black/70 backdrop-blur-xl border-purple-500/30 text-white max-w-4xl animate-scale-in">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-white flex items-center">
-              <Bookmark className="h-6 w-6 mr-2 text-purple-400" />
-              Bookmarked Career Paths
-            </DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            {bookmarkedPaths.map((path) => (
-              <Card key={path.id} className="bg-gray-800/50 border-purple-500/20 hover:scale-105 transition-all duration-300 backdrop-blur-sm">
-                <CardContent className="p-4">
-                  <div className="flex justify-between items-start mb-3">
-                    <div>
-                      <h3 className="text-white font-semibold text-lg">{path.title}</h3>
-                      <p className="text-purple-300">{path.industry}</p>
-                    </div>
-                    <Button size="sm" variant="outline" className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-all duration-300">
-                      View Details
-                    </Button>
-                  </div>
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    {path.tags.map((tag, index) => (
-                      <span key={index} className="bg-purple-600/20 text-purple-300 px-2 py-1 rounded text-xs">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                  <p className="text-gray-300 text-sm">{path.insight}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </DialogContent>
-      </Dialog>
+      <BookmarksModal 
+        isOpen={isBookmarksOpen}
+        onOpenChange={setIsBookmarksOpen}
+        bookmarkedPaths={bookmarkedPaths}
+      />
     </>
   );
 };
