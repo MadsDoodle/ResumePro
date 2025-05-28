@@ -1,4 +1,3 @@
-
 import { useState, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,79 +8,86 @@ import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/s
 import EnhancedSidebar from '@/components/EnhancedSidebar';
 import { MessageSquare, BarChart3, FileText, Home, Menu, Download } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-
 const Dashboard = () => {
-  const { user } = useAuth();
+  const {
+    user
+  } = useAuth();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  const dashboardOptions = [
-    {
-      id: 'chatbox',
-      icon: MessageSquare,
-      title: 'AI Chatbox',
-      description: 'Get instant help and guidance for your resume',
-      color: 'bg-blue-600',
-      hoverColor: 'hover:bg-blue-700',
-      route: '/chat'
-    },
-    {
-      id: 'analyze',
-      icon: BarChart3,
-      title: 'Analyze Resume',
-      description: 'Upload and get AI-powered analysis of your resume',
-      color: 'bg-green-600',
-      hoverColor: 'hover:bg-green-700',
-      route: '/analyze'
-    },
-    {
-      id: 'create',
-      icon: FileText,
-      title: 'Create New Resume',
-      description: 'Start building your professional resume from scratch',
-      color: 'bg-purple-600',
-      hoverColor: 'hover:bg-purple-700',
-      route: '/create'
-    }
-  ];
-
-  const platformItems = [
-    { name: 'Resume Builder', href: '/create' },
-    { name: 'Resume Analyzer', href: '/analyze' },
-    { name: 'AI Career Advisor', href: '/chat' }
-  ];
-
-  const featureItems = [
-    { name: 'ATS Optimized Templates', href: '/templates' },
-    { name: 'Chat-Based Editing', href: '/chat' },
-    { name: 'Smart Suggestions', href: '/features' },
-    { name: 'Version History', href: '/history' }
-  ];
-
-  const resourceItems = [
-    { name: 'Resume Tips', href: '/tips' },
-    { name: 'Career Paths', href: '/paths' },
-    { name: 'Blog', href: '/blog' }
-  ];
-
+  const dashboardOptions = [{
+    id: 'chatbox',
+    icon: MessageSquare,
+    title: 'AI Chatbox',
+    description: 'Get instant help and guidance for your resume',
+    color: 'bg-blue-600',
+    hoverColor: 'hover:bg-blue-700',
+    route: '/chat'
+  }, {
+    id: 'analyze',
+    icon: BarChart3,
+    title: 'Analyze Resume',
+    description: 'Upload and get AI-powered analysis of your resume',
+    color: 'bg-green-600',
+    hoverColor: 'hover:bg-green-700',
+    route: '/analyze'
+  }, {
+    id: 'create',
+    icon: FileText,
+    title: 'Create New Resume',
+    description: 'Start building your professional resume from scratch',
+    color: 'bg-purple-600',
+    hoverColor: 'hover:bg-purple-700',
+    route: '/create'
+  }];
+  const platformItems = [{
+    name: 'Resume Builder',
+    href: '/create'
+  }, {
+    name: 'Resume Analyzer',
+    href: '/analyze'
+  }, {
+    name: 'AI Career Advisor',
+    href: '/chat'
+  }];
+  const featureItems = [{
+    name: 'ATS Optimized Templates',
+    href: '/templates'
+  }, {
+    name: 'Chat-Based Editing',
+    href: '/chat'
+  }, {
+    name: 'Smart Suggestions',
+    href: '/features'
+  }, {
+    name: 'Version History',
+    href: '/history'
+  }];
+  const resourceItems = [{
+    name: 'Resume Tips',
+    href: '/tips'
+  }, {
+    name: 'Career Paths',
+    href: '/paths'
+  }, {
+    name: 'Blog',
+    href: '/blog'
+  }];
   const handleCardClick = (route: string) => {
     navigate(route);
   };
-
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      element.scrollIntoView({
+        behavior: 'smooth'
+      });
     }
   };
-
   const handleDownloadPDF = async () => {
     // This would be implemented with html2pdf.js
     console.log('PDF download functionality would be implemented here');
   };
-
-  return (
-    <SidebarProvider>
+  return <SidebarProvider>
       <div className="min-h-screen bg-[#060315] relative overflow-hidden flex w-full">
         <AnimatedBackground />
         <EnhancedSidebar />
@@ -108,11 +114,9 @@ const Dashboard = () => {
                       Platform
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="bg-gray-900/95 backdrop-blur-sm border-purple-500/30 text-white">
-                      {platformItems.map((item) => (
-                        <DropdownMenuItem key={item.name} onClick={() => navigate(item.href)} className="hover:bg-purple-600/20">
+                      {platformItems.map(item => <DropdownMenuItem key={item.name} onClick={() => navigate(item.href)} className="hover:bg-purple-600/20">
                           {item.name}
-                        </DropdownMenuItem>
-                      ))}
+                        </DropdownMenuItem>)}
                     </DropdownMenuContent>
                   </DropdownMenu>
 
@@ -121,11 +125,9 @@ const Dashboard = () => {
                       Features
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="bg-gray-900/95 backdrop-blur-sm border-purple-500/30 text-white">
-                      {featureItems.map((item) => (
-                        <DropdownMenuItem key={item.name} onClick={() => navigate(item.href)} className="hover:bg-purple-600/20">
+                      {featureItems.map(item => <DropdownMenuItem key={item.name} onClick={() => navigate(item.href)} className="hover:bg-purple-600/20">
                           {item.name}
-                        </DropdownMenuItem>
-                      ))}
+                        </DropdownMenuItem>)}
                     </DropdownMenuContent>
                   </DropdownMenu>
 
@@ -134,25 +136,17 @@ const Dashboard = () => {
                       Resources
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="bg-gray-900/95 backdrop-blur-sm border-purple-500/30 text-white">
-                      {resourceItems.map((item) => (
-                        <DropdownMenuItem key={item.name} onClick={() => navigate(item.href)} className="hover:bg-purple-600/20">
+                      {resourceItems.map(item => <DropdownMenuItem key={item.name} onClick={() => navigate(item.href)} className="hover:bg-purple-600/20">
                           {item.name}
-                        </DropdownMenuItem>
-                      ))}
+                        </DropdownMenuItem>)}
                     </DropdownMenuContent>
                   </DropdownMenu>
 
-                  <button 
-                    onClick={() => scrollToSection('pricing-section')}
-                    className="text-gray-300 hover:text-white transition-colors duration-200"
-                  >
+                  <button onClick={() => scrollToSection('pricing-section')} className="text-gray-300 hover:text-white transition-colors duration-200">
                     Pricing
                   </button>
                   
-                  <button 
-                    onClick={() => scrollToSection('contact-section')}
-                    className="text-gray-300 hover:text-white transition-colors duration-200"
-                  >
+                  <button onClick={() => scrollToSection('contact-section')} className="text-gray-300 hover:text-white transition-colors duration-200">
                     Contact
                   </button>
                 </nav>
@@ -165,11 +159,7 @@ const Dashboard = () => {
                     </span>
                   </div>
                   
-                  <Button 
-                    onClick={() => navigate('/')} 
-                    variant="outline" 
-                    className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10 hover:border-purple-400 transition-all duration-300 hover:scale-105"
-                  >
+                  <Button onClick={() => navigate('/')} variant="outline" className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10 hover:border-purple-400 transition-all duration-300 hover:scale-105">
                     <Home className="h-4 w-4 mr-2" />
                     Back to Home
                   </Button>
@@ -179,7 +169,7 @@ const Dashboard = () => {
           </header>
           
           {/* Main Content */}
-          <div className="relative z-10 pt-8">
+          <div className="relative z-10 pt-8 bg-indigo-950">
             <div className="container mx-auto px-4 py-12">
               {/* Welcome Section */}
               <div className="text-center mb-12 animate-fade-in">
@@ -191,12 +181,7 @@ const Dashboard = () => {
               
               {/* Dashboard Options */}
               <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-20">
-                {dashboardOptions.map((option) => (
-                  <Card 
-                    key={option.id} 
-                    className="bg-purple-900/20 border-purple-500/30 hover:bg-purple-900/30 transition-all duration-300 cursor-pointer group hover:scale-105 backdrop-blur-sm"
-                    onClick={() => handleCardClick(option.route)}
-                  >
+                {dashboardOptions.map(option => <Card key={option.id} className="bg-purple-900/20 border-purple-500/30 hover:bg-purple-900/30 transition-all duration-300 cursor-pointer group hover:scale-105 backdrop-blur-sm" onClick={() => handleCardClick(option.route)}>
                     <CardHeader className="text-center">
                       <div className="flex justify-center mb-4">
                         <div className={`p-4 rounded-full ${option.color} group-hover:scale-110 transition-transform duration-300`}>
@@ -211,8 +196,7 @@ const Dashboard = () => {
                         Get Started
                       </Button>
                     </CardContent>
-                  </Card>
-                ))}
+                  </Card>)}
               </div>
               
               {/* AI Resume Assistant Section */}
@@ -227,17 +211,10 @@ const Dashboard = () => {
                     </div>
                     <div className="bg-black/30 rounded-lg p-6 min-h-[200px] border border-purple-500/20 flex items-center justify-center">
                       <div className="flex flex-col items-center space-y-4">
-                        <Button 
-                          onClick={() => navigate('/chat')} 
-                          className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 text-lg transition-all duration-300 hover:scale-105"
-                        >
+                        <Button onClick={() => navigate('/chat')} className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 text-lg transition-all duration-300 hover:scale-105">
                           Start Chatting
                         </Button>
-                        <Button 
-                          onClick={handleDownloadPDF}
-                          variant="outline"
-                          className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10 hover:border-purple-400 transition-all duration-300 hover:scale-105"
-                        >
+                        <Button onClick={handleDownloadPDF} variant="outline" className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10 hover:border-purple-400 transition-all duration-300 hover:scale-105">
                           <Download className="h-4 w-4 mr-2" />
                           Download Resume (PDF)
                         </Button>
@@ -250,8 +227,6 @@ const Dashboard = () => {
           </div>
         </SidebarInset>
       </div>
-    </SidebarProvider>
-  );
+    </SidebarProvider>;
 };
-
 export default Dashboard;
