@@ -290,7 +290,7 @@ const LandingPage = () => {
       </section>
 
       {/* Pricing Section */}
-      <section className="container mx-auto px-4 py-16">
+      <section id="pricing-section" className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-white mb-4">Choose Your Plan</h2>
           <p className="text-xl text-gray-300">Start building your career today</p>
@@ -339,7 +339,7 @@ const LandingPage = () => {
       </section>
 
       {/* Contact Section */}
-      <section className="container mx-auto px-4 py-16">
+      <section id="contact-section" className="container mx-auto px-4 py-16">
         <div className="grid md:grid-cols-2 gap-12">
           <div>
             <h2 className="text-3xl font-bold text-white mb-6">Get in Touch</h2>
