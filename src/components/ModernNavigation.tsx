@@ -10,7 +10,11 @@ import {
   Zap,
   BarChart3,
   MessageSquare,
-  Target
+  Target,
+  BookOpen,
+  Briefcase,
+  Settings as SettingsIcon,
+  CreditCard
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
@@ -32,16 +36,16 @@ const ModernNavigation = () => {
   ];
 
   const featureItems = [
-    { name: 'ATS Optimized Templates', href: '/templates' },
-    { name: 'Chat-Based Editing', href: '/chat' },
-    { name: 'Smart Suggestions', href: '/dashboard' },
-    { name: 'Version History', href: '/dashboard' },
+    { name: 'ATS Optimized Templates', href: '/templates', icon: Target },
+    { name: 'Chat-Based Editing', href: '/chat', icon: MessageSquare },
+    { name: 'Smart Suggestions', href: '/dashboard', icon: Zap },
+    { name: 'Version History', href: '/dashboard', icon: BookOpen },
   ];
 
   const resourceItems = [
-    { name: 'Resume Tips', href: '#' },
-    { name: 'Career Paths', href: '#' },
-    { name: 'Blog', href: '#' },
+    { name: 'Resume Tips', href: '#', icon: BookOpen },
+    { name: 'Career Paths', href: '#', icon: Briefcase },
+    { name: 'Blog', href: '#', icon: FileText },
   ];
 
   const DropdownMenu = ({ 
@@ -94,7 +98,7 @@ const ModernNavigation = () => {
                   }}
                   className="w-full text-left px-4 py-3 text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-purple-600/20 hover:to-blue-600/20 rounded-md transition-all duration-300 flex items-center space-x-3 group"
                 >
-                  {('icon' in item) && <item.icon className="h-4 w-4 text-purple-400 group-hover:text-white transition-colors" />}
+                  <item.icon className="h-4 w-4 text-purple-400 group-hover:text-white transition-colors" />
                   <span className="relative">
                     {item.name}
                     <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-400 to-blue-400 transition-all duration-300 group-hover:w-full"></span>
