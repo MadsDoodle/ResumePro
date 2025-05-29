@@ -1,3 +1,4 @@
+
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from '@/components/ui/sonner';
@@ -16,7 +17,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 
 const queryClient = new QueryClient();
 
-function QueryClient({ children }: { children: React.ReactNode }) {
+function QueryProviderWrapper({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       {children}
@@ -26,7 +27,7 @@ function QueryClient({ children }: { children: React.ReactNode }) {
 
 function App() {
   return (
-    <QueryClient>
+    <QueryProviderWrapper>
       <Router>
         <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
           <Toaster />
@@ -93,7 +94,7 @@ function App() {
           </Routes>
         </div>
       </Router>
-    </QueryClient>
+    </QueryProviderWrapper>
   );
 }
 

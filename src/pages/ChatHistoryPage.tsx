@@ -12,9 +12,8 @@ import { MessageSquare, Calendar, User, Bot } from 'lucide-react';
 
 const ChatHistoryPage = () => {
   const { user } = useAuth();
-  const { getChatHistory } = useChatHistory();
+  const { messages, loadChatHistory } = useChatHistory();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [chatHistory, setChatHistory] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedChat, setSelectedChat] = useState<any>(null);
 
@@ -22,14 +21,13 @@ const ChatHistoryPage = () => {
     const fetchChatHistory = async () => {
       if (user) {
         setLoading(true);
-        const history = await getChatHistory();
-        setChatHistory(history);
+        await loadChatHistory();
         setLoading(false);
       }
     };
 
     fetchChatHistory();
-  }, [user, getChatHistory]);
+  }, [user, loadChatHistory]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -43,7 +41,7 @@ const ChatHistoryPage = () => {
 
   const groupChatsBySession = (chats: any[]) => {
     const grouped = chats.reduce((acc, chat) => {
-      const sessionId = chat.session_id;
+      const sessionId = chat.session_id || 'default';
       if (!acc[sessionId]) {
         acc[sessionId] = {
           session_id: sessionId,
@@ -53,7 +51,7 @@ const ChatHistoryPage = () => {
         };
       }
       acc[sessionId].messages.push(chat);
-      acc[sessionId].last_message = chat.message_content.substring(0, 100) + '...';
+      acc[sessionId].last_message = chat.content.substring(0, 100) + '...';
       return acc;
     }, {});
 
@@ -62,7 +60,7 @@ const ChatHistoryPage = () => {
     );
   };
 
-  const groupedChats = groupChatsBySession(chatHistory);
+  const groupedChats = groupChatsBySession(messages);
 
   return (
     <div className="min-h-screen bg-[#060315] relative overflow-hidden">
@@ -104,7 +102,10 @@ const ChatHistoryPage = () => {
                     <MessageSquare className="h-16 w-16 text-purple-400 mx-auto mb-4" />
                     <h3 className="text-xl font-semibold text-white mb-2">No Chat History Yet</h3>
                     <p className="text-purple-300 mb-4">Start a conversation with our AI assistant</p>
-                    <Button className="bg-purple-600 hover:bg-purple-700">
+                    <Button 
+                      onClick={() => window.location.href = '/chat'}
+                      className="bg-purple-600 hover:bg-purple-700"
+                    >
                       Start Chatting
                     </Button>
                   </CardContent>
@@ -199,18 +200,18 @@ const ChatHistoryPage = () => {
               {selectedChat.messages.map((message: any, index: number) => (
                 <div key={index} className="mb-4 flex items-start space-x-3">
                   <div className={`p-2 rounded-full ${
-                    message.message_type === 'user' 
+                    message.type === 'user' 
                       ? 'bg-purple-600/20 text-purple-400' 
                       : 'bg-blue-600/20 text-blue-400'
                   }`}>
-                    {message.message_type === 'user' ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
+                    {message.type === 'user' ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
                   </div>
                   <div className="flex-1">
                     <div className="text-sm text-gray-400 mb-1">
-                      {message.message_type === 'user' ? 'You' : 'AI Assistant'} • {formatDate(message.created_at)}
+                      {message.type === 'user' ? 'You' : 'AI Assistant'} • {formatDate(message.created_at)}
                     </div>
                     <div className="text-white bg-gray-800/50 rounded-lg p-3">
-                      {message.message_content}
+                      {message.content}
                     </div>
                   </div>
                 </div>
