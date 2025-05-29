@@ -54,7 +54,7 @@ const CollapsibleSidebar = ({ isOpen, onToggle, onClose }: CollapsibleSidebarPro
     { id: 'dashboard', title: 'Dashboard', icon: Home, route: '/dashboard' },
     { id: 'library', title: 'My Action Plans', icon: FileText, route: '/library' },
     { id: 'projects', title: 'Saved Projects', icon: Bookmark, route: '/projects' },
-    { id: 'chat', title: 'AI Chat History', icon: MessageSquare, route: '/chat-history' },
+    { id: 'chat', title: 'AI Chat History', icon: MessageSquare, route: '/chat' },
     { id: 'settings', title: 'Settings', icon: Settings, route: '/settings' },
     { id: 'billing', title: 'Billing & Subscription', icon: CreditCard, route: '/pricing' },
   ];

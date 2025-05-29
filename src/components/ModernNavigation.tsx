@@ -29,18 +29,6 @@ const ModernNavigation = () => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [isFlowchartModalOpen, setIsFlowchartModalOpen] = useState(false);
 
-  // Close dropdowns when clicking outside
-  useEffect(() => {
-    const handleClickOutside = () => {
-      setActiveDropdown(null);
-    };
-    
-    if (activeDropdown) {
-      document.addEventListener('click', handleClickOutside);
-      return () => document.removeEventListener('click', handleClickOutside);
-    }
-  }, [activeDropdown]);
-
   const platformItems = [
     { name: 'Resume Builder', href: '/create', icon: FileText },
     { name: 'Resume Analyzer', href: '/analyze', icon: BarChart3 },
@@ -71,7 +59,7 @@ const ModernNavigation = () => {
     isOpen: boolean; 
     onToggle: () => void; 
   }) => (
-    <div className="relative" onClick={(e) => e.stopPropagation()}>
+    <div className="relative">
       <button 
         onClick={onToggle}
         className="flex items-center space-x-1 text-gray-300 hover:text-white transition-all duration-300 px-4 py-2 group"
@@ -124,35 +112,9 @@ const ModernNavigation = () => {
     </div>
   );
 
-  const handlePricingClick = () => {
-    if (window.location.pathname === '/') {
-      // If on landing page, scroll to pricing section
-      const pricingSection = document.getElementById('pricing-section');
-      if (pricingSection) {
-        pricingSection.scrollIntoView({ behavior: 'smooth' });
-      }
-    } else {
-      // Navigate to dashboard pricing section
-      navigate('/dashboard#pricing');
-    }
-  };
-
-  const handleContactClick = () => {
-    if (window.location.pathname === '/') {
-      // If on landing page, scroll to contact section
-      const contactSection = document.getElementById('contact-section');
-      if (contactSection) {
-        contactSection.scrollIntoView({ behavior: 'smooth' });
-      }
-    } else {
-      // Navigate to dashboard contact section
-      navigate('/dashboard#contact');
-    }
-  };
-
   return (
     <>
-      <nav className="bg-[#0D0D0D] border-b border-gray-800 fixed top-0 left-0 right-0 z-40">
+      <nav className="bg-[#0D0D0D] border-b border-gray-800 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
@@ -189,21 +151,11 @@ const ModernNavigation = () => {
               />
               
               <button 
-                onClick={handlePricingClick}
+                onClick={() => navigate('/pricing')}
                 className="text-gray-300 hover:text-white transition-all duration-300 px-4 py-2 group"
               >
                 <span className="relative">
                   Pricing
-                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-400 to-blue-400 transition-all duration-300 group-hover:w-full"></span>
-                </span>
-              </button>
-
-              <button 
-                onClick={handleContactClick}
-                className="text-gray-300 hover:text-white transition-all duration-300 px-4 py-2 group"
-              >
-                <span className="relative">
-                  Contact
                   <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-400 to-blue-400 transition-all duration-300 group-hover:w-full"></span>
                 </span>
               </button>
