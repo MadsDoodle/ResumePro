@@ -14,25 +14,11 @@ import ChatPage from "./pages/ChatPage";
 import AnalyzePage from "./pages/AnalyzePage";
 import CreatePage from "./pages/CreatePage";
 import TemplateSelection from "./pages/TemplateSelection";
+import ProfilePage from "./pages/ProfilePage";
 import NotFound from "./pages/NotFound";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
-
-function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useAuth();
-  
-  if (loading) {
-    return <div className="min-h-screen bg-[#060315] flex items-center justify-center">
-      <div className="text-purple-400">Loading...</div>
-    </div>;
-  }
-  
-  if (!user) {
-    return <Navigate to="/auth" replace />;
-  }
-  
-  return <>{children}</>;
-}
 
 function PublicRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -88,6 +74,11 @@ const App = () => (
               <Route path="/templates" element={
                 <ProtectedRoute>
                   <TemplateSelection />
+                </ProtectedRoute>
+              } />
+              <Route path="/profile" element={
+                <ProtectedRoute>
+                  <ProfilePage />
                 </ProtectedRoute>
               } />
               <Route path="*" element={<NotFound />} />

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Eye, Download, Save, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -27,7 +26,7 @@ const ResumeBuilder = () => {
   });
   const { toast } = useToast();
   const { credits, deductCredit } = useCredits();
-  const { uploadResume, uploading } = useResumeStorage();
+  const { saveResumeToDatabase, uploading } = useResumeStorage();
 
   // Auto-save functionality
   useEffect(() => {
@@ -130,18 +129,15 @@ const ResumeBuilder = () => {
     }
 
     try {
-      // Generate PDF blob (this would integrate with html2pdf or similar)
+      // Generate PDF and save to database
       const resumeTitle = (formData.personalInfo as any)?.fullName || 'Resume';
       
-      // For now, create a simple text file as placeholder
+      // Save to database
+      await saveResumeToDatabase(formData, `${resumeTitle} - ${new Date().toLocaleDateString()}`);
+
+      // Create downloadable file
       const resumeContent = JSON.stringify(formData, null, 2);
       const blob = new Blob([resumeContent], { type: 'application/json' });
-      const file = new File([blob], `${resumeTitle}-resume.json`, { type: 'application/json' });
-
-      // Save to storage
-      await uploadResume(file, `${resumeTitle} - ${new Date().toLocaleDateString()}`);
-
-      // Download the file
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -241,10 +237,11 @@ const ResumeBuilder = () => {
                 {currentStep === steps.length - 1 ? (
                   <Button 
                     onClick={handleDownloadPDF}
+                    disabled={uploading}
                     className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700"
                   >
                     <Download className="mr-2 h-4 w-4" />
-                    Generate PDF
+                    {uploading ? 'Generating...' : 'Generate PDF'}
                   </Button>
                 ) : (
                   <Button 

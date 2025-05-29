@@ -119,10 +119,45 @@ export function useResumeStorage() {
     }
   };
 
+  const saveResumeToDatabase = async (resumeData: any, resumeTitle: string) => {
+    if (!user) return null;
+
+    try {
+      // Create a JSON file from the resume data
+      const resumeContent = JSON.stringify(resumeData, null, 2);
+      const blob = new Blob([resumeContent], { type: 'application/json' });
+      const file = new File([blob], `${resumeTitle}.json`, { type: 'application/json' });
+
+      // Upload the file and save metadata
+      const result = await uploadResume(file, resumeTitle);
+      
+      // Log to Downloaded Resumes table
+      if (result) {
+        await supabase
+          .from('Downloaded Resumes')
+          .insert({
+            // The table structure shows only id and created_at with defaults
+            // No additional data needed as both have defaults
+          });
+      }
+
+      return result;
+    } catch (error) {
+      console.error('Error saving resume to database:', error);
+      toast({
+        title: "Save Failed",
+        description: "Failed to save your resume to the database.",
+        variant: "destructive"
+      });
+      return null;
+    }
+  };
+
   return {
     uploadResume,
     downloadResume,
     getUserResumes,
+    saveResumeToDatabase,
     uploading
   };
 }
