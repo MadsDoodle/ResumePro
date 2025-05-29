@@ -102,7 +102,7 @@ const TermsModal = ({ isOpen, onAccept }: TermsModalProps) => {
           <Checkbox 
             id="terms" 
             checked={accepted}
-            onCheckedChange={setAccepted}
+            onCheckedChange={(checked) => setAccepted(checked === true)}
             className="border-purple-500/30"
           />
           <label htmlFor="terms" className="text-sm text-gray-300 cursor-pointer">

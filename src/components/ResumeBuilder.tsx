@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Eye, Download, Save, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -130,7 +131,7 @@ const ResumeBuilder = () => {
 
     try {
       // Generate PDF blob (this would integrate with html2pdf or similar)
-      const resumeTitle = formData.personalInfo?.fullName || 'Resume';
+      const resumeTitle = (formData.personalInfo as any)?.fullName || 'Resume';
       
       // For now, create a simple text file as placeholder
       const resumeContent = JSON.stringify(formData, null, 2);
