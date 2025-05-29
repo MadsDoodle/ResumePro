@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Eye, Download, Save, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -6,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
+import { useCredits } from '@/hooks/useCredits';
+import { useResumeStorage } from '@/hooks/useResumeStorage';
 import PersonalInfoForm from '@/components/forms/PersonalInfoForm';
 import SummaryForm from '@/components/forms/SummaryForm';
 import ExperienceForm from '@/components/forms/ExperienceForm';
@@ -24,6 +25,8 @@ const ResumeBuilder = () => {
     additionalSections: {}
   });
   const { toast } = useToast();
+  const { credits, deductCredit } = useCredits();
+  const { uploadResume, uploading } = useResumeStorage();
 
   // Auto-save functionality
   useEffect(() => {
@@ -108,12 +111,56 @@ const ResumeBuilder = () => {
     });
   };
 
-  const handleDownloadPDF = () => {
-    // This would integrate with a PDF generation library
-    toast({
-      title: "PDF Download",
-      description: "PDF download feature will be implemented with html2pdf integration.",
-    });
+  const handleDownloadPDF = async () => {
+    // Check if user has credits
+    if (credits < 1) {
+      toast({
+        title: "Insufficient Credits",
+        description: "You need at least 1 credit to generate a PDF. Please upgrade your plan.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Deduct credit for PDF generation
+    const creditDeducted = await deductCredit('pdf_generation', 'Resume PDF download');
+    if (!creditDeducted) {
+      return;
+    }
+
+    try {
+      // Generate PDF blob (this would integrate with html2pdf or similar)
+      const resumeTitle = formData.personalInfo?.fullName || 'Resume';
+      
+      // For now, create a simple text file as placeholder
+      const resumeContent = JSON.stringify(formData, null, 2);
+      const blob = new Blob([resumeContent], { type: 'application/json' });
+      const file = new File([blob], `${resumeTitle}-resume.json`, { type: 'application/json' });
+
+      // Save to storage
+      await uploadResume(file, `${resumeTitle} - ${new Date().toLocaleDateString()}`);
+
+      // Download the file
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${resumeTitle}-resume.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      toast({
+        title: "Resume Generated",
+        description: "Your resume has been generated and saved to your library.",
+      });
+    } catch (error) {
+      toast({
+        title: "Generation Failed",
+        description: "Failed to generate resume PDF. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   const CurrentStepComponent = steps[currentStep].component;
@@ -121,6 +168,15 @@ const ResumeBuilder = () => {
   return (
     <TooltipProvider>
       <div className="max-w-7xl mx-auto">
+        {/* Credit warning */}
+        {credits < 1 && (
+          <div className="mb-4 p-4 bg-red-900/20 border border-red-500/30 rounded-lg">
+            <p className="text-red-400 text-sm">
+              ⚠️ You have no credits remaining. Upgrade your plan to continue using ResumePro features.
+            </p>
+          </div>
+        )}
+
         <div className="mb-8 text-center">
           <h2 className="text-3xl font-bold text-white mb-4">Resume Builder</h2>
           <div className="max-w-md mx-auto">

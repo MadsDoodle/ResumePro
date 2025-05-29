@@ -6,14 +6,19 @@ import { useNavigate } from 'react-router-dom';
 import AnimatedBackground from '@/components/AnimatedBackground';
 import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/sidebar';
 import EnhancedSidebar from '@/components/EnhancedSidebar';
+import CreditDisplay from '@/components/CreditDisplay';
 import { MessageSquare, BarChart3, FileText, Home, Menu, Download } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { useCredits } from '@/hooks/useCredits';
+
 const Dashboard = () => {
   const {
     user
   } = useAuth();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { hasCredits } = useCredits();
+
   const dashboardOptions = [{
     id: 'chatbox',
     icon: MessageSquare,
@@ -72,7 +77,19 @@ const Dashboard = () => {
     name: 'Blog',
     href: '/blog'
   }];
-  const handleCardClick = (route: string) => {
+  const handleCardClick = async (route: string) => {
+    // Check if action requires credits
+    const creditRequiredRoutes = ['/create', '/analyze', '/chat'];
+    
+    if (creditRequiredRoutes.includes(route)) {
+      const userHasCredits = await hasCredits();
+      if (!userHasCredits) {
+        // Show upgrade modal or redirect to pricing
+        navigate('/pricing');
+        return;
+      }
+    }
+    
     navigate(route);
   };
   const scrollToSection = (sectionId: string) => {
@@ -152,6 +169,9 @@ const Dashboard = () => {
                 </nav>
                 
                 <div className="flex items-center space-x-4">
+                  {/* Credit Display */}
+                  <CreditDisplay />
+                  
                   {/* User Avatar */}
                   <div className="w-10 h-10 rounded-full bg-purple-600/20 border border-purple-500/30 flex items-center justify-center">
                     <span className="text-purple-400 text-sm font-medium">
@@ -229,4 +249,5 @@ const Dashboard = () => {
       </div>
     </SidebarProvider>;
 };
+
 export default Dashboard;
