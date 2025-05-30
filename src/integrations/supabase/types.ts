@@ -9,39 +9,6 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      analysed_resume: {
-        Row: {
-          analysis_recommendations: Json | null
-          analysis_status: string | null
-          created_at: string
-          id: string
-          improved_resume: string | null
-          original_resume: string | null
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          analysis_recommendations?: Json | null
-          analysis_status?: string | null
-          created_at?: string
-          id?: string
-          improved_resume?: string | null
-          original_resume?: string | null
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          analysis_recommendations?: Json | null
-          analysis_status?: string | null
-          created_at?: string
-          id?: string
-          improved_resume?: string | null
-          original_resume?: string | null
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
       chat_history: {
         Row: {
           conversation_id: string
@@ -126,21 +93,6 @@ export type Database = {
           description?: string | null
           id?: string
           user_id?: string
-        }
-        Relationships: []
-      }
-      "Downloaded Resumes": {
-        Row: {
-          created_at: string
-          id: number
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-        }
-        Update: {
-          created_at?: string
-          id?: number
         }
         Relationships: []
       }
