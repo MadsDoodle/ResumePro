@@ -36,9 +36,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 .from('profiles')
                 .select('id')
                 .eq('id', session.user.id)
-                .single();
+                .maybeSingle();
 
-              if (error && error.code === 'PGRST116') {
+              if (!profile) {
                 // Profile doesn't exist, create it
                 console.log('Creating profile for new user...');
                 const { error: insertError } = await supabase
