@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -36,6 +35,7 @@ const ChatInterface = ({ isOpen, onClose }: ChatInterfaceProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [conversationId] = useState(() => crypto.randomUUID());
+  const [sessionId] = useState(() => crypto.randomUUID());
   const { user } = useAuth();
   const { toast } = useToast();
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -57,6 +57,7 @@ const ChatInterface = ({ isOpen, onClose }: ChatInterfaceProps) => {
         .insert({
           user_id: user.id,
           conversation_id: conversationId,
+          session_id: sessionId,
           message_content: content,
           message_type: isAI ? 'ai' : 'user'
         });
