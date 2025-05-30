@@ -16,7 +16,10 @@ import {
   Users,
   Award,
   Target,
-  Zap
+  Zap,
+  Mail,
+  Phone,
+  MapPin
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -29,10 +32,15 @@ const LandingPage = () => {
   const [email, setEmail] = useState('');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [showServices, setShowServices] = useState(false);
+  const [activeContactTab, setActiveContactTab] = useState('email');
   const navigate = useNavigate();
   const { user } = useAuth();
 
   const handleGetStarted = () => {
+    if (!agreedToTerms) {
+      alert('Please accept the Terms and Conditions to continue.');
+      return;
+    }
     navigate('/auth');
   };
 
@@ -53,6 +61,12 @@ const LandingPage = () => {
   const handleCheckboxChange = (checked: boolean | "indeterminate") => {
     setAgreedToTerms(checked === true);
   };
+
+  const contactTabs = [
+    { id: 'email', label: 'Email', icon: Mail, content: 'moodiedoodler29@gmail.com' },
+    { id: 'phone', label: 'Phone', icon: Phone, content: '+91 6900541047' },
+    { id: 'address', label: 'Address', icon: MapPin, content: 'H/NO- 94, Sribhumi Nagar, Guwahati, Assam- 781034, India' }
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-purple-900">
@@ -93,21 +107,13 @@ const LandingPage = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
               
-              <DropdownMenu>
-                <DropdownMenuTrigger className="flex items-center text-gray-300 hover:text-white transition-colors">
-                  Resources <ChevronDown className="ml-1 h-4 w-4" />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="bg-gray-800/95 backdrop-blur-sm border-purple-500/30 text-white">
-                  <DropdownMenuItem onClick={() => navigate('/auth')} className="hover:bg-purple-600/20 focus:bg-purple-600/20">Resume Tips</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/auth')} className="hover:bg-purple-600/20 focus:bg-purple-600/20">Career Paths</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/auth')} className="hover:bg-purple-600/20 focus:bg-purple-600/20">Blog</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              
-              <button onClick={handlePricingClick} className="text-gray-300 hover:text-white transition-colors">
+              <button onClick={() => navigate('/resources')} className="text-gray-300 hover:text-white transition-colors">
+                Resources
+              </button>
+              <button onClick={() => navigate('/pricing')} className="text-gray-300 hover:text-white transition-colors">
                 Pricing
               </button>
-              <button onClick={handleContactClick} className="text-gray-300 hover:text-white transition-colors">
+              <button onClick={() => navigate('/contact')} className="text-gray-300 hover:text-white transition-colors">
                 Contact
               </button>
             </div>
@@ -167,6 +173,7 @@ const LandingPage = () => {
                 <Button 
                   onClick={handleGetStarted}
                   className="bg-purple-600 hover:bg-purple-700 text-white px-8"
+                  disabled={!agreedToTerms}
                 >
                   Get started
                 </Button>
@@ -175,11 +182,11 @@ const LandingPage = () => {
               <div className="flex items-center space-x-2">
                 <Checkbox 
                   checked={agreedToTerms}
-                  onCheckedChange={handleCheckboxChange}
+                  onCheckedChange={(checked) => setAgreedToTerms(checked === true)}
                   className="border-purple-500/30"
                 />
                 <span className="text-sm text-gray-400">
-                  I agree with the <a href="#" className="text-purple-400 hover:underline">Terms and Conditions</a>
+                  I accept the <a href="/terms" className="text-purple-400 hover:underline">Terms and Conditions</a>
                 </span>
               </div>
             </div>
@@ -374,6 +381,32 @@ const LandingPage = () => {
           </div>
 
           <div className="space-y-8">
+            {/* Contact Tabs */}
+            <div>
+              <h3 className="text-xl font-semibold text-white mb-4">Contact Information</h3>
+              <div className="flex space-x-1 mb-4">
+                {contactTabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveContactTab(tab.id)}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      activeContactTab === tab.id 
+                        ? 'bg-purple-600 text-white' 
+                        : 'bg-gray-800/50 text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    <tab.icon className="h-4 w-4 inline mr-1" />
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+              <div className="bg-gray-800/50 border border-purple-500/30 rounded-lg p-4">
+                <p className="text-gray-300">
+                  {contactTabs.find(tab => tab.id === activeContactTab)?.content}
+                </p>
+              </div>
+            </div>
+
             <div>
               <h3 className="text-xl font-semibold text-white mb-4">Follow Us</h3>
               <div className="flex space-x-4">
@@ -418,17 +451,17 @@ const LandingPage = () => {
             <div>
               <h4 className="font-semibold text-white mb-4">Resources</h4>
               <div className="space-y-2">
-                <a href="#" className="block text-gray-400 hover:text-white transition-colors">Resume Tips</a>
-                <a href="#" className="block text-gray-400 hover:text-white transition-colors">Career Paths</a>
-                <a href="#" className="block text-gray-400 hover:text-white transition-colors">Blog</a>
+                <a href="/resources" className="block text-gray-400 hover:text-white transition-colors">Resume Tips</a>
+                <a href="/resources" className="block text-gray-400 hover:text-white transition-colors">Career Paths</a>
+                <a href="/resources" className="block text-gray-400 hover:text-white transition-colors">Blog</a>
               </div>
             </div>
 
             <div>
               <h4 className="font-semibold text-white mb-4">Legal</h4>
               <div className="space-y-2">
-                <a href="#" className="block text-gray-400 hover:text-white transition-colors">Terms & Conditions</a>
-                <a href="#" className="block text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
+                <a href="/terms" className="block text-gray-400 hover:text-white transition-colors">Terms & Conditions</a>
+                <a href="/privacy" className="block text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
               </div>
             </div>
           </div>

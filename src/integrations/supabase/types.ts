@@ -9,6 +9,45 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      blog_posts: {
+        Row: {
+          author_bio: string | null
+          content: string
+          created_at: string
+          id: string
+          publication_date: string | null
+          status: string | null
+          tags: string[] | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          author_bio?: string | null
+          content: string
+          created_at?: string
+          id?: string
+          publication_date?: string | null
+          status?: string | null
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          author_bio?: string | null
+          content?: string
+          created_at?: string
+          id?: string
+          publication_date?: string | null
+          status?: string | null
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       chat_history: {
         Row: {
           conversation_id: string
@@ -162,6 +201,45 @@ export type Database = {
           id?: string
           last_credit_reset?: string | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      resource_documents: {
+        Row: {
+          category: string | null
+          created_at: string
+          description: string | null
+          file_name: string
+          file_path: string
+          id: string
+          is_active: boolean | null
+          updated_at: string
+          upload_date: string
+          version: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          file_name: string
+          file_path: string
+          id?: string
+          is_active?: boolean | null
+          updated_at?: string
+          upload_date?: string
+          version?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          file_name?: string
+          file_path?: string
+          id?: string
+          is_active?: boolean | null
+          updated_at?: string
+          upload_date?: string
+          version?: string | null
         }
         Relationships: []
       }

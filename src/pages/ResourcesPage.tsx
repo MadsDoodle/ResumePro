@@ -1,393 +1,682 @@
 
-import React, { useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { 
-  BookOpen, 
-  Terminal, 
-  PenTool, 
+  FileText, 
   Search, 
   Download, 
-  TrendingUp,
+  BookOpen, 
+  Code, 
+  Brain,
+  Database,
+  BarChart3,
+  Shield,
   Users,
-  DollarSign,
-  Clock
+  Palette,
+  Link as LinkIcon,
+  Settings,
+  PenTool,
+  Filter,
+  Calendar,
+  User,
+  Tag
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
 
 const ResourcesPage = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCareerPath, setSelectedCareerPath] = useState<number | null>(null);
-
-  const resumeTips = [
-    {
-      title: 'ATS Optimization Tips',
-      category: 'Technical',
-      content: 'Learn how to make your resume ATS-friendly with proper formatting and keywords.',
-      downloadable: true
-    },
-    {
-      title: 'Industry-Specific Templates',
-      category: 'Templates',
-      content: 'Professional templates tailored for different industries and career levels.',
-      downloadable: true
-    },
-    {
-      title: 'Cover Letter Best Practices',
-      category: 'Writing',
-      content: 'Craft compelling cover letters that complement your resume perfectly.',
-      downloadable: false
-    },
-    {
-      title: 'Remote Work Resume Guide',
-      category: 'Modern',
-      content: 'Highlight remote work skills and experience in your resume.',
-      downloadable: true
-    }
-  ];
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const [activeTab, setActiveTab] = useState('tips');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCareer, setSelectedCareer] = useState(null);
+  const [blogPosts, setBlogPosts] = useState([]);
+  const [resourceDocs, setResourceDocs] = useState([]);
+  const [blogForm, setBlogForm] = useState({
+    title: '',
+    content: '',
+    authorBio: '',
+    tags: ''
+  });
 
   const careerPaths = [
     {
-      title: 'Machine Learning Engineer',
-      description: 'Design and implement ML algorithms and systems',
-      requiredSkills: ['Python', 'TensorFlow', 'Statistics', 'Data Analysis'],
-      salaryRange: '$90k - $180k',
+      id: 'ml',
+      title: 'Machine Learning',
+      icon: Brain,
+      description: 'Build intelligent systems that learn from data',
+      skills: ['Python', 'TensorFlow', 'Statistics', 'Data Preprocessing'],
+      salary: '$95,000 - $180,000',
+      demand: 'Very High',
+      resources: ['Coursera ML Course', 'Kaggle Competitions', 'Papers with Code']
+    },
+    {
+      id: 'webdev',
+      title: 'Web Development',
+      icon: Code,
+      description: 'Create dynamic websites and web applications',
+      skills: ['JavaScript', 'React', 'Node.js', 'HTML/CSS'],
+      salary: '$70,000 - $140,000',
       demand: 'High',
-      learningResources: ['Coursera ML Course', 'Kaggle Competitions', 'Papers With Code'],
-      color: 'bg-purple-100 border-purple-300'
+      resources: ['MDN Web Docs', 'freeCodeCamp', 'The Odin Project']
     },
     {
-      title: 'Web Developer',
-      description: 'Build responsive web applications and websites',
-      requiredSkills: ['JavaScript', 'React', 'Node.js', 'CSS'],
-      salaryRange: '$60k - $130k',
+      id: 'ai',
+      title: 'AI Engineering',
+      icon: Brain,
+      description: 'Develop and deploy artificial intelligence solutions',
+      skills: ['Python', 'Deep Learning', 'MLOps', 'Computer Vision'],
+      salary: '$100,000 - $200,000',
       demand: 'Very High',
-      learningResources: ['FreeCodeCamp', 'MDN Web Docs', 'React Documentation'],
-      color: 'bg-blue-100 border-blue-300'
+      resources: ['Fast.ai', 'CS231n Stanford', 'Hugging Face']
     },
     {
-      title: 'AI Engineer',
-      description: 'Develop AI-powered applications and systems',
-      requiredSkills: ['Python', 'Deep Learning', 'NLP', 'Computer Vision'],
-      salaryRange: '$100k - $200k',
-      demand: 'Very High',
-      learningResources: ['Fast.ai', 'OpenAI Documentation', 'Hugging Face'],
-      color: 'bg-green-100 border-green-300'
-    },
-    {
-      title: 'Data Scientist',
+      id: 'datascience',
+      title: 'Data Science',
+      icon: BarChart3,
       description: 'Extract insights from complex datasets',
-      requiredSkills: ['Python', 'SQL', 'Statistics', 'Visualization'],
-      salaryRange: '$80k - $160k',
+      skills: ['Python/R', 'SQL', 'Statistics', 'Machine Learning'],
+      salary: '$85,000 - $160,000',
       demand: 'High',
-      learningResources: ['Kaggle Learn', 'DataCamp', 'Towards Data Science'],
-      color: 'bg-yellow-100 border-yellow-300'
+      resources: ['Kaggle Learn', 'DataCamp', 'Towards Data Science']
     },
     {
-      title: 'Data Analyst',
-      description: 'Analyze data to support business decisions',
-      requiredSkills: ['SQL', 'Excel', 'Tableau', 'Python'],
-      salaryRange: '$50k - $90k',
+      id: 'analytics',
+      title: 'Data Analytics',
+      icon: Database,
+      description: 'Transform data into actionable business insights',
+      skills: ['SQL', 'Excel', 'Tableau', 'Python'],
+      salary: '$65,000 - $120,000',
       demand: 'High',
-      learningResources: ['Google Analytics Academy', 'Tableau Public', 'SQL Tutorial'],
-      color: 'bg-red-100 border-red-300'
+      resources: ['Google Analytics Academy', 'Tableau Public', 'SQL Zoo']
     },
     {
-      title: 'Cybersecurity Specialist',
-      description: 'Protect systems and networks from threats',
-      requiredSkills: ['Network Security', 'Penetration Testing', 'CISSP', 'Linux'],
-      salaryRange: '$70k - $140k',
+      id: 'cybersecurity',
+      title: 'Cybersecurity',
+      icon: Shield,
+      description: 'Protect systems and data from digital threats',
+      skills: ['Network Security', 'Ethical Hacking', 'Risk Assessment', 'Compliance'],
+      salary: '$80,000 - $150,000',
       demand: 'Very High',
-      learningResources: ['SANS Training', 'Cybrary', 'OWASP'],
-      color: 'bg-indigo-100 border-indigo-300'
+      resources: ['Cybrary', 'OWASP', 'SANS Training']
     },
     {
-      title: 'Product Manager',
-      description: 'Guide product development from concept to launch',
-      requiredSkills: ['Strategy', 'Analytics', 'Communication', 'Agile'],
-      salaryRange: '$90k - $170k',
+      id: 'product',
+      title: 'Product Management',
+      icon: Users,
+      description: 'Guide product development from conception to launch',
+      skills: ['Market Research', 'Roadmapping', 'Agile', 'Analytics'],
+      salary: '$90,000 - $170,000',
       demand: 'High',
-      learningResources: ['Product School', 'Mind the Product', 'First Round Review'],
-      color: 'bg-pink-100 border-pink-300'
+      resources: ['Product School', 'Mind the Product', 'Lean Startup']
     },
     {
-      title: 'UX/UI Designer',
-      description: 'Design user-friendly interfaces and experiences',
-      requiredSkills: ['Figma', 'User Research', 'Prototyping', 'Design Systems'],
-      salaryRange: '$60k - $120k',
+      id: 'ux',
+      title: 'UX/UI Design',
+      icon: Palette,
+      description: 'Design intuitive and beautiful user experiences',
+      skills: ['Figma', 'User Research', 'Prototyping', 'Design Systems'],
+      salary: '$75,000 - $140,000',
       demand: 'High',
-      learningResources: ['Figma Academy', 'Nielsen Norman Group', 'Material Design'],
-      color: 'bg-orange-100 border-orange-300'
+      resources: ['Figma Academy', 'NNG UX Training', 'Interaction Design Foundation']
     },
     {
-      title: 'Blockchain Developer',
+      id: 'blockchain',
+      title: 'Blockchain Dev',
+      icon: LinkIcon,
       description: 'Build decentralized applications and smart contracts',
-      requiredSkills: ['Solidity', 'Web3', 'Ethereum', 'Cryptography'],
-      salaryRange: '$80k - $160k',
+      skills: ['Solidity', 'Web3', 'Ethereum', 'Cryptography'],
+      salary: '$90,000 - $180,000',
       demand: 'Medium',
-      learningResources: ['Ethereum.org', 'CryptoZombies', 'OpenZeppelin'],
-      color: 'bg-teal-100 border-teal-300'
+      resources: ['CryptoZombies', 'Ethereum.org', 'Moralis Academy']
     },
     {
-      title: 'DevOps Engineer',
-      description: 'Streamline development and deployment processes',
-      requiredSkills: ['Docker', 'Kubernetes', 'AWS', 'CI/CD'],
-      salaryRange: '$80k - $150k',
+      id: 'devops',
+      title: 'DevOps',
+      icon: Settings,
+      description: 'Bridge development and operations for efficient deployment',
+      skills: ['Docker', 'Kubernetes', 'CI/CD', 'Cloud Platforms'],
+      salary: '$85,000 - $160,000',
       demand: 'Very High',
-      learningResources: ['AWS Training', 'Docker Documentation', 'Kubernetes.io'],
-      color: 'bg-gray-100 border-gray-300'
+      resources: ['Docker Documentation', 'Kubernetes Academy', 'AWS Training']
     }
   ];
 
-  const filteredTips = resumeTips.filter(tip =>
-    tip.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    tip.category.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const resumeTips = [
+    {
+      id: 1,
+      category: 'ATS Optimization',
+      title: 'Making Your Resume ATS-Friendly',
+      description: 'Learn how to format your resume to pass through Applicant Tracking Systems',
+      tips: [
+        'Use standard section headings like "Work Experience" and "Education"',
+        'Include relevant keywords from the job description',
+        'Avoid complex formatting, tables, and graphics',
+        'Use standard fonts like Arial, Calibri, or Times New Roman',
+        'Save as both PDF and Word document formats'
+      ]
+    },
+    {
+      id: 2,
+      category: 'Content Writing',
+      title: 'Writing Compelling Bullet Points',
+      description: 'Transform your job duties into achievement-focused statements',
+      tips: [
+        'Start with strong action verbs (managed, developed, implemented)',
+        'Include quantifiable results and metrics whenever possible',
+        'Focus on achievements rather than responsibilities',
+        'Use the STAR method (Situation, Task, Action, Result)',
+        'Tailor bullet points to match the target job requirements'
+      ]
+    },
+    {
+      id: 3,
+      category: 'Industry-Specific',
+      title: 'Technology Resume Best Practices',
+      description: 'Special considerations for tech professionals',
+      tips: [
+        'Include a technical skills section with relevant technologies',
+        'Showcase projects with links to GitHub or portfolio',
+        'Highlight programming languages and frameworks',
+        'Include relevant certifications and continuous learning',
+        'Demonstrate problem-solving and analytical thinking'
+      ]
+    }
+  ];
 
-  const getDemandColor = (demand: string) => {
-    switch (demand) {
-      case 'Very High': return 'bg-green-100 text-green-800';
-      case 'High': return 'bg-blue-100 text-blue-800';
-      case 'Medium': return 'bg-yellow-100 text-yellow-800';
-      default: return 'bg-gray-100 text-gray-800';
+  useEffect(() => {
+    fetchBlogPosts();
+    fetchResourceDocs();
+  }, []);
+
+  const fetchBlogPosts = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .select('*')
+        .eq('status', 'published')
+        .order('publication_date', { ascending: false });
+      
+      if (error) throw error;
+      setBlogPosts(data || []);
+    } catch (error) {
+      console.error('Error fetching blog posts:', error);
     }
   };
 
+  const fetchResourceDocs = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('resource_documents')
+        .select('*')
+        .eq('is_active', true)
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      setResourceDocs(data || []);
+    } catch (error) {
+      console.error('Error fetching resource documents:', error);
+    }
+  };
+
+  const handleBlogSubmit = async (e) => {
+    e.preventDefault();
+    if (!user) {
+      alert('Please sign in to submit a blog post');
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('blog_posts')
+        .insert([{
+          user_id: user.id,
+          title: blogForm.title,
+          content: blogForm.content,
+          author_bio: blogForm.authorBio,
+          tags: blogForm.tags.split(',').map(tag => tag.trim()),
+          status: 'draft'
+        }]);
+
+      if (error) throw error;
+      
+      alert('Blog post submitted for review!');
+      setBlogForm({ title: '', content: '', authorBio: '', tags: '' });
+      fetchBlogPosts();
+    } catch (error) {
+      console.error('Error submitting blog post:', error);
+      alert('Error submitting blog post. Please try again.');
+    }
+  };
+
+  const filteredTips = resumeTips.filter(tip =>
+    tip.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    tip.category.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredPosts = blogPosts.filter(post =>
+    post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (post.tags && post.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())))
+  );
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-purple-900">
       {/* Header */}
-      <header className="bg-white/95 backdrop-blur-sm border-b">
+      <header className="sticky top-0 z-50 bg-gray-900/95 backdrop-blur-sm border-b border-purple-500/20">
         <div className="container mx-auto px-4 py-4">
           <nav className="flex items-center justify-between">
-            <div className="text-2xl font-bold text-blue-600">AI Resume Pro</div>
+            <div className="flex items-center space-x-3">
+              <div className="p-2 rounded-lg bg-purple-600/20 border border-purple-500/30">
+                <FileText className="h-6 w-6 text-purple-400" />
+              </div>
+              <span className="text-xl font-bold text-white">ResumePro</span>
+            </div>
             <div className="hidden md:flex space-x-6">
-              <a href="/" className="text-gray-600 hover:text-blue-600">Home</a>
-              <a href="/pricing" className="text-gray-600 hover:text-blue-600">Pricing</a>
-              <a href="/contact" className="text-gray-600 hover:text-blue-600">Contact</a>
-              <a href="/resources" className="text-blue-600 font-medium">Resources</a>
+              <button onClick={() => navigate('/')} className="text-gray-300 hover:text-white transition-colors">Home</button>
+              <button onClick={() => navigate('/pricing')} className="text-gray-300 hover:text-white transition-colors">Pricing</button>
+              <button onClick={() => navigate('/contact')} className="text-gray-300 hover:text-white transition-colors">Contact</button>
+              <button onClick={() => navigate('/resources')} className="text-purple-400 font-medium">Resources</button>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Button 
+                variant="outline" 
+                className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10"
+                onClick={() => navigate('/auth')}
+              >
+                Sign in
+              </Button>
+              <Button 
+                className="bg-purple-600 hover:bg-purple-700 text-white"
+                onClick={() => navigate('/auth')}
+              >
+                Start for free
+              </Button>
             </div>
           </nav>
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-16">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Career Resources Hub</h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Everything you need to advance your career journey
-          </p>
-        </div>
+      {/* Hero Section */}
+      <section className="py-20">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h1 className="text-5xl font-bold text-white mb-6">
+              Career Resources Hub
+            </h1>
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+              Everything you need to accelerate your career growth - from resume tips to career roadmaps.
+            </p>
+          </div>
 
-        <Tabs defaultValue="resume-tips" className="max-w-6xl mx-auto">
-          <TabsList className="grid w-full grid-cols-3 mb-8">
-            <TabsTrigger value="resume-tips" className="flex items-center space-x-2">
-              <BookOpen className="w-4 h-4" />
-              <span>Resume Tips</span>
-            </TabsTrigger>
-            <TabsTrigger value="career-paths" className="flex items-center space-x-2">
-              <Terminal className="w-4 h-4" />
-              <span>Career Paths</span>
-            </TabsTrigger>
-            <TabsTrigger value="blog" className="flex items-center space-x-2">
-              <PenTool className="w-4 h-4" />
-              <span>Blog</span>
-            </TabsTrigger>
-          </TabsList>
-
-          {/* Resume Tips Tab */}
-          <TabsContent value="resume-tips" className="space-y-6">
-            <div className="flex items-center space-x-4 mb-6">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <Input
-                  placeholder="Search tips and templates..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-6">
-              {filteredTips.map((tip, index) => (
-                <Card key={index} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <div className="flex justify-between items-start">
-                      <CardTitle className="text-lg">{tip.title}</CardTitle>
-                      <Badge variant="secondary">{tip.category}</Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-600 mb-4">{tip.content}</p>
-                    {tip.downloadable && (
-                      <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
-                        <Download className="w-4 h-4 mr-2" />
-                        Download
-                      </Button>
-                    )}
-                  </CardContent>
-                </Card>
+          {/* Tab Navigation */}
+          <div className="flex justify-center mb-12">
+            <div className="bg-gray-800/50 border border-purple-500/20 rounded-lg p-2 flex space-x-2">
+              {[
+                { id: 'tips', label: 'Resume Tips', icon: FileText },
+                { id: 'careers', label: 'Career Paths', icon: Users },
+                { id: 'blog', label: 'Blog', icon: PenTool }
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center px-6 py-3 rounded-lg transition-all ${
+                    activeTab === tab.id
+                      ? 'bg-purple-600 text-white'
+                      : 'text-gray-400 hover:text-white hover:bg-gray-700/50'
+                  }`}
+                >
+                  <tab.icon className="h-5 w-5 mr-2" />
+                  {tab.label}
+                </button>
               ))}
             </div>
-          </TabsContent>
+          </div>
 
-          {/* Career Paths Tab */}
-          <TabsContent value="career-paths" className="space-y-6">
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {careerPaths.map((path, index) => (
-                <Card 
-                  key={index} 
-                  className={`cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl ${path.color} ${
-                    selectedCareerPath === index ? 'ring-2 ring-blue-500' : ''
-                  }`}
-                  onClick={() => setSelectedCareerPath(selectedCareerPath === index ? null : index)}
-                  style={{
-                    transform: selectedCareerPath === index ? 'rotateY(5deg)' : 'rotateY(0deg)',
-                  }}
-                >
-                  <CardHeader>
-                    <CardTitle className="text-lg">{path.title}</CardTitle>
-                    <p className="text-sm text-gray-600">{path.description}</p>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="flex items-center text-sm">
-                          <DollarSign className="w-4 h-4 mr-1" />
-                          Salary
-                        </span>
-                        <span className="text-sm font-medium">{path.salaryRange}</span>
+          {/* Content */}
+          {activeTab === 'tips' && (
+            <div className="max-w-6xl mx-auto">
+              {/* Search Bar */}
+              <div className="mb-8">
+                <div className="relative max-w-md mx-auto">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <Input
+                    type="text"
+                    placeholder="Search resume tips..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10 bg-gray-800/50 border-purple-500/30 text-white placeholder:text-gray-400"
+                  />
+                </div>
+              </div>
+
+              {/* Resume Tips */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+                {filteredTips.map((tip) => (
+                  <Card key={tip.id} className="bg-gray-800/50 border-purple-500/20 hover:border-purple-500/40 transition-all hover:scale-105">
+                    <CardHeader>
+                      <Badge variant="secondary" className="w-fit mb-2 bg-purple-600/20 text-purple-400">
+                        {tip.category}
+                      </Badge>
+                      <CardTitle className="text-white">{tip.title}</CardTitle>
+                      <p className="text-gray-400">{tip.description}</p>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="space-y-2">
+                        {tip.tips.slice(0, 3).map((point, index) => (
+                          <li key={index} className="text-gray-300 text-sm flex items-start">
+                            <span className="w-1.5 h-1.5 bg-purple-400 rounded-full mt-2 mr-2 flex-shrink-0"></span>
+                            {point}
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+
+              {/* Downloadable Templates */}
+              <div>
+                <h2 className="text-3xl font-bold text-white mb-8 text-center">Downloadable Resources</h2>
+                <div className="grid md:grid-cols-3 gap-6">
+                  {resourceDocs.map((doc) => (
+                    <Card key={doc.id} className="bg-gray-800/50 border-purple-500/20 hover:border-purple-500/40 transition-all">
+                      <CardHeader>
+                        <CardTitle className="text-white flex items-center">
+                          <Download className="h-5 w-5 mr-2 text-purple-400" />
+                          {doc.file_name.replace('.pdf', '').replace(/_/g, ' ')}
+                        </CardTitle>
+                        <p className="text-gray-400">{doc.description}</p>
+                      </CardHeader>
+                      <CardContent>
+                        <Button className="w-full bg-purple-600 hover:bg-purple-700">
+                          Download PDF
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'careers' && (
+            <div className="max-w-7xl mx-auto">
+              {selectedCareer ? (
+                // Career Detail View
+                <div>
+                  <Button 
+                    onClick={() => setSelectedCareer(null)}
+                    variant="outline"
+                    className="mb-6 border-purple-500/30 text-purple-400 hover:bg-purple-500/10"
+                  >
+                    ← Back to Career Paths
+                  </Button>
+                  
+                  <Card className="bg-gray-800/50 border-purple-500/20 p-8">
+                    <div className="flex items-center mb-6">
+                      <div className="p-4 bg-purple-600/20 rounded-lg mr-4">
+                        <selectedCareer.icon className="h-8 w-8 text-purple-400" />
                       </div>
-                      
-                      <div className="flex items-center justify-between">
-                        <span className="flex items-center text-sm">
-                          <TrendingUp className="w-4 h-4 mr-1" />
-                          Demand
-                        </span>
-                        <Badge className={getDemandColor(path.demand)}>
-                          {path.demand}
+                      <div>
+                        <h2 className="text-3xl font-bold text-white">{selectedCareer.title}</h2>
+                        <p className="text-gray-300 text-lg">{selectedCareer.description}</p>
+                      </div>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-8">
+                      <div>
+                        <h3 className="text-xl font-semibold text-white mb-4">Required Skills</h3>
+                        <div className="flex flex-wrap gap-2 mb-6">
+                          {selectedCareer.skills.map((skill, index) => (
+                            <Badge key={index} variant="secondary" className="bg-purple-600/20 text-purple-400">
+                              {skill}
+                            </Badge>
+                          ))}
+                        </div>
+
+                        <h3 className="text-xl font-semibold text-white mb-4">Salary Range</h3>
+                        <p className="text-green-400 text-lg font-medium mb-6">{selectedCareer.salary}</p>
+
+                        <h3 className="text-xl font-semibold text-white mb-4">Market Demand</h3>
+                        <Badge 
+                          variant="secondary" 
+                          className={`mb-6 ${
+                            selectedCareer.demand === 'Very High' ? 'bg-green-600/20 text-green-400' :
+                            selectedCareer.demand === 'High' ? 'bg-yellow-600/20 text-yellow-400' :
+                            'bg-blue-600/20 text-blue-400'
+                          }`}
+                        >
+                          {selectedCareer.demand}
                         </Badge>
                       </div>
 
-                      {selectedCareerPath === index && (
-                        <div className="mt-4 space-y-3 animate-fade-in">
-                          <div>
-                            <h4 className="font-medium text-sm mb-2">Required Skills:</h4>
-                            <div className="flex flex-wrap gap-1">
-                              {path.requiredSkills.map((skill, skillIndex) => (
-                                <Badge key={skillIndex} variant="outline" className="text-xs">
-                                  {skill}
-                                </Badge>
-                              ))}
+                      <div>
+                        <h3 className="text-xl font-semibold text-white mb-4">Learning Resources</h3>
+                        <div className="space-y-3">
+                          {selectedCareer.resources.map((resource, index) => (
+                            <Card key={index} className="bg-gray-700/50 border-purple-500/20 p-4">
+                              <p className="text-gray-300">{resource}</p>
+                            </Card>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                </div>
+              ) : (
+                // Career Paths Grid
+                <div>
+                  <h2 className="text-3xl font-bold text-white mb-8 text-center">Explore Career Paths</h2>
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {careerPaths.map((career) => (
+                      <Card 
+                        key={career.id}
+                        className="bg-gray-800/50 border-purple-500/20 hover:border-purple-500/40 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-xl transform-gpu"
+                        style={{
+                          transformStyle: 'preserve-3d',
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = 'perspective(1000px) rotateY(5deg) scale(1.05)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'perspective(1000px) rotateY(0deg) scale(1)';
+                        }}
+                        onClick={() => setSelectedCareer(career)}
+                      >
+                        <CardHeader className="text-center">
+                          <div className="mx-auto p-4 bg-purple-600/20 rounded-lg w-fit mb-4">
+                            <career.icon className="h-8 w-8 text-purple-400" />
+                          </div>
+                          <CardTitle className="text-white">{career.title}</CardTitle>
+                          <p className="text-gray-400 text-sm">{career.description}</p>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-3">
+                            <div>
+                              <p className="text-sm text-gray-400 mb-1">Salary Range</p>
+                              <p className="text-green-400 font-medium">{career.salary}</p>
+                            </div>
+                            <div>
+                              <p className="text-sm text-gray-400 mb-1">Market Demand</p>
+                              <Badge 
+                                variant="secondary" 
+                                className={`${
+                                  career.demand === 'Very High' ? 'bg-green-600/20 text-green-400' :
+                                  career.demand === 'High' ? 'bg-yellow-600/20 text-yellow-400' :
+                                  'bg-blue-600/20 text-blue-400'
+                                }`}
+                              >
+                                {career.demand}
+                              </Badge>
                             </div>
                           </div>
-                          
-                          <div>
-                            <h4 className="font-medium text-sm mb-2">Learning Resources:</h4>
-                            <ul className="text-xs space-y-1">
-                              {path.learningResources.map((resource, resourceIndex) => (
-                                <li key={resourceIndex} className="text-blue-600">
-                                  • {resource}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-
-          {/* Blog Tab */}
-          <TabsContent value="blog" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Submit a Blog Post</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Title</label>
-                      <Input placeholder="Enter blog post title..." />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Tags</label>
-                      <Input placeholder="career, tips, industry..." />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Author Bio</label>
-                      <Input placeholder="Brief author description..." />
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Content</label>
-                      <textarea
-                        className="w-full h-32 px-3 py-2 border border-gray-300 rounded-md resize-none"
-                        placeholder="Write your blog post content here..."
-                      />
-                    </div>
-                    
-                    <Button className="w-full bg-blue-600 hover:bg-blue-700">
-                      Submit for Review
-                    </Button>
+                        </CardContent>
+                      </Card>
+                    ))}
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-
-            {/* Sample Blog Posts */}
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">The Future of Remote Work</CardTitle>
-                  <div className="flex space-x-2">
-                    <Badge>Remote Work</Badge>
-                    <Badge>Career Tips</Badge>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 mb-4">
-                    Explore how remote work is reshaping the job market and what skills you need...
-                  </p>
-                  <div className="flex items-center justify-between text-sm text-gray-500">
-                    <span>By Sarah Johnson</span>
-                    <span>5 min read</span>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">AI in Hiring: What Job Seekers Need to Know</CardTitle>
-                  <div className="flex space-x-2">
-                    <Badge>AI</Badge>
-                    <Badge>Hiring</Badge>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 mb-4">
-                    Understanding how AI is changing the recruitment process and how to adapt...
-                  </p>
-                  <div className="flex items-center justify-between text-sm text-gray-500">
-                    <span>By Michael Chen</span>
-                    <span>7 min read</span>
-                  </div>
-                </CardContent>
-              </Card>
+              )}
             </div>
-          </TabsContent>
-        </Tabs>
-      </div>
+          )}
+
+          {activeTab === 'blog' && (
+            <div className="max-w-6xl mx-auto">
+              {/* Search and Filter */}
+              <div className="mb-8">
+                <div className="relative max-w-md mx-auto">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <Input
+                    type="text"
+                    placeholder="Search blog posts..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10 bg-gray-800/50 border-purple-500/30 text-white placeholder:text-gray-400"
+                  />
+                </div>
+              </div>
+
+              {/* Blog Submission Form */}
+              {user && (
+                <Card className="bg-gray-800/50 border-purple-500/20 p-6 mb-8">
+                  <CardHeader>
+                    <CardTitle className="text-white">Submit a Blog Post</CardTitle>
+                    <p className="text-gray-400">Share your knowledge with the community</p>
+                  </CardHeader>
+                  <CardContent>
+                    <form onSubmit={handleBlogSubmit} className="space-y-4">
+                      <Input
+                        placeholder="Blog Title"
+                        value={blogForm.title}
+                        onChange={(e) => setBlogForm(prev => ({ ...prev, title: e.target.value }))}
+                        className="bg-gray-700/50 border-purple-500/30 text-white placeholder:text-gray-400"
+                        required
+                      />
+                      <textarea
+                        placeholder="Blog Content"
+                        value={blogForm.content}
+                        onChange={(e) => setBlogForm(prev => ({ ...prev, content: e.target.value }))}
+                        rows={6}
+                        className="w-full p-3 bg-gray-700/50 border border-purple-500/30 rounded-md text-white placeholder:text-gray-400 focus:border-purple-500 focus:outline-none"
+                        required
+                      />
+                      <Input
+                        placeholder="Author Bio"
+                        value={blogForm.authorBio}
+                        onChange={(e) => setBlogForm(prev => ({ ...prev, authorBio: e.target.value }))}
+                        className="bg-gray-700/50 border-purple-500/30 text-white placeholder:text-gray-400"
+                      />
+                      <Input
+                        placeholder="Tags (comma separated)"
+                        value={blogForm.tags}
+                        onChange={(e) => setBlogForm(prev => ({ ...prev, tags: e.target.value }))}
+                        className="bg-gray-700/50 border-purple-500/30 text-white placeholder:text-gray-400"
+                      />
+                      <Button type="submit" className="bg-purple-600 hover:bg-purple-700">
+                        Submit for Review
+                      </Button>
+                    </form>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Blog Posts Grid */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredPosts.map((post) => (
+                  <Card key={post.id} className="bg-gray-800/50 border-purple-500/20 hover:border-purple-500/40 transition-all">
+                    <CardHeader>
+                      <div className="flex items-center justify-between mb-2">
+                        <Badge variant="secondary" className="bg-purple-600/20 text-purple-400">
+                          <Calendar className="h-3 w-3 mr-1" />
+                          {new Date(post.publication_date).toLocaleDateString()}
+                        </Badge>
+                      </div>
+                      <CardTitle className="text-white">{post.title}</CardTitle>
+                      {post.author_bio && (
+                        <p className="text-gray-400 text-sm flex items-center">
+                          <User className="h-3 w-3 mr-1" />
+                          {post.author_bio}
+                        </p>
+                      )}
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-gray-300 mb-4 line-clamp-3">
+                        {post.content.substring(0, 150)}...
+                      </p>
+                      {post.tags && post.tags.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mb-4">
+                          {post.tags.slice(0, 3).map((tag, index) => (
+                            <Badge key={index} variant="outline" className="text-xs border-purple-500/30 text-purple-300">
+                              <Tag className="h-2 w-2 mr-1" />
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+                      <Button variant="outline" className="w-full border-purple-500/30 text-purple-400 hover:bg-purple-500/10">
+                        Read More
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+
+              {filteredPosts.length === 0 && (
+                <div className="text-center py-12">
+                  <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-400">No blog posts found. Be the first to contribute!</p>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-purple-500/20 bg-gray-900/50">
+        <div className="container mx-auto px-4 py-12">
+          <div className="grid md:grid-cols-4 gap-8">
+            <div>
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="p-2 rounded-lg bg-purple-600/20 border border-purple-500/30">
+                  <FileText className="h-6 w-6 text-purple-400" />
+                </div>
+                <span className="text-xl font-bold text-white">ResumePro</span>
+              </div>
+              <p className="text-gray-400">Building careers with AI-powered tools.</p>
+            </div>
+            <div>
+              <h4 className="font-semibold text-white mb-4">Platform</h4>
+              <div className="space-y-2">
+                <a href="#" className="block text-gray-400 hover:text-white transition-colors">Resume Builder</a>
+                <a href="#" className="block text-gray-400 hover:text-white transition-colors">Resume Analyzer</a>
+                <a href="#" className="block text-gray-400 hover:text-white transition-colors">AI Career Advisor</a>
+              </div>
+            </div>
+            <div>
+              <h4 className="font-semibold text-white mb-4">Resources</h4>
+              <div className="space-y-2">
+                <a href="/resources" className="block text-gray-400 hover:text-white transition-colors">Resume Tips</a>
+                <a href="/resources" className="block text-gray-400 hover:text-white transition-colors">Career Paths</a>
+                <a href="/resources" className="block text-gray-400 hover:text-white transition-colors">Blog</a>
+              </div>
+            </div>
+            <div>
+              <h4 className="font-semibold text-white mb-4">Legal</h4>
+              <div className="space-y-2">
+                <a href="/terms" className="block text-gray-400 hover:text-white transition-colors">Terms & Conditions</a>
+                <a href="/privacy" className="block text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
+              </div>
+            </div>
+          </div>
+          <div className="border-t border-purple-500/20 mt-8 pt-8 text-center">
+            <p className="text-gray-500">© 2024 ResumePro. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
