@@ -65,9 +65,22 @@ const FlowchartCreator = ({ isOpen, onClose }: FlowchartCreatorProps) => {
     
     setIsLoading(true);
     try {
+      // Convert the flowchart data to a proper JSON format
       const flowchartData = {
-        nodes,
-        edges,
+        nodes: nodes.map(node => ({
+          id: node.id,
+          type: node.type || 'default',
+          data: node.data,
+          position: node.position,
+          style: node.style || {}
+        })),
+        edges: edges.map(edge => ({
+          id: edge.id,
+          source: edge.source,
+          target: edge.target,
+          type: edge.type || 'default',
+          style: edge.style || {}
+        })),
         viewport: { x: 0, y: 0, zoom: 1 }
       };
 
@@ -76,7 +89,7 @@ const FlowchartCreator = ({ isOpen, onClose }: FlowchartCreatorProps) => {
         .insert({
           user_id: user.id,
           title,
-          flowchart_data: flowchartData,
+          flowchart_data: flowchartData as any,
           description: `Flowchart with ${nodes.length} nodes`
         });
 
