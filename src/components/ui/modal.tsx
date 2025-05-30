@@ -105,7 +105,7 @@ const Modal = ({ isOpen, onClose, variant, children, title }: ModalProps) => {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
-            className={`relative ${getModalSize()} max-h-[90vh] overflow-hidden`}
+            className={`relative ${getModalSize()} max-h-[90vh] overflow-hidden rounded-xl border border-purple-500/20 bg-[#0E0E0E]/85 backdrop-blur-lg shadow-2xl shadow-purple-500/20`}
             onClick={(e) => e.stopPropagation()}
             style={{
               background: 'rgba(14, 14, 14, 0.85)',
@@ -113,7 +113,6 @@ const Modal = ({ isOpen, onClose, variant, children, title }: ModalProps) => {
               border: '1px solid rgba(147, 51, 234, 0.2)',
               boxShadow: '0 8px 32px rgba(147, 51, 234, 0.3)',
             }}
-            className={`${getModalSize()} max-h-[90vh] overflow-hidden rounded-xl border border-purple-500/20 bg-[#0E0E0E]/85 backdrop-blur-lg shadow-2xl shadow-purple-500/20`}
           >
             {/* Header */}
             {title && (
