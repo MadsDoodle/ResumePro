@@ -15,7 +15,8 @@ import {
   LogOut,
   Plus,
   Download,
-  Trash2
+  Trash2,
+  Eye
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -24,6 +25,7 @@ import { useCredits } from '@/hooks/useCredits';
 import { useFlowcharts } from '@/hooks/useFlowcharts';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
+import FlowchartCreator from '@/components/FlowchartCreator';
 
 interface CollapsibleSidebarProps {
   isOpen: boolean;
@@ -39,6 +41,7 @@ const CollapsibleSidebar = ({ isOpen, onToggle, onClose }: CollapsibleSidebarPro
   const sidebarRef = useRef<HTMLDivElement>(null);
   const [activeItem, setActiveItem] = useState('dashboard');
   const [showLibrary, setShowLibrary] = useState(false);
+  const [isFlowchartModalOpen, setIsFlowchartModalOpen] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -60,8 +63,8 @@ const CollapsibleSidebar = ({ isOpen, onToggle, onClose }: CollapsibleSidebarPro
   const mainNavItems = [
     { id: 'dashboard', title: 'Dashboard', icon: Home, route: '/dashboard' },
     { id: 'library', title: 'My Library', icon: FileText, action: () => setShowLibrary(!showLibrary) },
-    { id: 'projects', title: 'Saved Projects', icon: Bookmark, route: '/projects' },
-    { id: 'chat', title: 'AI Chat History', icon: MessageSquare, route: '/chat' },
+    { id: 'projects', title: 'Saved Projects', icon: Bookmark, route: '/saved-projects' },
+    { id: 'chat', title: 'AI Chat History', icon: MessageSquare, route: '/chat-history' },
     { id: 'settings', title: 'Settings', icon: Settings, route: '/settings' },
     { id: 'billing', title: 'Billing & Subscription', icon: CreditCard, route: '/pricing' },
   ];
@@ -69,6 +72,11 @@ const CollapsibleSidebar = ({ isOpen, onToggle, onClose }: CollapsibleSidebarPro
   const handleNavigation = (route: string, itemId: string) => {
     setActiveItem(itemId);
     navigate(route);
+    onClose();
+  };
+
+  const handleFlowchartCreate = () => {
+    setIsFlowchartModalOpen(true);
     onClose();
   };
 
@@ -159,7 +167,10 @@ const CollapsibleSidebar = ({ isOpen, onToggle, onClose }: CollapsibleSidebarPro
               </div>
 
               {/* Primary Action */}
-              <Button className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white mb-4 relative overflow-hidden group">
+              <Button 
+                onClick={handleFlowchartCreate}
+                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white mb-4 relative overflow-hidden group"
+              >
                 <Plus className="h-4 w-4 mr-2" />
                 Create Flow Map
                 <Badge className="ml-2 bg-green-500/20 text-green-400 animate-pulse">
@@ -302,6 +313,12 @@ const CollapsibleSidebar = ({ isOpen, onToggle, onClose }: CollapsibleSidebarPro
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Flowchart Creator Modal */}
+      <FlowchartCreator 
+        isOpen={isFlowchartModalOpen} 
+        onClose={() => setIsFlowchartModalOpen(false)} 
+      />
     </>
   );
 };

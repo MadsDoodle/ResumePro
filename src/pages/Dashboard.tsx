@@ -8,13 +8,17 @@ import AnimatedBackground from '@/components/AnimatedBackground';
 import ModernNavigation from '@/components/ModernNavigation';
 import CollapsibleSidebar from '@/components/CollapsibleSidebar';
 import CreditDisplay from '@/components/CreditDisplay';
-import { MessageSquare, BarChart3, FileText, Download } from 'lucide-react';
+import { MessageSquare, BarChart3, FileText, Download, Plus, Zap } from 'lucide-react';
 import { useCredits } from '@/hooks/useCredits';
+import FlowchartCreator from '@/components/FlowchartCreator';
+import ChatInterface from '@/components/ChatInterface';
 
 const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isFlowchartModalOpen, setIsFlowchartModalOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const { hasCredits } = useCredits();
 
   const dashboardOptions = [
@@ -48,7 +52,6 @@ const Dashboard = () => {
   ];
 
   const handleCardClick = async (route: string) => {
-    // Check if action requires credits
     const creditRequiredRoutes = ['/create', '/analyze', '/chat'];
     
     if (creditRequiredRoutes.includes(route)) {
@@ -92,6 +95,40 @@ const Dashboard = () => {
             <p className="text-purple-300 text-lg">What would you like to do today?</p>
           </div>
           
+          {/* Create Flowchart Card with Breathing Halo Effect */}
+          <div className="max-w-6xl mx-auto mb-8">
+            <Card 
+              className="bg-purple-900/20 border-purple-500/30 hover:bg-purple-900/30 transition-all duration-300 cursor-pointer group hover:scale-105 backdrop-blur-sm relative overflow-hidden"
+              onClick={() => setIsFlowchartModalOpen(true)}
+            >
+              {/* Breathing Halo Effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-blue-500/20 to-green-500/20 animate-pulse rounded-lg blur-sm"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-400/10 via-blue-400/10 to-green-400/10 animate-ping rounded-lg"></div>
+              
+              <div className="relative">
+                <CardHeader className="text-center">
+                  <div className="flex justify-center mb-4">
+                    <div className="p-6 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_20px_rgba(147,51,234,0.7)]">
+                      <Plus className="h-10 w-10 text-white" />
+                    </div>
+                  </div>
+                  <CardTitle className="text-white text-2xl flex items-center justify-center gap-2">
+                    Create Flowchart
+                    <Zap className="h-6 w-6 text-yellow-400 animate-pulse" />
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-purple-300 text-center mb-4 text-lg">
+                    Design professional flowcharts with our advanced AI-powered creator
+                  </p>
+                  <Button className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white transition-all duration-300 hover:scale-105 text-lg py-3">
+                    Start Creating
+                  </Button>
+                </CardContent>
+              </div>
+            </Card>
+          </div>
+          
           {/* Dashboard Options */}
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-20">
             {dashboardOptions.map(option => (
@@ -131,7 +168,7 @@ const Dashboard = () => {
                 <div className="bg-black/30 rounded-lg p-6 min-h-[200px] border border-purple-500/20 flex items-center justify-center">
                   <div className="flex flex-col items-center space-y-4">
                     <Button 
-                      onClick={() => navigate('/chat')} 
+                      onClick={() => setIsChatOpen(true)}
                       className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 text-lg transition-all duration-300 hover:scale-105"
                     >
                       Start Chatting
@@ -151,6 +188,18 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Flowchart Creator Modal */}
+      <FlowchartCreator 
+        isOpen={isFlowchartModalOpen} 
+        onClose={() => setIsFlowchartModalOpen(false)} 
+      />
+
+      {/* Chat Interface */}
+      <ChatInterface 
+        isOpen={isChatOpen} 
+        onClose={() => setIsChatOpen(false)} 
+      />
     </div>
   );
 };

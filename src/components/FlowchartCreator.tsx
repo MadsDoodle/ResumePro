@@ -131,7 +131,7 @@ const FlowchartCreator = ({ isOpen, onClose }: FlowchartCreatorProps) => {
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex">
-      {/* Sidebar */}
+      {/* Sidebar - Removed navigation collision by positioning independently */}
       <div className="w-80 bg-[#0E0E0E] border-r border-gray-800 p-4 flex flex-col">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-white">Flowchart Creator</h2>

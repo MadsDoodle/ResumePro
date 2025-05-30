@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -34,10 +33,20 @@ const LandingPage = () => {
   const { user } = useAuth();
 
   const handleGetStarted = () => {
-    if (user) {
-      navigate('/dashboard');
-    } else {
-      navigate('/auth');
+    navigate('/auth');
+  };
+
+  const handlePricingClick = () => {
+    const pricingSection = document.getElementById('pricing');
+    if (pricingSection) {
+      pricingSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleContactClick = () => {
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -66,9 +75,9 @@ const LandingPage = () => {
                   Platform <ChevronDown className="ml-1 h-4 w-4" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="bg-gray-800/95 backdrop-blur-sm border-purple-500/30 text-white">
-                  <DropdownMenuItem className="hover:bg-purple-600/20 focus:bg-purple-600/20">Resume Builder</DropdownMenuItem>
-                  <DropdownMenuItem className="hover:bg-purple-600/20 focus:bg-purple-600/20">Resume Analyzer</DropdownMenuItem>
-                  <DropdownMenuItem className="hover:bg-purple-600/20 focus:bg-purple-600/20">AI Career Advisor</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/auth')} className="hover:bg-purple-600/20 focus:bg-purple-600/20">Resume Builder</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/auth')} className="hover:bg-purple-600/20 focus:bg-purple-600/20">Resume Analyzer</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/auth')} className="hover:bg-purple-600/20 focus:bg-purple-600/20">AI Career Advisor</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
               
@@ -77,10 +86,10 @@ const LandingPage = () => {
                   Features <ChevronDown className="ml-1 h-4 w-4" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="bg-gray-800/95 backdrop-blur-sm border-purple-500/30 text-white">
-                  <DropdownMenuItem className="hover:bg-purple-600/20 focus:bg-purple-600/20">ATS Optimized Templates</DropdownMenuItem>
-                  <DropdownMenuItem className="hover:bg-purple-600/20 focus:bg-purple-600/20">Chat-Based Editing</DropdownMenuItem>
-                  <DropdownMenuItem className="hover:bg-purple-600/20 focus:bg-purple-600/20">Smart Suggestions</DropdownMenuItem>
-                  <DropdownMenuItem className="hover:bg-purple-600/20 focus:bg-purple-600/20">Version History</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/auth')} className="hover:bg-purple-600/20 focus:bg-purple-600/20">ATS Optimized Templates</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/auth')} className="hover:bg-purple-600/20 focus:bg-purple-600/20">Chat-Based Editing</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/auth')} className="hover:bg-purple-600/20 focus:bg-purple-600/20">Smart Suggestions</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/auth')} className="hover:bg-purple-600/20 focus:bg-purple-600/20">Version History</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
               
@@ -89,16 +98,16 @@ const LandingPage = () => {
                   Resources <ChevronDown className="ml-1 h-4 w-4" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="bg-gray-800/95 backdrop-blur-sm border-purple-500/30 text-white">
-                  <DropdownMenuItem className="hover:bg-purple-600/20 focus:bg-purple-600/20">Resume Tips</DropdownMenuItem>
-                  <DropdownMenuItem className="hover:bg-purple-600/20 focus:bg-purple-600/20">Career Paths</DropdownMenuItem>
-                  <DropdownMenuItem className="hover:bg-purple-600/20 focus:bg-purple-600/20">Blog</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/auth')} className="hover:bg-purple-600/20 focus:bg-purple-600/20">Resume Tips</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/auth')} className="hover:bg-purple-600/20 focus:bg-purple-600/20">Career Paths</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/auth')} className="hover:bg-purple-600/20 focus:bg-purple-600/20">Blog</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
               
-              <button className="text-gray-300 hover:text-white transition-colors">
+              <button onClick={handlePricingClick} className="text-gray-300 hover:text-white transition-colors">
                 Pricing
               </button>
-              <button className="text-gray-300 hover:text-white transition-colors">
+              <button onClick={handleContactClick} className="text-gray-300 hover:text-white transition-colors">
                 Contact
               </button>
             </div>
@@ -290,7 +299,7 @@ const LandingPage = () => {
       </section>
 
       {/* Pricing Section */}
-      <section className="container mx-auto px-4 py-16">
+      <section id="pricing" className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-white mb-4">Choose Your Plan</h2>
           <p className="text-xl text-gray-300">Start building your career today</p>
@@ -311,7 +320,7 @@ const LandingPage = () => {
                   </div>
                 ))}
               </div>
-              <Button className="w-full bg-purple-600 hover:bg-purple-700">Start Plan</Button>
+              <Button onClick={() => navigate('/auth')} className="w-full bg-purple-600 hover:bg-purple-700">Start Plan</Button>
             </CardContent>
           </Card>
 
@@ -332,14 +341,14 @@ const LandingPage = () => {
                   </div>
                 ))}
               </div>
-              <Button className="w-full bg-purple-600 hover:bg-purple-700">Start Plan</Button>
+              <Button onClick={() => navigate('/auth')} className="w-full bg-purple-600 hover:bg-purple-700">Start Plan</Button>
             </CardContent>
           </Card>
         </div>
       </section>
 
       {/* Contact Section */}
-      <section className="container mx-auto px-4 py-16">
+      <section id="contact" className="container mx-auto px-4 py-16">
         <div className="grid md:grid-cols-2 gap-12">
           <div>
             <h2 className="text-3xl font-bold text-white mb-6">Get in Touch</h2>
