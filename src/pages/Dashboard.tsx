@@ -95,15 +95,15 @@ const Dashboard = () => {
             <p className="text-purple-300 text-lg">What would you like to do today?</p>
           </div>
           
-          {/* Create Flowchart Card with Breathing Halo Effect */}
+          {/* Create Flowchart Card with Gradual Halo Effect */}
           <div className="max-w-6xl mx-auto mb-8">
             <Card 
               className="bg-purple-900/20 border-purple-500/30 hover:bg-purple-900/30 transition-all duration-300 cursor-pointer group hover:scale-105 backdrop-blur-sm relative overflow-hidden"
               onClick={() => setIsFlowchartModalOpen(true)}
             >
-              {/* Breathing Halo Effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-blue-500/20 to-green-500/20 animate-pulse rounded-lg blur-sm"></div>
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-400/10 via-blue-400/10 to-green-400/10 animate-ping rounded-lg"></div>
+              {/* Gradual Halo Effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-blue-500/20 to-green-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-lg blur-sm"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-400/10 via-blue-400/10 to-green-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-lg"></div>
               
               <div className="relative">
                 <CardHeader className="text-center">

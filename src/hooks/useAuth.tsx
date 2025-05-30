@@ -20,10 +20,45 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
+        console.log('Auth state changed:', event, session?.user?.id);
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
+
+        // If user just signed up, ensure profile exists
+        if (event === 'SIGNED_UP' && session?.user) {
+          console.log('New user signed up, checking profile...');
+          try {
+            const { data: profile, error } = await supabase
+              .from('profiles')
+              .select('id')
+              .eq('id', session.user.id)
+              .single();
+
+            if (error && error.code === 'PGRST116') {
+              // Profile doesn't exist, create it
+              console.log('Creating profile for new user...');
+              const { error: insertError } = await supabase
+                .from('profiles')
+                .insert({
+                  id: session.user.id,
+                  email: session.user.email,
+                  full_name: session.user.user_metadata?.full_name || session.user.email,
+                  credits: 50,
+                  current_plan: 'Free'
+                });
+
+              if (insertError) {
+                console.error('Error creating profile:', insertError);
+              } else {
+                console.log('Profile created successfully');
+              }
+            }
+          } catch (error) {
+            console.error('Error checking/creating profile:', error);
+          }
+        }
       }
     );
 

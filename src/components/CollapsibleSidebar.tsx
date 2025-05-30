@@ -22,10 +22,13 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
 import { useCredits } from '@/hooks/useCredits';
-import { useFlowcharts } from '@/hooks/useFlowcharts';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import FlowchartCreator from '@/components/FlowchartCreator';
+import Modal from '@/components/ui/modal';
+import LibraryModal from '@/components/modals/LibraryModal';
+import SavedProjectsModal from '@/components/modals/SavedProjectsModal';
+import ChatHistoryModal from '@/components/modals/ChatHistoryModal';
 
 interface CollapsibleSidebarProps {
   isOpen: boolean;
@@ -36,12 +39,17 @@ interface CollapsibleSidebarProps {
 const CollapsibleSidebar = ({ isOpen, onToggle, onClose }: CollapsibleSidebarProps) => {
   const { user, signOut } = useAuth();
   const { credits, currentPlan } = useCredits();
-  const { flowcharts, loading, deleteFlowchart } = useFlowcharts();
   const navigate = useNavigate();
   const sidebarRef = useRef<HTMLDivElement>(null);
   const [activeItem, setActiveItem] = useState('dashboard');
-  const [showLibrary, setShowLibrary] = useState(false);
   const [isFlowchartModalOpen, setIsFlowchartModalOpen] = useState(false);
+  const [modalState, setModalState] = useState<{
+    isOpen: boolean;
+    variant: 'library' | 'saved' | 'chat' | 'settings' | null;
+  }>({
+    isOpen: false,
+    variant: null
+  });
   const { toast } = useToast();
 
   useEffect(() => {
@@ -62,10 +70,10 @@ const CollapsibleSidebar = ({ isOpen, onToggle, onClose }: CollapsibleSidebarPro
 
   const mainNavItems = [
     { id: 'dashboard', title: 'Dashboard', icon: Home, route: '/dashboard' },
-    { id: 'library', title: 'My Library', icon: FileText, action: () => setShowLibrary(!showLibrary) },
-    { id: 'projects', title: 'Saved Projects', icon: Bookmark, route: '/saved-projects' },
-    { id: 'chat', title: 'AI Chat History', icon: MessageSquare, route: '/chat-history' },
-    { id: 'settings', title: 'Settings', icon: Settings, route: '/settings' },
+    { id: 'library', title: 'My Library', icon: FileText, action: () => openModal('library') },
+    { id: 'projects', title: 'Saved Projects', icon: Bookmark, action: () => openModal('saved') },
+    { id: 'chat', title: 'AI Chat History', icon: MessageSquare, action: () => openModal('chat') },
+    { id: 'settings', title: 'Settings', icon: Settings, action: () => openModal('settings') },
     { id: 'billing', title: 'Billing & Subscription', icon: CreditCard, route: '/pricing' },
   ];
 
@@ -80,37 +88,48 @@ const CollapsibleSidebar = ({ isOpen, onToggle, onClose }: CollapsibleSidebarPro
     onClose();
   };
 
+  const openModal = (variant: 'library' | 'saved' | 'chat' | 'settings') => {
+    setModalState({ isOpen: true, variant });
+    onClose();
+  };
+
+  const closeModal = () => {
+    setModalState({ isOpen: false, variant: null });
+  };
+
   const handleSignOut = async () => {
     await signOut();
     navigate('/');
     onClose();
   };
 
-  const handleDownloadFlowchart = (flowchart: any) => {
-    const dataStr = JSON.stringify(flowchart.flowchart_data, null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-    
-    const exportFileDefaultName = `${flowchart.title.replace(/\s+/g, '_')}.json`;
-    
-    const linkElement = document.createElement('a');
-    linkElement.setAttribute('href', dataUri);
-    linkElement.setAttribute('download', exportFileDefaultName);
-    linkElement.click();
+  const getModalTitle = () => {
+    switch (modalState.variant) {
+      case 'library': return 'My Library';
+      case 'saved': return 'Saved Projects';
+      case 'chat': return 'AI Chat History';
+      case 'settings': return 'Settings';
+      default: return '';
+    }
   };
 
-  const handleDeleteFlowchart = async (id: string) => {
-    try {
-      await deleteFlowchart(id);
-      toast({
-        title: "Success",
-        description: "Flowchart deleted successfully"
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to delete flowchart",
-        variant: "destructive"
-      });
+  const renderModalContent = () => {
+    switch (modalState.variant) {
+      case 'library':
+        return <LibraryModal onClose={closeModal} />;
+      case 'saved':
+        return <SavedProjectsModal onClose={closeModal} />;
+      case 'chat':
+        return <ChatHistoryModal onClose={closeModal} />;
+      case 'settings':
+        return (
+          <div className="text-center text-gray-400 py-8">
+            <Settings className="h-12 w-12 mx-auto mb-4 opacity-50" />
+            <p>Settings functionality coming soon</p>
+          </div>
+        );
+      default:
+        return null;
     }
   };
 
@@ -219,54 +238,6 @@ const CollapsibleSidebar = ({ isOpen, onToggle, onClose }: CollapsibleSidebarPro
                     </motion.button>
                   ))}
                 </div>
-
-                {/* Library Section */}
-                <AnimatePresence>
-                  {showLibrary && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      className="mt-4 ml-4 border-l border-purple-500/20 pl-4 space-y-2"
-                    >
-                      <h4 className="text-sm font-medium text-purple-300">Flowcharts</h4>
-                      {loading ? (
-                        <div className="text-gray-400 text-sm">Loading...</div>
-                      ) : flowcharts.length === 0 ? (
-                        <div className="text-gray-400 text-sm">No flowcharts yet</div>
-                      ) : (
-                        flowcharts.slice(0, 5).map((flowchart) => (
-                          <div key={flowchart.id} className="bg-gray-800/50 rounded-lg p-3 space-y-2">
-                            <div className="text-white text-sm font-medium truncate">
-                              {flowchart.title}
-                            </div>
-                            <div className="text-gray-400 text-xs">
-                              {new Date(flowchart.created_at).toLocaleDateString()}
-                            </div>
-                            <div className="flex space-x-2">
-                              <Button
-                                onClick={() => handleDownloadFlowchart(flowchart)}
-                                size="sm"
-                                variant="outline"
-                                className="border-green-500/30 text-green-400 hover:bg-green-500/10 text-xs p-1"
-                              >
-                                <Download className="h-3 w-3" />
-                              </Button>
-                              <Button
-                                onClick={() => handleDeleteFlowchart(flowchart.id)}
-                                size="sm"
-                                variant="outline"
-                                className="border-red-500/30 text-red-400 hover:bg-red-500/10 text-xs p-1"
-                              >
-                                <Trash2 className="h-3 w-3" />
-                              </Button>
-                            </div>
-                          </div>
-                        ))
-                      )}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
               </div>
 
               {/* Account Controls */}
@@ -319,6 +290,16 @@ const CollapsibleSidebar = ({ isOpen, onToggle, onClose }: CollapsibleSidebarPro
         isOpen={isFlowchartModalOpen} 
         onClose={() => setIsFlowchartModalOpen(false)} 
       />
+
+      {/* Generic Modal */}
+      <Modal
+        isOpen={modalState.isOpen}
+        onClose={closeModal}
+        variant={modalState.variant || 'library'}
+        title={getModalTitle()}
+      >
+        {renderModalContent()}
+      </Modal>
     </>
   );
 };
