@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Edit2, Check, X } from 'lucide-react';
 
-interface FlowchartNodeData {
+interface FlowchartNodeData extends Record<string, unknown> {
   label: string;
   description?: string;
   nodeType?: 'start' | 'process' | 'decision' | 'end';

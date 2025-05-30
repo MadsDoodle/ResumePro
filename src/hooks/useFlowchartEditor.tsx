@@ -6,7 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useChatHistory } from '@/hooks/useChatHistory';
 import { useToast } from '@/hooks/use-toast';
 
-interface FlowchartNodeData {
+interface FlowchartNodeData extends Record<string, unknown> {
   label: string;
   description?: string;
   nodeType?: 'start' | 'process' | 'decision' | 'end';
@@ -55,8 +55,8 @@ export const useFlowchartEditor = () => {
           ...node,
           data: {
             ...node.data,
-            label: node.data.label || 'Untitled Node',
-            description: node.data.description || ''
+            label: (node.data as FlowchartNodeData).label || 'Untitled Node',
+            description: (node.data as FlowchartNodeData).description || ''
           }
         })),
         edges
@@ -118,15 +118,20 @@ Flowchart: ${flowchartTitle || 'Untitled'}
 Created: ${new Date().toLocaleDateString()}
 
 Nodes:
-${nodes.map((node, index) => 
-  `${index + 1}. ${node.data.label} (${node.data.nodeType || 'process'})
-     ${node.data.description ? `Description: ${node.data.description}` : ''}`
-).join('\n')}
+${nodes.map((node, index) => {
+  const nodeData = node.data as FlowchartNodeData;
+  return `${index + 1}. ${nodeData.label} (${nodeData.nodeType || 'process'})
+     ${nodeData.description ? `Description: ${nodeData.description}` : ''}`;
+}).join('\n')}
 
 Connections:
-${edges.map((edge, index) => 
-  `${index + 1}. ${nodes.find(n => n.id === edge.source)?.data.label || edge.source} → ${nodes.find(n => n.id === edge.target)?.data.label || edge.target}`
-).join('\n')}
+${edges.map((edge, index) => {
+  const sourceNode = nodes.find(n => n.id === edge.source);
+  const targetNode = nodes.find(n => n.id === edge.target);
+  const sourceData = sourceNode?.data as FlowchartNodeData;
+  const targetData = targetNode?.data as FlowchartNodeData;
+  return `${index + 1}. ${sourceData?.label || edge.source} → ${targetData?.label || edge.target}`;
+}).join('\n')}
       `;
       
       const blob = new Blob([flowchartContent], { type: 'text/plain' });

@@ -131,16 +131,6 @@ export function useResumeStorage() {
       // Upload the file and save metadata
       const result = await uploadResume(file, resumeTitle);
       
-      // Log to Downloaded Resumes table
-      if (result) {
-        await supabase
-          .from('Downloaded Resumes')
-          .insert({
-            // The table structure shows only id and created_at with defaults
-            // No additional data needed as both have defaults
-          });
-      }
-
       return result;
     } catch (error) {
       console.error('Error saving resume to database:', error);
