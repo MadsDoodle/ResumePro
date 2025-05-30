@@ -15,6 +15,9 @@ import AnalyzePage from "./pages/AnalyzePage";
 import CreatePage from "./pages/CreatePage";
 import TemplateSelection from "./pages/TemplateSelection";
 import ProfilePage from "./pages/ProfilePage";
+import PricingPage from "./pages/PricingPage";
+import ContactPage from "./pages/ContactPage";
+import ResourcesPage from "./pages/ResourcesPage";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -46,6 +49,9 @@ const App = () => (
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<LandingPage />} />
+              <Route path="/pricing" element={<PricingPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/resources" element={<ResourcesPage />} />
               <Route path="/auth" element={
                 <PublicRoute>
                   <AuthPage />
