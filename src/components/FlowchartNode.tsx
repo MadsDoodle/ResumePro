@@ -12,10 +12,11 @@ interface FlowchartNodeData extends Record<string, unknown> {
   nodeType?: 'start' | 'process' | 'decision' | 'end';
 }
 
-const FlowchartNode = ({ data, id, selected }: NodeProps<FlowchartNodeData>) => {
+const FlowchartNode = ({ data, id, selected }: NodeProps) => {
+  const nodeData = data as FlowchartNodeData;
   const [isEditing, setIsEditing] = useState(false);
-  const [label, setLabel] = useState(data.label || 'New Node');
-  const [description, setDescription] = useState(data.description || '');
+  const [label, setLabel] = useState(nodeData.label || 'New Node');
+  const [description, setDescription] = useState(nodeData.description || '');
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -27,14 +28,14 @@ const FlowchartNode = ({ data, id, selected }: NodeProps<FlowchartNodeData>) => 
 
   const handleSave = () => {
     // Update the node data
-    data.label = label;
-    data.description = description;
+    nodeData.label = label;
+    nodeData.description = description;
     setIsEditing(false);
   };
 
   const handleCancel = () => {
-    setLabel(data.label || 'New Node');
-    setDescription(data.description || '');
+    setLabel(nodeData.label || 'New Node');
+    setDescription(nodeData.description || '');
     setIsEditing(false);
   };
 
@@ -49,7 +50,7 @@ const FlowchartNode = ({ data, id, selected }: NodeProps<FlowchartNodeData>) => 
   const getNodeStyle = () => {
     const baseStyle = "min-w-[120px] min-h-[60px] border-2 rounded-lg p-3 text-center";
     
-    switch (data.nodeType) {
+    switch (nodeData.nodeType) {
       case 'start':
         return `${baseStyle} bg-green-100 border-green-400 text-green-800`;
       case 'end':
