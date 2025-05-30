@@ -69,7 +69,11 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-[#060315] relative overflow-hidden">
       <AnimatedBackground />
-      <ModernNavigation />
+      
+      {/* Fixed Navigation */}
+      <div className="fixed top-0 left-0 right-0 z-40">
+        <ModernNavigation />
+      </div>
       
       <CollapsibleSidebar 
         isOpen={sidebarOpen}
@@ -77,8 +81,8 @@ const Dashboard = () => {
         onClose={() => setSidebarOpen(false)}
       />
       
-      {/* Main Content */}
-      <div className="relative z-10 pt-8">
+      {/* Main Content with top padding to account for fixed nav */}
+      <div className="relative z-10 pt-16">
         <div className="container mx-auto px-4 py-12">
           {/* Welcome Section */}
           <div className="text-center mb-12 animate-fade-in">

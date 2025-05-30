@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -20,6 +19,7 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { useCredits } from '@/hooks/useCredits';
+import FlowchartCreator from '@/components/FlowchartCreator';
 
 const ModernNavigation = () => {
   const { user, signOut } = useAuth();
@@ -260,45 +260,10 @@ const ModernNavigation = () => {
       </nav>
 
       {/* Flowchart Creator Modal */}
-      <AnimatePresence>
-        {isFlowchartModalOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center"
-            onClick={() => setIsFlowchartModalOpen(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-[#0E0E0E] rounded-lg p-8 max-w-2xl w-full mx-4 border border-gray-800"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <h2 className="text-2xl font-bold text-white mb-4">Flowchart Creator</h2>
-              <p className="text-gray-300 mb-6">
-                Create interactive flowcharts and diagrams. This feature is coming soon!
-              </p>
-              <div className="flex justify-end space-x-3">
-                <Button 
-                  onClick={() => setIsFlowchartModalOpen(false)}
-                  variant="outline"
-                  className="border-gray-600 text-gray-300"
-                >
-                  Close
-                </Button>
-                <Button 
-                  className="bg-[#00FF88] text-black hover:bg-[#00FF88]/90"
-                  disabled
-                >
-                  Coming Soon
-                </Button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <FlowchartCreator 
+        isOpen={isFlowchartModalOpen} 
+        onClose={() => setIsFlowchartModalOpen(false)} 
+      />
     </>
   );
 };
