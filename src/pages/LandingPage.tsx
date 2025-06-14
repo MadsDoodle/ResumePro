@@ -5,6 +5,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import AnimatedResumeDemo from '@/components/AnimatedResumeDemo';
 import { 
   FileText, 
   BarChart3, 
@@ -209,33 +210,9 @@ const LandingPage = () => {
             </div>
           </div>
 
-          {/* Right Content - Resume Demo */}
+          {/* Right Content - Animated Resume Demo */}
           <div className="relative">
-            <div className="relative bg-white rounded-lg shadow-2xl border border-purple-500/20 p-8 transform rotate-3">
-              <div className="absolute -inset-4 bg-purple-500/20 rounded-lg blur-xl"></div>
-              <div className="relative">
-                <div className="h-6 bg-purple-600 rounded mb-6"></div>
-                <div className="space-y-3 mb-6">
-                  <div className="h-3 bg-gray-300 rounded w-3/4"></div>
-                  <div className="h-3 bg-gray-300 rounded w-1/2"></div>
-                  <div className="h-3 bg-gray-300 rounded w-2/3"></div>
-                </div>
-                <div className="space-y-2">
-                  <div className="h-2 bg-gray-200 rounded"></div>
-                  <div className="h-2 bg-gray-200 rounded w-5/6"></div>
-                  <div className="h-2 bg-gray-200 rounded w-4/5"></div>
-                  <div className="h-2 bg-gray-200 rounded w-3/4"></div>
-                </div>
-              </div>
-            </div>
-            
-            {/* Floating AI elements */}
-            <div className="absolute -top-4 -right-4 bg-purple-600 rounded-full p-3 shadow-lg">
-              <MessageSquare className="h-6 w-6 text-white" />
-            </div>
-            <div className="absolute -bottom-4 -left-4 bg-blue-600 rounded-full p-3 shadow-lg">
-              <BarChart3 className="h-6 w-6 text-white" />
-            </div>
+            <AnimatedResumeDemo />
           </div>
         </div>
       </section>
