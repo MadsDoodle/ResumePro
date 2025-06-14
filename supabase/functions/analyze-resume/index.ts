@@ -18,15 +18,23 @@ interface AnalysisScores {
 }
 
 serve(async (req) => {
+  console.log('Analyze resume function called');
+  
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
     const { resumeText, fileName } = await req.json();
+    console.log('Processing resume:', fileName, 'Text length:', resumeText?.length);
 
     if (!openAIApiKey) {
+      console.error('OpenAI API key not configured');
       throw new Error('OpenAI API key not configured');
+    }
+
+    if (!resumeText) {
+      throw new Error('No resume text provided');
     }
 
     const analysisPrompt = `
@@ -57,6 +65,7 @@ Format your response as a JSON object with this exact structure:
 Be specific and actionable in your recommendations. Focus on content improvements, keyword optimization, structure enhancements, and ATS compatibility.
 `;
 
+    console.log('Calling OpenAI API...');
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -78,18 +87,24 @@ Be specific and actionable in your recommendations. Focus on content improvement
     });
 
     if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.statusText}`);
+      const errorText = await response.text();
+      console.error('OpenAI API error:', response.status, errorText);
+      throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
     }
 
     const data = await response.json();
+    console.log('OpenAI response received');
+    
     const analysisText = data.choices[0].message.content;
+    console.log('Analysis text:', analysisText);
     
     // Parse the JSON response
     let analysisResult: AnalysisScores;
     try {
       analysisResult = JSON.parse(analysisText);
+      console.log('Parsed analysis result:', analysisResult);
     } catch (parseError) {
-      console.error('Failed to parse AI response:', analysisText);
+      console.error('Failed to parse AI response:', analysisText, parseError);
       // Fallback response if parsing fails
       analysisResult = {
         overallScore: 75,
@@ -111,6 +126,7 @@ Be specific and actionable in your recommendations. Focus on content improvement
     analysisResult.clarityScore = Math.min(100, Math.max(0, analysisResult.clarityScore));
     analysisResult.atsScore = Math.min(100, Math.max(0, analysisResult.atsScore));
 
+    console.log('Returning analysis result:', analysisResult);
     return new Response(JSON.stringify(analysisResult), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

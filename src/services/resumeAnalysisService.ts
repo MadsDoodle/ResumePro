@@ -1,4 +1,6 @@
 
+import { supabase } from '@/integrations/supabase/client';
+
 interface AnalysisResult {
   overallScore: number;
   designScore: number;
@@ -10,28 +12,33 @@ interface AnalysisResult {
 
 export const analyzeResumeWithAI = async (file: File): Promise<AnalysisResult> => {
   try {
+    console.log('Starting resume analysis for file:', file.name);
+    
     // Extract text from the uploaded file
     const extractedText = await extractTextFromFile(file);
+    console.log('Text extracted, length:', extractedText.length);
     
-    // Call our Supabase edge function for AI analysis
-    const response = await fetch('/functions/v1/analyze-resume', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
+    // Call our Supabase edge function for AI analysis using the proper client method
+    const { data, error } = await supabase.functions.invoke('analyze-resume', {
+      body: {
         resumeText: extractedText,
         fileName: file.name
-      }),
+      }
     });
 
-    if (!response.ok) {
-      throw new Error('Failed to analyze resume');
+    if (error) {
+      console.error('Supabase function error:', error);
+      throw new Error(`Failed to analyze resume: ${error.message}`);
     }
 
-    const result = await response.json();
+    if (!data) {
+      throw new Error('No data returned from analysis');
+    }
+
+    console.log('Analysis completed successfully:', data);
+    
     return {
-      ...result,
+      ...data,
       extractedText
     };
   } catch (error) {
