@@ -14,6 +14,7 @@ export interface ResumeTemplate {
     experience: any[];
     education: any[];
     skills: string[];
+    additionalSections: {};
   };
 }
 
@@ -66,7 +67,8 @@ export const resumeTemplates: ResumeTemplate[] = [
           gpa: '3.8'
         }
       ],
-      skills: ['Project Management', 'Data Analysis', 'Leadership', 'Strategic Planning', 'Team Building', 'Process Improvement']
+      skills: ['Project Management', 'Data Analysis', 'Leadership', 'Strategic Planning', 'Team Building', 'Process Improvement'],
+      additionalSections: {}
     }
   },
   {
@@ -106,7 +108,8 @@ export const resumeTemplates: ResumeTemplate[] = [
           graduationDate: '2018'
         }
       ],
-      skills: ['Executive Leadership', 'Strategic Planning', 'Financial Management', 'Business Development', 'Change Management']
+      skills: ['Executive Leadership', 'Strategic Planning', 'Financial Management', 'Business Development', 'Change Management'],
+      additionalSections: {}
     }
   },
   {
@@ -147,7 +150,8 @@ export const resumeTemplates: ResumeTemplate[] = [
           graduationDate: '2019'
         }
       ],
-      skills: ['Adobe Creative Suite', 'UI/UX Design', 'Brand Development', 'Creative Direction', 'Team Leadership', 'Client Relations']
+      skills: ['Adobe Creative Suite', 'UI/UX Design', 'Brand Development', 'Creative Direction', 'Team Leadership', 'Client Relations'],
+      additionalSections: {}
     }
   },
   {
@@ -186,7 +190,8 @@ export const resumeTemplates: ResumeTemplate[] = [
           graduationDate: '2023'
         }
       ],
-      skills: ['Data Analysis', 'Excel', 'SQL', 'Python', 'Tableau', 'Problem Solving']
+      skills: ['Data Analysis', 'Excel', 'SQL', 'Python', 'Tableau', 'Problem Solving'],
+      additionalSections: {}
     }
   },
   {
@@ -226,7 +231,8 @@ export const resumeTemplates: ResumeTemplate[] = [
           graduationDate: '2021'
         }
       ],
-      skills: ['Creative Thinking', 'Innovation', 'Workshop Facilitation', 'Collaboration', 'Problem Solving', 'Design Thinking']
+      skills: ['Creative Thinking', 'Innovation', 'Workshop Facilitation', 'Collaboration', 'Problem Solving', 'Design Thinking'],
+      additionalSections: {}
     }
   },
   {
@@ -265,7 +271,8 @@ export const resumeTemplates: ResumeTemplate[] = [
           graduationDate: '2020'
         }
       ],
-      skills: ['Communication', 'Organization', 'Time Management', 'Attention to Detail', 'Teamwork', 'Reliability']
+      skills: ['Communication', 'Organization', 'Time Management', 'Attention to Detail', 'Teamwork', 'Reliability'],
+      additionalSections: {}
     }
   }
 ];

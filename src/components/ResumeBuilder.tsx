@@ -38,8 +38,11 @@ const ResumeBuilder = () => {
       try {
         const template = JSON.parse(savedTemplate);
         setSelectedTemplate(template);
-        // Initialize form data with template structure
-        setFormData(template.structure);
+        // Initialize form data with template structure including additionalSections
+        setFormData({
+          ...template.structure,
+          additionalSections: template.structure.additionalSections || {}
+        });
         toast({
           title: "Template Loaded",
           description: `${template.name} template has been applied to your resume.`,
@@ -49,13 +52,19 @@ const ResumeBuilder = () => {
         // Load default template if parsing fails
         const defaultTemplate = resumeTemplates[0];
         setSelectedTemplate(defaultTemplate);
-        setFormData(defaultTemplate.structure);
+        setFormData({
+          ...defaultTemplate.structure,
+          additionalSections: defaultTemplate.structure.additionalSections || {}
+        });
       }
     } else {
       // Load default template if none selected
       const defaultTemplate = resumeTemplates[0];
       setSelectedTemplate(defaultTemplate);
-      setFormData(defaultTemplate.structure);
+      setFormData({
+        ...defaultTemplate.structure,
+        additionalSections: defaultTemplate.structure.additionalSections || {}
+      });
     }
   }, []);
 
