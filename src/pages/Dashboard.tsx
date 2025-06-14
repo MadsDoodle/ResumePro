@@ -10,6 +10,7 @@ import { MessageSquare, BarChart3, FileText, Download, Plus, Sparkles, Target, B
 import { useCredits } from '@/hooks/useCredits';
 import FlowchartCreator from '@/components/FlowchartCreator';
 import ChatInterface from '@/components/ChatInterface';
+import { useTheme } from '@/contexts/ThemeContext';
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -18,6 +19,7 @@ const Dashboard = () => {
   const [isFlowchartModalOpen, setIsFlowchartModalOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const { hasCredits } = useCredits();
+  const { isDark } = useTheme();
 
   const dashboardOptions = [
     {
@@ -68,7 +70,11 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#0f0f23] via-[#1a1a2e] to-[#16213e] bg-abstract font-inter">
+    <div className={`min-h-screen relative overflow-hidden bg-abstract font-inter transition-all duration-300 ${
+      isDark 
+        ? 'bg-gradient-to-br from-[#0f0f23] via-[#1a1a2e] to-[#16213e]' 
+        : 'bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50'
+    }`}>
       {/* Fixed Navigation */}
       <div className="fixed top-0 left-0 right-0 z-40">
         <ModernNavigation />
@@ -86,10 +92,16 @@ const Dashboard = () => {
           {/* Welcome Section */}
           <div className="text-center animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
             <div className="mb-6">
-              <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent mb-4 font-sf-pro">
+              <h1 className={`text-5xl md:text-6xl font-bold bg-clip-text text-transparent mb-4 font-sf-pro transition-all duration-300 ${
+                isDark 
+                  ? 'bg-gradient-to-r from-white via-purple-200 to-blue-200' 
+                  : 'bg-gradient-to-r from-gray-900 via-blue-700 to-indigo-700'
+              }`}>
                 Welcome back, {user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0]}!
               </h1>
-              <div className="flex items-center justify-center gap-2 text-xl text-purple-300">
+              <div className={`flex items-center justify-center gap-2 text-xl transition-colors duration-300 ${
+                isDark ? 'text-purple-300' : 'text-blue-600'
+              }`}>
                 <Sparkles className="h-6 w-6" />
                 <p>What would you like to create today?</p>
                 <Sparkles className="h-6 w-6" />
@@ -107,20 +119,30 @@ const Dashboard = () => {
                 <CardHeader className="text-center pb-4">
                   <div className="flex justify-center mb-6">
                     <div className="relative">
-                      <div className="p-8 rounded-full bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 group-hover:scale-105 transition-transform duration-300 shadow-lg">
+                      <div className={`p-8 rounded-full group-hover:scale-105 transition-transform duration-300 shadow-lg ${
+                        isDark 
+                          ? 'bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600' 
+                          : 'bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700'
+                      }`}>
                         <Plus className="h-12 w-12 text-white" />
                       </div>
                     </div>
                   </div>
-                  <CardTitle className="text-white text-3xl md:text-4xl font-sf-pro mb-2 flex items-center justify-center gap-3">
+                  <CardTitle className={`text-3xl md:text-4xl font-sf-pro mb-2 flex items-center justify-center gap-3 transition-colors duration-300 ${
+                    isDark ? 'text-white' : 'text-gray-900'
+                  }`}>
                     Create Flowchart
                     <Target className="h-8 w-8 text-green-400" />
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="text-center pb-8">
-                  <p className="text-purple-200 text-lg mb-8 max-w-2xl mx-auto leading-relaxed">
+                  <p className={`text-lg mb-8 max-w-2xl mx-auto leading-relaxed transition-colors duration-300 ${
+                    isDark ? 'text-purple-200' : 'text-gray-600'
+                  }`}>
                     Design professional flowcharts with our advanced AI-powered creator. 
-                    <span className="block mt-2 text-blue-300 font-medium">Transform your ideas into visual masterpieces</span>
+                    <span className={`block mt-2 font-medium ${
+                      isDark ? 'text-blue-300' : 'text-blue-600'
+                    }`}>Transform your ideas into visual masterpieces</span>
                   </p>
                   <Button className="btn-premium text-lg py-4 px-8 font-semibold tracking-wide">
                     <Brain className="h-5 w-5 mr-2" />
@@ -146,12 +168,16 @@ const Dashboard = () => {
                       <option.icon className="h-8 w-8 text-white" />
                     </div>
                   </div>
-                  <CardTitle className="text-white text-xl font-sf-pro group-hover:text-purple-200 transition-colors duration-300">
+                  <CardTitle className={`text-xl font-sf-pro group-hover:opacity-80 transition-all duration-300 ${
+                    isDark ? 'text-white' : 'text-gray-900'
+                  }`}>
                     {option.title}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="relative z-10">
-                  <p className="text-purple-300 text-center mb-6 leading-relaxed group-hover:text-purple-200 transition-colors duration-300">
+                  <p className={`text-center mb-6 leading-relaxed group-hover:opacity-80 transition-all duration-300 ${
+                    isDark ? 'text-purple-300' : 'text-gray-600'
+                  }`}>
                     {option.description}
                   </p>
                   <Button className={`w-full bg-gradient-to-r ${option.gradient} hover:scale-[1.02] text-white transition-all duration-300 font-medium py-3 rounded-lg shadow-lg hover:shadow-xl`}>
@@ -167,19 +193,27 @@ const Dashboard = () => {
           <div className="max-w-4xl mx-auto animate-fade-in-up" style={{ animationDelay: '0.8s' }}>
             <Card className="glass-card hover-lift relative overflow-hidden">
               <CardHeader className="relative z-10">
-                <CardTitle className="text-white text-3xl text-center font-sf-pro flex items-center justify-center gap-3">
-                  <Brain className="h-8 w-8 text-purple-400" />
+                <CardTitle className={`text-3xl text-center font-sf-pro flex items-center justify-center gap-3 transition-colors duration-300 ${
+                  isDark ? 'text-white' : 'text-gray-900'
+                }`}>
+                  <Brain className={`h-8 w-8 ${isDark ? 'text-purple-400' : 'text-blue-600'}`} />
                   AI Career Coach
-                  <MessageSquare className="h-8 w-8 text-blue-400" />
+                  <MessageSquare className={`h-8 w-8 ${isDark ? 'text-blue-400' : 'text-indigo-600'}`} />
                 </CardTitle>
               </CardHeader>
               <CardContent className="relative z-10">
-                <div className="text-center text-purple-300 mb-8 text-lg leading-relaxed">
+                <div className={`text-center mb-8 text-lg leading-relaxed transition-colors duration-300 ${
+                  isDark ? 'text-purple-300' : 'text-gray-600'
+                }`}>
                   Chat with our advanced AI coach for career guidance, 
-                  <span className="block text-blue-300 font-medium mt-1">job search strategies, and professional development.</span>
+                  <span className={`block font-medium mt-1 ${
+                    isDark ? 'text-blue-300' : 'text-blue-600'
+                  }`}>job search strategies, and professional development.</span>
                 </div>
                 
-                <div className="glass-card-dark rounded-2xl p-8 min-h-[200px] border border-purple-500/20 flex items-center justify-center relative overflow-hidden">
+                <div className={`glass-card-dark rounded-2xl p-8 min-h-[200px] border flex items-center justify-center relative overflow-hidden ${
+                  isDark ? 'border-purple-500/20' : 'border-blue-200/40'
+                }`}>
                   <div className="flex flex-col items-center space-y-6 relative z-10">
                     <Button 
                       onClick={() => setIsChatOpen(true)}
@@ -191,7 +225,11 @@ const Dashboard = () => {
                     <Button 
                       onClick={handleDownloadPDF} 
                       variant="outline" 
-                      className="border-purple-500/40 bg-white/5 text-purple-300 hover:bg-purple-500/20 hover:border-purple-400 hover:text-white transition-all duration-300 hover:scale-[1.02] px-8 py-3 font-medium"
+                      className={`transition-all duration-300 hover:scale-[1.02] px-8 py-3 font-medium ${
+                        isDark 
+                          ? 'border-purple-500/40 bg-white/5 text-purple-300 hover:bg-purple-500/20 hover:border-purple-400 hover:text-white' 
+                          : 'border-blue-300 bg-white/50 text-blue-700 hover:bg-blue-50 hover:border-blue-400 hover:text-blue-800'
+                      }`}
                     >
                       <Download className="h-4 w-4 mr-2" />
                       Download Resume (PDF)

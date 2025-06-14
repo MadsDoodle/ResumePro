@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
@@ -6,12 +5,15 @@ import { useUserSettings } from '@/hooks/useUserSettings';
 import { useNavigate } from 'react-router-dom';
 import { FileText, ChevronDown } from 'lucide-react';
 import TermsModal from './TermsModal';
+import ThemeToggle from './ThemeToggle';
+import { useTheme } from '@/contexts/ThemeContext';
 
 const Header = () => {
   const { user, signOut } = useAuth();
   const { settings, updateLastLogin } = useUserSettings();
   const navigate = useNavigate();
   const [showTermsModal, setShowTermsModal] = useState(false);
+  const { isDark } = useTheme();
 
   const handleAuthAction = async () => {
     if (user) {
@@ -108,14 +110,26 @@ const Header = () => {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#060315]/90 backdrop-blur-sm border-b border-purple-500/20">
+      <header className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-sm border-b transition-all duration-300 ${
+        isDark 
+          ? 'bg-[#060315]/90 border-purple-500/20' 
+          : 'bg-white/90 border-blue-200/50'
+      }`}>
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-8">
             <div className="flex items-center space-x-3">
-              <div className="p-2 rounded-lg bg-purple-600/20 border border-purple-500/30">
-                <FileText className="h-6 w-6 text-purple-400" />
+              <div className={`p-2 rounded-lg border transition-colors duration-300 ${
+                isDark 
+                  ? 'bg-purple-600/20 border-purple-500/30' 
+                  : 'bg-blue-100 border-blue-300'
+              }`}>
+                <FileText className={`h-6 w-6 transition-colors duration-300 ${
+                  isDark ? 'text-purple-400' : 'text-blue-600'
+                }`} />
               </div>
-              <span className="text-xl font-bold text-white">ResumePro</span>
+              <span className={`text-xl font-bold transition-colors duration-300 ${
+                isDark ? 'text-white' : 'text-gray-900'
+              }`}>ResumePro</span>
             </div>
             
             <nav className="hidden md:flex items-center space-x-1">
@@ -125,14 +139,22 @@ const Header = () => {
               
               <button 
                 onClick={() => navigate('/pricing')}
-                className="text-white hover:text-purple-300 transition-colors px-4 py-2"
+                className={`transition-colors px-4 py-2 ${
+                  isDark 
+                    ? 'text-white hover:text-purple-300' 
+                    : 'text-gray-700 hover:text-blue-600'
+                }`}
               >
                 Pricing
               </button>
               
               <button 
                 onClick={() => navigate('/contact')}
-                className="text-white hover:text-purple-300 transition-colors px-4 py-2"
+                className={`transition-colors px-4 py-2 ${
+                  isDark 
+                    ? 'text-white hover:text-purple-300' 
+                    : 'text-gray-700 hover:text-blue-600'
+                }`}
               >
                 Contact
               </button>
@@ -140,18 +162,32 @@ const Header = () => {
           </div>
           
           <div className="flex items-center space-x-4">
+            <ThemeToggle />
+            
             <Button 
               onClick={handleAuthAction}
               variant="outline"
-              className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10 hover:border-purple-400 transition-all duration-300 hover:scale-105"
+              className={`transition-all duration-300 hover:scale-105 ${
+                isDark 
+                  ? 'border-purple-500/30 text-purple-400 hover:bg-purple-500/10 hover:border-purple-400' 
+                  : 'border-blue-300 text-blue-600 hover:bg-blue-50 hover:border-blue-400'
+              }`}
             >
               {user ? 'Sign Out' : 'Sign In'}
             </Button>
             
             <Button 
               onClick={handleGetStarted}
-              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white transition-all duration-300 hover:scale-105"
-              style={{ boxShadow: '0 0 20px rgba(78, 54, 226, 0.4)' }}
+              className={`transition-all duration-300 hover:scale-105 ${
+                isDark 
+                  ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white' 
+                  : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white'
+              }`}
+              style={{ 
+                boxShadow: isDark 
+                  ? '0 0 20px rgba(78, 54, 226, 0.4)' 
+                  : '0 0 20px rgba(59, 130, 246, 0.4)' 
+              }}
             >
               {user ? 'Go to Dashboard' : 'Start Free'}
             </Button>

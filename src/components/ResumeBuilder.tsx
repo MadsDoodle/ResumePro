@@ -15,6 +15,7 @@ import EducationForm from '@/components/forms/EducationForm';
 import SkillsForm from '@/components/forms/SkillsForm';
 import ResumePreview from '@/components/ResumePreview';
 import PageTransition from '@/components/PageTransition';
+import { useTheme } from '@/contexts/ThemeContext';
 
 const ResumeBuilder = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -31,6 +32,7 @@ const ResumeBuilder = () => {
   const { toast } = useToast();
   const { credits, deductCredit } = useCredits();
   const { saveResumeToDatabase, uploading } = useResumeStorage();
+  const { isDark } = useTheme();
 
   // Load selected template and initialize form data
   useEffect(() => {
@@ -198,16 +200,21 @@ const ResumeBuilder = () => {
       <div className="max-w-7xl mx-auto relative">
         {/* Template Info */}
         {selectedTemplate && (
-          <div className="mb-6 p-4 rounded-lg border" style={{ 
-            borderColor: selectedTemplate.primaryColor + '40',
-            backgroundColor: selectedTemplate.primaryColor + '10'
-          }}>
+          <div className={`mb-6 p-4 rounded-lg border transition-all duration-300 ${
+            isDark 
+              ? `border-${selectedTemplate.primaryColor}-500/40 bg-${selectedTemplate.primaryColor}-500/10` 
+              : 'border-blue-300/60 bg-blue-50/60'
+          }`}>
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-white font-semibold">
+                <h3 className={`font-semibold transition-colors duration-300 ${
+                  isDark ? 'text-white' : 'text-gray-900'
+                }`}>
                   Using Template: {selectedTemplate.name}
                 </h3>
-                <p className="text-purple-300 text-sm">
+                <p className={`text-sm transition-colors duration-300 ${
+                  isDark ? 'text-purple-300' : 'text-blue-600'
+                }`}>
                   {selectedTemplate.layout} • {selectedTemplate.style} • {selectedTemplate.photo}
                 </p>
               </div>
@@ -215,7 +222,11 @@ const ResumeBuilder = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => window.location.href = '/templates'}
-                className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10"
+                className={`transition-all duration-300 ${
+                  isDark 
+                    ? 'border-purple-500/30 text-purple-400 hover:bg-purple-500/10' 
+                    : 'border-blue-300 text-blue-600 hover:bg-blue-50'
+                }`}
               >
                 Change Template
               </Button>
@@ -225,17 +236,27 @@ const ResumeBuilder = () => {
 
         {/* Credit warning */}
         {credits < 1 && (
-          <div className="mb-4 p-4 bg-red-900/20 border border-red-500/30 rounded-lg">
-            <p className="text-red-400 text-sm">
+          <div className={`mb-4 p-4 rounded-lg border transition-all duration-300 ${
+            isDark 
+              ? 'bg-red-900/20 border-red-500/30' 
+              : 'bg-red-50 border-red-200'
+          }`}>
+            <p className={`text-sm transition-colors duration-300 ${
+              isDark ? 'text-red-400' : 'text-red-600'
+            }`}>
               ⚠️ You have no credits remaining. Upgrade your plan to continue using ResumePro features.
             </p>
           </div>
         )}
 
         <div className="mb-8 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">Resume Builder</h2>
+          <h2 className={`text-3xl font-bold mb-4 transition-colors duration-300 ${
+            isDark ? 'text-white' : 'text-gray-900'
+          }`}>Resume Builder</h2>
           <div className="max-w-md mx-auto">
-            <div className="flex justify-between text-sm text-slate-300 mb-2">
+            <div className={`flex justify-between text-sm mb-2 transition-colors duration-300 ${
+              isDark ? 'text-slate-300' : 'text-gray-600'
+            }`}>
               <span>Step {currentStep + 1} of {steps.length}</span>
               <span>{Math.round(progress)}% Complete</span>
             </div>
@@ -247,21 +268,33 @@ const ResumeBuilder = () => {
           {/* Form Section with Animation */}
           <div className="space-y-6 relative">
             <PageTransition currentStep={currentStep} direction={direction}>
-              <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+              <Card className={`backdrop-blur-sm border transition-all duration-300 ${
+                isDark 
+                  ? 'bg-white/10 border-white/20' 
+                  : 'bg-white/80 border-blue-200/40'
+              }`}>
                 <CardHeader>
-                  <CardTitle className="text-white flex items-center justify-between">
+                  <CardTitle className={`flex items-center justify-between transition-colors duration-300 ${
+                    isDark ? 'text-white' : 'text-gray-900'
+                  }`}>
                     <div className="flex items-center gap-2">
                       {steps[currentStep].title}
                       <Tooltip>
                         <TooltipTrigger>
-                          <HelpCircle className="h-4 w-4 text-purple-400 hover:text-purple-300" />
+                          <HelpCircle className={`h-4 w-4 transition-colors duration-300 ${
+                            isDark 
+                              ? 'text-purple-400 hover:text-purple-300' 
+                              : 'text-blue-500 hover:text-blue-600'
+                          }`} />
                         </TooltipTrigger>
                         <TooltipContent className="max-w-xs">
                           <p className="text-sm">{steps[currentStep].tip}</p>
                         </TooltipContent>
                       </Tooltip>
                     </div>
-                    <span className="text-sm font-normal text-slate-300">
+                    <span className={`text-sm font-normal transition-colors duration-300 ${
+                      isDark ? 'text-slate-300' : 'text-gray-600'
+                    }`}>
                       {currentStep + 1}/{steps.length}
                     </span>
                   </CardTitle>
@@ -278,7 +311,11 @@ const ResumeBuilder = () => {
                 variant="outline" 
                 onClick={handlePrevious} 
                 disabled={currentStep === 0} 
-                className="border-white/30 text-zinc-900 bg-zinc-50"
+                className={`transition-all duration-300 ${
+                  isDark 
+                    ? 'border-white/30 text-zinc-900 bg-zinc-50' 
+                    : 'border-blue-300 text-blue-700 bg-white hover:bg-blue-50'
+                }`}
               >
                 <ChevronLeft className="mr-2 h-4 w-4" />
                 Previous
@@ -288,7 +325,11 @@ const ResumeBuilder = () => {
                 <Button 
                   variant="outline" 
                   onClick={handleSaveDraft}
-                  className="border-white/30 text-zinc-900 bg-zinc-50"
+                  className={`transition-all duration-300 ${
+                    isDark 
+                      ? 'border-white/30 text-zinc-900 bg-zinc-50' 
+                      : 'border-blue-300 text-blue-700 bg-white hover:bg-blue-50'
+                  }`}
                 >
                   <Save className="mr-2 h-4 w-4" />
                   Save Draft
@@ -298,7 +339,11 @@ const ResumeBuilder = () => {
                   <Button 
                     onClick={handleDownloadPDF}
                     disabled={uploading}
-                    className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700"
+                    className={`transition-all duration-300 ${
+                      isDark 
+                        ? 'bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700' 
+                        : 'bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700'
+                    }`}
                   >
                     <Download className="mr-2 h-4 w-4" />
                     {uploading ? 'Generating...' : 'Generate PDF'}
@@ -306,7 +351,11 @@ const ResumeBuilder = () => {
                 ) : (
                   <Button 
                     onClick={handleNext} 
-                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                    className={`transition-all duration-300 ${
+                      isDark 
+                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700' 
+                        : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700'
+                    }`}
                   >
                     Next
                     <ChevronRight className="ml-2 h-4 w-4" />
@@ -318,9 +367,15 @@ const ResumeBuilder = () => {
 
           {/* Preview Section */}
           <div className="lg:sticky lg:top-8">
-            <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+            <Card className={`backdrop-blur-sm border transition-all duration-300 ${
+              isDark 
+                ? 'bg-white/10 border-white/20' 
+                : 'bg-white/80 border-blue-200/40'
+            }`}>
               <CardHeader>
-                <CardTitle className="text-white flex items-center">
+                <CardTitle className={`flex items-center transition-colors duration-300 ${
+                  isDark ? 'text-white' : 'text-gray-900'
+                }`}>
                   <Eye className="mr-2 h-5 w-5" />
                   Live Preview
                   <span className="ml-auto text-xs bg-green-600 px-2 py-1 rounded">

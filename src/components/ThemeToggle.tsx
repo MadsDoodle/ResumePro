@@ -1,0 +1,37 @@
+
+import { Sun, Moon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useTheme } from '@/contexts/ThemeContext';
+
+const ThemeToggle = () => {
+  const { isDark, toggleTheme } = useTheme();
+
+  return (
+    <Button
+      variant="outline"
+      size="sm"
+      onClick={toggleTheme}
+      className={`relative overflow-hidden transition-all duration-300 ${
+        isDark 
+          ? 'border-purple-500/30 text-purple-400 hover:bg-purple-500/10 hover:border-purple-400' 
+          : 'border-blue-300 text-blue-600 hover:bg-blue-50 hover:border-blue-400'
+      }`}
+    >
+      <div className="flex items-center space-x-2">
+        {isDark ? (
+          <>
+            <Sun className="h-4 w-4" />
+            <span className="hidden sm:inline">Light</span>
+          </>
+        ) : (
+          <>
+            <Moon className="h-4 w-4" />
+            <span className="hidden sm:inline">Dark</span>
+          </>
+        )}
+      </div>
+    </Button>
+  );
+};
+
+export default ThemeToggle;
