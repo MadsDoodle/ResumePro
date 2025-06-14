@@ -1,4 +1,3 @@
-
 import React, { useCallback, useState, useRef } from 'react';
 import {
   ReactFlow,
@@ -23,6 +22,7 @@ import { Input } from '@/components/ui/input';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { 
   Download, 
   Save, 
@@ -38,7 +38,9 @@ import {
   Move,
   Copy,
   Trash2,
-  Settings
+  Settings,
+  Menu,
+  X
 } from 'lucide-react';
 
 interface NodeData extends Record<string, unknown> {
@@ -78,8 +80,10 @@ const FlowchartCreator = ({ isOpen, onClose }: FlowchartCreatorProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedNodeType, setSelectedNodeType] = useState<'start' | 'process' | 'decision' | 'end' | 'custom'>('process');
   const [showGrid, setShowGrid] = useState(true);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
+  const isMobile = useIsMobile();
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
 
   const onConnect = useCallback(
@@ -163,6 +167,11 @@ const FlowchartCreator = ({ isOpen, onClose }: FlowchartCreatorProps) => {
       },
     };
     setNodes((nds) => [...nds, newNode]);
+    
+    // Close mobile sidebar after adding node
+    if (isMobile) {
+      setIsMobileSidebarOpen(false);
+    }
   };
 
   const updateNodeLabel = useCallback((nodeId: string, newLabel: string) => {
@@ -373,156 +382,213 @@ const FlowchartCreator = ({ isOpen, onClose }: FlowchartCreatorProps) => {
 
   if (!isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex">
-      {/* Enhanced Sidebar */}
-      <div className="w-80 bg-gradient-to-b from-gray-900 to-black border-r border-gray-700 p-6 flex flex-col overflow-y-auto">
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-bold text-white bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-            Flowchart Studio
-          </h2>
+  const sidebarContent = (
+    <>
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6 sm:mb-8">
+        <h2 className="text-xl sm:text-2xl font-bold text-white bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+          Flowchart Studio
+        </h2>
+        {isMobile && (
+          <Button 
+            onClick={() => setIsMobileSidebarOpen(false)} 
+            variant="outline" 
+            size="sm" 
+            className="border-gray-600 text-gray-300 hover:bg-gray-800"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        )}
+        {!isMobile && (
           <Button onClick={onClose} variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:bg-gray-800">
             ×
           </Button>
-        </div>
+        )}
+      </div>
 
-        {/* Title Input */}
-        <div className="mb-8">
-          <label className="block text-sm font-medium text-gray-300 mb-3">
-            Project Title
-          </label>
-          <Input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="w-full px-4 py-3 bg-gray-800/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            placeholder="Enter flowchart name..."
-          />
-        </div>
+      {/* Title Input */}
+      <div className="mb-6 sm:mb-8">
+        <label className="block text-sm font-medium text-gray-300 mb-3">
+          Project Title
+        </label>
+        <Input
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="w-full px-4 py-3 bg-gray-800/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+          placeholder="Enter flowchart name..."
+        />
+      </div>
 
-        {/* Quick Tips */}
-        <div className="mb-8 p-4 bg-gradient-to-r from-purple-900/30 to-blue-900/30 border border-purple-500/30 rounded-xl">
-          <h4 className="text-sm font-semibold text-purple-300 mb-3 flex items-center">
-            <Settings className="w-4 h-4 mr-2" />
-            Quick Tips
-          </h4>
-          <ul className="text-xs text-purple-200 space-y-2">
-            <li>• Double-click nodes to edit text</li>
-            <li>• Drag from connection points to link nodes</li>
-            <li>• Use keyboard shortcuts: Enter (save), Esc (cancel)</li>
-            <li>• Select multiple items with Shift+Click</li>
-          </ul>
-        </div>
+      {/* Quick Tips */}
+      <div className="mb-6 sm:mb-8 p-4 bg-gradient-to-r from-purple-900/30 to-blue-900/30 border border-purple-500/30 rounded-xl">
+        <h4 className="text-sm font-semibold text-purple-300 mb-3 flex items-center">
+          <Settings className="w-4 h-4 mr-2" />
+          Quick Tips
+        </h4>
+        <ul className="text-xs text-purple-200 space-y-2">
+          <li>• Double-click nodes to edit text</li>
+          <li>• Drag from connection points to link nodes</li>
+          <li>• Use keyboard shortcuts: Enter (save), Esc (cancel)</li>
+          <li>• Select multiple items with Shift+Click</li>
+        </ul>
+      </div>
 
-        {/* Node Palette */}
-        <div className="mb-8">
-          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-            <Plus className="w-5 h-5 mr-2" />
-            Add Elements
-          </h3>
-          <div className="grid grid-cols-2 gap-3">
-            <Button
-              onClick={() => addNode('start')}
-              variant="outline"
-              className="h-16 border-green-500/40 bg-green-500/10 text-green-400 hover:bg-green-500/20 hover:border-green-400 transition-all duration-200 flex flex-col"
-            >
-              <Play className="h-5 w-5 mb-1" />
-              <span className="text-xs">Start</span>
-            </Button>
-            <Button
-              onClick={() => addNode('process')}
-              variant="outline"
-              className="h-16 border-blue-500/40 bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 hover:border-blue-400 transition-all duration-200 flex flex-col"
-            >
-              <Square className="h-5 w-5 mb-1" />
-              <span className="text-xs">Process</span>
-            </Button>
-            <Button
-              onClick={() => addNode('decision')}
-              variant="outline"
-              className="h-16 border-yellow-500/40 bg-yellow-500/10 text-yellow-400 hover:bg-yellow-500/20 hover:border-yellow-400 transition-all duration-200 flex flex-col"
-            >
-              <Diamond className="h-5 w-5 mb-1" />
-              <span className="text-xs">Decision</span>
-            </Button>
-            <Button
-              onClick={() => addNode('end')}
-              variant="outline"
-              className="h-16 border-red-500/40 bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:border-red-400 transition-all duration-200 flex flex-col"
-            >
-              <Pause className="h-5 w-5 mb-1" />
-              <span className="text-xs">End</span>
-            </Button>
-            <Button
-              onClick={() => addNode('custom')}
-              variant="outline"
-              className="h-16 border-purple-500/40 bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 hover:border-purple-400 transition-all duration-200 flex flex-col col-span-2"
-            >
-              <Circle className="h-5 w-5 mb-1" />
-              <span className="text-xs">Custom Node</span>
-            </Button>
-          </div>
-        </div>
-
-        {/* Canvas Tools */}
-        <div className="mb-8">
-          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-            <Move className="w-5 h-5 mr-2" />
-            Canvas Tools
-          </h3>
-          <div className="grid grid-cols-2 gap-2">
-            <Button
-              onClick={duplicateSelectedNodes}
-              variant="outline"
-              size="sm"
-              className="border-gray-600 text-gray-300 hover:bg-gray-700"
-            >
-              <Copy className="h-4 w-4 mr-1" />
-              Duplicate
-            </Button>
-            <Button
-              onClick={deleteSelectedNodes}
-              variant="outline"
-              size="sm"
-              className="border-red-500/30 text-red-400 hover:bg-red-500/10"
-            >
-              <Trash2 className="h-4 w-4 mr-1" />
-              Delete
-            </Button>
-            <Button
-              onClick={clearCanvas}
-              variant="outline"
-              size="sm"
-              className="border-orange-500/30 text-orange-400 hover:bg-orange-500/10 col-span-2"
-            >
-              <RotateCcw className="h-4 w-4 mr-1" />
-              Clear All
-            </Button>
-          </div>
-        </div>
-
-        {/* Actions */}
-        <div className="mt-auto space-y-4">
+      {/* Node Palette */}
+      <div className="mb-6 sm:mb-8">
+        <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+          <Plus className="w-5 h-5 mr-2" />
+          Add Elements
+        </h3>
+        <div className="grid grid-cols-2 gap-3">
           <Button
-            onClick={saveFlowchart}
-            disabled={isLoading}
-            className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold py-3"
+            onClick={() => addNode('start')}
+            variant="outline"
+            className="h-14 sm:h-16 border-green-500/40 bg-green-500/10 text-green-400 hover:bg-green-500/20 hover:border-green-400 transition-all duration-200 flex flex-col text-xs sm:text-sm"
           >
-            <Save className="h-4 w-4 mr-2" />
-            {isLoading ? 'Saving...' : 'Save Project'}
+            <Play className="h-4 w-4 sm:h-5 sm:w-5 mb-1" />
+            <span>Start</span>
           </Button>
           <Button
-            onClick={downloadFlowchart}
+            onClick={() => addNode('process')}
             variant="outline"
-            className="w-full border-emerald-500/40 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 hover:border-emerald-400 font-semibold py-3"
+            className="h-14 sm:h-16 border-blue-500/40 bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 hover:border-blue-400 transition-all duration-200 flex flex-col text-xs sm:text-sm"
           >
-            <Download className="h-4 w-4 mr-2" />
-            Export JSON
+            <Square className="h-4 w-4 sm:h-5 sm:w-5 mb-1" />
+            <span>Process</span>
+          </Button>
+          <Button
+            onClick={() => addNode('decision')}
+            variant="outline"
+            className="h-14 sm:h-16 border-yellow-500/40 bg-yellow-500/10 text-yellow-400 hover:bg-yellow-500/20 hover:border-yellow-400 transition-all duration-200 flex flex-col text-xs sm:text-sm"
+          >
+            <Diamond className="h-4 w-4 sm:h-5 sm:w-5 mb-1" />
+            <span>Decision</span>
+          </Button>
+          <Button
+            onClick={() => addNode('end')}
+            variant="outline"
+            className="h-14 sm:h-16 border-red-500/40 bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:border-red-400 transition-all duration-200 flex flex-col text-xs sm:text-sm"
+          >
+            <Pause className="h-4 w-4 sm:h-5 sm:w-5 mb-1" />
+            <span>End</span>
+          </Button>
+          <Button
+            onClick={() => addNode('custom')}
+            variant="outline"
+            className="h-14 sm:h-16 border-purple-500/40 bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 hover:border-purple-400 transition-all duration-200 flex flex-col col-span-2 text-xs sm:text-sm"
+          >
+            <Circle className="h-4 w-4 sm:h-5 sm:w-5 mb-1" />
+            <span>Custom Node</span>
           </Button>
         </div>
       </div>
 
-      {/* Enhanced Canvas */}
+      {/* Canvas Tools */}
+      <div className="mb-6 sm:mb-8">
+        <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+          <Move className="w-5 h-5 mr-2" />
+          Canvas Tools
+        </h3>
+        <div className="grid grid-cols-2 gap-2">
+          <Button
+            onClick={duplicateSelectedNodes}
+            variant="outline"
+            size="sm"
+            className="border-gray-600 text-gray-300 hover:bg-gray-700 text-xs"
+          >
+            <Copy className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+            Duplicate
+          </Button>
+          <Button
+            onClick={deleteSelectedNodes}
+            variant="outline"
+            size="sm"
+            className="border-red-500/30 text-red-400 hover:bg-red-500/10 text-xs"
+          >
+            <Trash2 className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+            Delete
+          </Button>
+          <Button
+            onClick={clearCanvas}
+            variant="outline"
+            size="sm"
+            className="border-orange-500/30 text-orange-400 hover:bg-orange-500/10 col-span-2 text-xs"
+          >
+            <RotateCcw className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+            Clear All
+          </Button>
+        </div>
+      </div>
+
+      {/* Actions */}
+      <div className="mt-auto space-y-4">
+        <Button
+          onClick={saveFlowchart}
+          disabled={isLoading}
+          className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold py-3 text-sm sm:text-base"
+        >
+          <Save className="h-4 w-4 mr-2" />
+          {isLoading ? 'Saving...' : 'Save Project'}
+        </Button>
+        <Button
+          onClick={downloadFlowchart}
+          variant="outline"
+          className="w-full border-emerald-500/40 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 hover:border-emerald-400 font-semibold py-3 text-sm sm:text-base"
+        >
+          <Download className="h-4 w-4 mr-2" />
+          Export JSON
+        </Button>
+      </div>
+    </>
+  );
+
+  return (
+    <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex">
+      {/* Mobile Sidebar Overlay */}
+      {isMobile && isMobileSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40"
+          onClick={() => setIsMobileSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <div className={`
+        ${isMobile 
+          ? `fixed left-0 top-0 bottom-0 w-80 transform transition-transform duration-300 z-50 ${
+              isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+            }`
+          : 'w-80'
+        } 
+        bg-gradient-to-b from-gray-900 to-black border-r border-gray-700 p-4 sm:p-6 flex flex-col overflow-y-auto
+      `}>
+        {sidebarContent}
+      </div>
+
+      {/* Canvas */}
       <div className="flex-1 relative" ref={reactFlowWrapper}>
+        {/* Mobile Menu Button */}
+        {isMobile && (
+          <Button
+            onClick={() => setIsMobileSidebarOpen(true)}
+            className="absolute top-4 left-4 z-30 bg-gray-800/90 hover:bg-gray-700 border border-gray-600"
+            size="sm"
+          >
+            <Menu className="h-4 w-4" />
+          </Button>
+        )}
+
+        {/* Mobile Close Button */}
+        {isMobile && (
+          <Button
+            onClick={onClose}
+            className="absolute top-4 right-4 z-30 bg-gray-800/90 hover:bg-gray-700 border border-gray-600"
+            size="sm"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        )}
+
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -552,14 +618,16 @@ const FlowchartCreator = ({ isOpen, onClose }: FlowchartCreatorProps) => {
             showFitView={true}
             showInteractive={true}
           />
-          <MiniMap 
-            className="bg-gray-800/80 border-gray-600 backdrop-blur-sm" 
-            nodeColor={(node) => {
-              const data = node.data as NodeData;
-              return data.backgroundColor || '#6B7280';
-            }}
-            maskColor="rgba(0, 0, 0, 0.7)"
-          />
+          {!isMobile && (
+            <MiniMap 
+              className="bg-gray-800/80 border-gray-600 backdrop-blur-sm" 
+              nodeColor={(node) => {
+                const data = node.data as NodeData;
+                return data.backgroundColor || '#6B7280';
+              }}
+              maskColor="rgba(0, 0, 0, 0.7)"
+            />
+          )}
           <Background 
             variant={showGrid ? BackgroundVariant.Dots : BackgroundVariant.Lines} 
             gap={20} 
@@ -567,23 +635,25 @@ const FlowchartCreator = ({ isOpen, onClose }: FlowchartCreatorProps) => {
             color="#374151"
           />
           
-          {/* Floating Panel */}
-          <Panel position="top-right" className="m-4">
-            <div className="bg-gray-800/90 backdrop-blur-sm border border-gray-600 rounded-lg p-3 text-white space-y-2">
-              <div className="text-sm font-medium">Canvas Info</div>
-              <div className="text-xs text-gray-300">
-                Nodes: {nodes.length} | Edges: {edges.length}
+          {/* Floating Panel - Hidden on mobile for better space */}
+          {!isMobile && (
+            <Panel position="top-right" className="m-4">
+              <div className="bg-gray-800/90 backdrop-blur-sm border border-gray-600 rounded-lg p-3 text-white space-y-2">
+                <div className="text-sm font-medium">Canvas Info</div>
+                <div className="text-xs text-gray-300">
+                  Nodes: {nodes.length} | Edges: {edges.length}
+                </div>
+                <Button
+                  onClick={() => setShowGrid(!showGrid)}
+                  variant="outline"
+                  size="sm"
+                  className="w-full text-xs border-gray-600 text-gray-300 hover:bg-gray-700"
+                >
+                  {showGrid ? 'Hide Grid' : 'Show Grid'}
+                </Button>
               </div>
-              <Button
-                onClick={() => setShowGrid(!showGrid)}
-                variant="outline"
-                size="sm"
-                className="w-full text-xs border-gray-600 text-gray-300 hover:bg-gray-700"
-              >
-                {showGrid ? 'Hide Grid' : 'Show Grid'}
-              </Button>
-            </div>
-          </Panel>
+            </Panel>
+          )}
         </ReactFlow>
       </div>
     </div>
