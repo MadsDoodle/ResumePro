@@ -17,8 +17,8 @@ const Header = () => {
     if (user) {
       try {
         await signOut();
-        // Force navigation to landing page after sign out
-        window.location.href = '/';
+        // Navigate to landing page after sign out
+        navigate('/');
       } catch (error) {
         console.error('Sign out error:', error);
         // Fallback navigation even if sign out fails

@@ -114,9 +114,17 @@ const LandingPage = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
               
-              <button onClick={() => navigate('/resources')} className="text-gray-300 hover:text-white transition-colors">
-                Resources
-              </button>
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center text-gray-300 hover:text-white transition-colors">
+                  Resources <ChevronDown className="ml-1 h-4 w-4" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="bg-gray-800/95 backdrop-blur-sm border-purple-500/30 text-white">
+                  <DropdownMenuItem onClick={() => navigate('/resources')} className="hover:bg-purple-600/20 focus:bg-purple-600/20">Resume Tips</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/resources')} className="hover:bg-purple-600/20 focus:bg-purple-600/20">Career Paths</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/resources')} className="hover:bg-purple-600/20 focus:bg-purple-600/20">Blog</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              
               <button onClick={() => navigate('/pricing')} className="text-gray-300 hover:text-white transition-colors">
                 Pricing
               </button>
