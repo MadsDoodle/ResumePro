@@ -1,10 +1,8 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
-import AnimatedBackground from '@/components/AnimatedBackground';
 import ModernNavigation from '@/components/ModernNavigation';
 import CollapsibleSidebar from '@/components/CollapsibleSidebar';
 import CreditDisplay from '@/components/CreditDisplay';
@@ -70,9 +68,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#060315] relative overflow-hidden">
-      <AnimatedBackground />
-      
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#181818] via-[#232046] to-[#15152e]">
       {/* Fixed Navigation */}
       <div className="fixed top-0 left-0 right-0 z-40">
         <ModernNavigation />
