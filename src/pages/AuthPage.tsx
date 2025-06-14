@@ -80,55 +80,55 @@ const AuthPage = () => {
       <AnimatedBackground />
       <Header />
       
-      <div className="relative z-10 pt-20 flex items-center justify-center min-h-[calc(100vh-80px)]">
-        <Card className="w-full max-w-md bg-purple-900/20 border-purple-500/30 backdrop-blur-sm">
-          <CardHeader>
-            <CardTitle className="text-white text-center text-2xl">Welcome to ResumePro</CardTitle>
+      <div className="relative z-10 pt-16 sm:pt-20 px-4 sm:px-6 lg:px-8 flex items-center justify-center min-h-[calc(100vh-64px)] sm:min-h-[calc(100vh-80px)]">
+        <Card className="w-full max-w-sm sm:max-w-md bg-purple-900/20 border-purple-500/30 backdrop-blur-sm">
+          <CardHeader className="space-y-2 sm:space-y-4">
+            <CardTitle className="text-white text-center text-xl sm:text-2xl">Welcome to ResumePro</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-4 sm:px-6">
             <Tabs defaultValue="signin" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 bg-purple-900/30 border border-purple-500/30">
+              <TabsList className="grid w-full grid-cols-2 bg-purple-900/30 border border-purple-500/30 h-9 sm:h-10">
                 <TabsTrigger 
                   value="signin"
-                  className="data-[state=active]:bg-purple-600 data-[state=active]:text-white"
+                  className="data-[state=active]:bg-purple-600 data-[state=active]:text-white text-xs sm:text-sm"
                 >
                   Sign In
                 </TabsTrigger>
                 <TabsTrigger 
                   value="signup"
-                  className="data-[state=active]:bg-purple-600 data-[state=active]:text-white"
+                  className="data-[state=active]:bg-purple-600 data-[state=active]:text-white text-xs sm:text-sm"
                 >
                   Sign Up
                 </TabsTrigger>
               </TabsList>
               
-              <TabsContent value="signin">
-                <form onSubmit={handleSignIn} className="space-y-4">
+              <TabsContent value="signin" className="mt-4 sm:mt-6">
+                <form onSubmit={handleSignIn} className="space-y-3 sm:space-y-4">
                   <div>
-                    <Label htmlFor="email" className="text-white">Email</Label>
+                    <Label htmlFor="email" className="text-white text-sm">Email</Label>
                     <Input
                       id="email"
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="bg-black/50 border-purple-500/30 text-white"
+                      className="bg-black/50 border-purple-500/30 text-white mt-1 h-9 sm:h-10"
                       required
                     />
                   </div>
                   <div>
-                    <Label htmlFor="password" className="text-white">Password</Label>
+                    <Label htmlFor="password" className="text-white text-sm">Password</Label>
                     <Input
                       id="password"
                       type="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="bg-black/50 border-purple-500/30 text-white"
+                      className="bg-black/50 border-purple-500/30 text-white mt-1 h-9 sm:h-10"
                       required
                     />
                   </div>
                   <Button 
                     type="submit" 
-                    className="w-full bg-purple-600 hover:bg-purple-700"
+                    className="w-full bg-purple-600 hover:bg-purple-700 h-9 sm:h-10 text-sm sm:text-base"
                     disabled={loading}
                   >
                     {loading ? 'Signing In...' : 'Sign In'}
@@ -136,44 +136,44 @@ const AuthPage = () => {
                 </form>
               </TabsContent>
               
-              <TabsContent value="signup">
-                <form onSubmit={handleSignUp} className="space-y-4">
+              <TabsContent value="signup" className="mt-4 sm:mt-6">
+                <form onSubmit={handleSignUp} className="space-y-3 sm:space-y-4">
                   <div>
-                    <Label htmlFor="fullName" className="text-white">Full Name</Label>
+                    <Label htmlFor="fullName" className="text-white text-sm">Full Name</Label>
                     <Input
                       id="fullName"
                       type="text"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
-                      className="bg-black/50 border-purple-500/30 text-white"
+                      className="bg-black/50 border-purple-500/30 text-white mt-1 h-9 sm:h-10"
                       required
                     />
                   </div>
                   <div>
-                    <Label htmlFor="email" className="text-white">Email</Label>
+                    <Label htmlFor="email" className="text-white text-sm">Email</Label>
                     <Input
                       id="email"
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="bg-black/50 border-purple-500/30 text-white"
+                      className="bg-black/50 border-purple-500/30 text-white mt-1 h-9 sm:h-10"
                       required
                     />
                   </div>
                   <div>
-                    <Label htmlFor="password" className="text-white">Password</Label>
+                    <Label htmlFor="password" className="text-white text-sm">Password</Label>
                     <Input
                       id="password"
                       type="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="bg-black/50 border-purple-500/30 text-white"
+                      className="bg-black/50 border-purple-500/30 text-white mt-1 h-9 sm:h-10"
                       required
                     />
                   </div>
                   <Button 
                     type="submit" 
-                    className="w-full bg-purple-600 hover:bg-purple-700"
+                    className="w-full bg-purple-600 hover:bg-purple-700 h-9 sm:h-10 text-sm sm:text-base"
                     disabled={loading}
                   >
                     {loading ? 'Creating Account...' : 'Sign Up'}

@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Upload, FileText, BarChart3, TrendingUp, BookOpen, Download, Zap, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -89,22 +88,22 @@ const ResumeAnalysis = () => {
 
   if (!uploadedFile) {
     return (
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl text-white mb-4">
+          <CardHeader className="text-center px-4 sm:px-6">
+            <CardTitle className="text-xl sm:text-2xl text-white mb-2 sm:mb-4">
               Upload Your Resume for AI Analysis
             </CardTitle>
-            <p className="text-slate-300">
+            <p className="text-slate-300 text-sm sm:text-base">
               Get personalized insights and recommendations powered by AI
             </p>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-4 sm:px-6">
             <FileUpload onFileUpload={handleFileUpload} />
             {error && (
               <Alert className="mt-4 bg-red-500/10 border-red-500/20">
                 <AlertCircle className="h-4 w-4" />
-                <AlertDescription className="text-red-400">
+                <AlertDescription className="text-red-400 text-sm">
                   {error}
                 </AlertDescription>
               </Alert>
@@ -117,13 +116,13 @@ const ResumeAnalysis = () => {
 
   if (isAnalyzing) {
     return (
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-          <CardContent className="text-center py-16">
-            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-white mx-auto mb-6"></div>
-            <h3 className="text-2xl font-semibold text-white mb-4">AI is Analyzing Your Resume</h3>
-            <p className="text-slate-300">Our AI is evaluating your resume content, structure, and ATS compatibility...</p>
-            <p className="text-slate-400 text-sm mt-2">This may take 30-60 seconds</p>
+          <CardContent className="text-center py-12 sm:py-16 px-4 sm:px-6">
+            <div className="animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-b-2 border-white mx-auto mb-4 sm:mb-6"></div>
+            <h3 className="text-xl sm:text-2xl font-semibold text-white mb-2 sm:mb-4">AI is Analyzing Your Resume</h3>
+            <p className="text-slate-300 text-sm sm:text-base">Our AI is evaluating your resume content, structure, and ATS compatibility...</p>
+            <p className="text-slate-400 text-xs sm:text-sm mt-2">This may take 30-60 seconds</p>
           </CardContent>
         </Card>
       </div>
@@ -131,109 +130,109 @@ const ResumeAnalysis = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <div className="mb-8 text-center">
-        <h2 className="text-3xl font-bold text-white mb-4">AI Analysis Results</h2>
-        <Badge variant="secondary" className="bg-green-600 text-white">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mb-6 sm:mb-8 text-center">
+        <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2 sm:mb-4">AI Analysis Results</h2>
+        <Badge variant="secondary" className="bg-green-600 text-white text-xs sm:text-sm">
           Analysis Complete
         </Badge>
       </div>
 
       <Tabs defaultValue="assessment" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 bg-white/10 backdrop-blur-sm">
-          <TabsTrigger value="assessment" className="data-[state=active]:bg-blue-600">
-            <BarChart3 className="mr-2 h-4 w-4" />
-            Resume Assessment
+        <TabsList className="grid w-full grid-cols-3 bg-white/10 backdrop-blur-sm h-9 sm:h-10">
+          <TabsTrigger value="assessment" className="data-[state=active]:bg-blue-600 text-xs sm:text-sm px-2">
+            <BarChart3 className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+            <span className="hidden xs:inline">Resume </span>Assessment
           </TabsTrigger>
-          <TabsTrigger value="navigator" className="data-[state=active]:bg-purple-600">
-            <TrendingUp className="mr-2 h-4 w-4" />
-            Career Navigator
+          <TabsTrigger value="navigator" className="data-[state=active]:bg-purple-600 text-xs sm:text-sm px-2">
+            <TrendingUp className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+            <span className="hidden xs:inline">Career </span>Navigator
           </TabsTrigger>
-          <TabsTrigger value="learning" className="data-[state=active]:bg-pink-600">
-            <BookOpen className="mr-2 h-4 w-4" />
-            Learning Hub
+          <TabsTrigger value="learning" className="data-[state=active]:bg-pink-600 text-xs sm:text-sm px-2">
+            <BookOpen className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+            <span className="hidden xs:inline">Learning </span>Hub
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="assessment" className="mt-6">
+        <TabsContent value="assessment" className="mt-4 sm:mt-6">
           {analysisData && (
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                <CardHeader>
-                  <CardTitle className="text-white">Overall Score</CardTitle>
+                <CardHeader className="pb-3 sm:pb-4">
+                  <CardTitle className="text-white text-lg sm:text-xl">Overall Score</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-center">
-                    <div className={`text-4xl font-bold mb-2 ${getScoreColor(analysisData.overallScore)}`}>
+                    <div className={`text-3xl sm:text-4xl font-bold mb-2 ${getScoreColor(analysisData.overallScore)}`}>
                       {analysisData.overallScore}/100
                     </div>
-                    <Progress value={analysisData.overallScore} className="mb-4" />
-                    <p className="text-slate-300">{getScoreDescription(analysisData.overallScore)}</p>
+                    <Progress value={analysisData.overallScore} className="mb-3 sm:mb-4" />
+                    <p className="text-slate-300 text-sm sm:text-base">{getScoreDescription(analysisData.overallScore)}</p>
                   </div>
                 </CardContent>
               </Card>
 
               <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                <CardHeader>
-                  <CardTitle className="text-white">ATS Compatibility</CardTitle>
+                <CardHeader className="pb-3 sm:pb-4">
+                  <CardTitle className="text-white text-lg sm:text-xl">ATS Compatibility</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-center">
-                    <div className={`text-4xl font-bold mb-2 ${getScoreColor(analysisData.atsScore)}`}>
+                    <div className={`text-3xl sm:text-4xl font-bold mb-2 ${getScoreColor(analysisData.atsScore)}`}>
                       {analysisData.atsScore}/100
                     </div>
-                    <Progress value={analysisData.atsScore} className="mb-4" />
-                    <p className="text-slate-300">{getScoreDescription(analysisData.atsScore)}</p>
+                    <Progress value={analysisData.atsScore} className="mb-3 sm:mb-4" />
+                    <p className="text-slate-300 text-sm sm:text-base">{getScoreDescription(analysisData.atsScore)}</p>
                   </div>
                 </CardContent>
               </Card>
 
               <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                <CardHeader>
-                  <CardTitle className="text-white">Design Quality</CardTitle>
+                <CardHeader className="pb-3 sm:pb-4">
+                  <CardTitle className="text-white text-lg sm:text-xl">Design Quality</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-center">
-                    <div className={`text-4xl font-bold mb-2 ${getScoreColor(analysisData.designScore)}`}>
+                    <div className={`text-3xl sm:text-4xl font-bold mb-2 ${getScoreColor(analysisData.designScore)}`}>
                       {analysisData.designScore}/100
                     </div>
-                    <Progress value={analysisData.designScore} className="mb-4" />
-                    <p className="text-slate-300">{getScoreDescription(analysisData.designScore)}</p>
+                    <Progress value={analysisData.designScore} className="mb-3 sm:mb-4" />
+                    <p className="text-slate-300 text-sm sm:text-base">{getScoreDescription(analysisData.designScore)}</p>
                   </div>
                 </CardContent>
               </Card>
 
               <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                <CardHeader>
-                  <CardTitle className="text-white">Content Clarity</CardTitle>
+                <CardHeader className="pb-3 sm:pb-4">
+                  <CardTitle className="text-white text-lg sm:text-xl">Content Clarity</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-center">
-                    <div className={`text-4xl font-bold mb-2 ${getScoreColor(analysisData.clarityScore)}`}>
+                    <div className={`text-3xl sm:text-4xl font-bold mb-2 ${getScoreColor(analysisData.clarityScore)}`}>
                       {analysisData.clarityScore}/100
                     </div>
-                    <Progress value={analysisData.clarityScore} className="mb-4" />
-                    <p className="text-slate-300">{getScoreDescription(analysisData.clarityScore)}</p>
+                    <Progress value={analysisData.clarityScore} className="mb-3 sm:mb-4" />
+                    <p className="text-slate-300 text-sm sm:text-base">{getScoreDescription(analysisData.clarityScore)}</p>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="bg-white/10 backdrop-blur-sm border-white/20 md:col-span-2">
-                <CardHeader>
-                  <CardTitle className="text-white">AI-Powered Recommendations</CardTitle>
-                  <p className="text-slate-300 text-sm">Personalized suggestions based on your resume analysis</p>
+              <Card className="bg-white/10 backdrop-blur-sm border-white/20 sm:col-span-2">
+                <CardHeader className="pb-3 sm:pb-4">
+                  <CardTitle className="text-white text-lg sm:text-xl">AI-Powered Recommendations</CardTitle>
+                  <p className="text-slate-300 text-xs sm:text-sm">Personalized suggestions based on your resume analysis</p>
                 </CardHeader>
                 <CardContent>
-                  <ul className="space-y-3">
+                  <ul className="space-y-2 sm:space-y-3">
                     {analysisData.recommendations.map((rec, index) => (
-                      <li key={index} className="flex items-start text-slate-300">
-                        <Zap className="mr-3 h-4 w-4 text-yellow-400 mt-0.5 flex-shrink-0" />
+                      <li key={index} className="flex items-start text-slate-300 text-sm sm:text-base">
+                        <Zap className="mr-2 sm:mr-3 h-3 w-3 sm:h-4 sm:w-4 text-yellow-400 mt-0.5 flex-shrink-0" />
                         <span>{rec}</span>
                       </li>
                     ))}
                   </ul>
-                  <Button className="mt-6 bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700">
-                    <Download className="mr-2 h-4 w-4" />
+                  <Button className="mt-4 sm:mt-6 bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 w-full sm:w-auto text-sm sm:text-base">
+                    <Download className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                     Download Analysis Report
                   </Button>
                 </CardContent>
@@ -242,30 +241,30 @@ const ResumeAnalysis = () => {
           )}
         </TabsContent>
 
-        <TabsContent value="navigator" className="mt-6">
-          <div className="grid md:grid-cols-2 gap-6">
+        <TabsContent value="navigator" className="mt-4 sm:mt-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-              <CardHeader>
-                <CardTitle className="text-white">Salary Insights</CardTitle>
+              <CardHeader className="pb-3 sm:pb-4">
+                <CardTitle className="text-white text-lg sm:text-xl">Salary Insights</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-green-400 mb-4">{mockCareerData.salaryRange}</div>
-                  <p className="text-slate-300">Expected salary range for your profile</p>
+                  <div className="text-xl sm:text-2xl font-bold text-green-400 mb-2 sm:mb-4">{mockCareerData.salaryRange}</div>
+                  <p className="text-slate-300 text-sm sm:text-base">Expected salary range for your profile</p>
                 </div>
               </CardContent>
             </Card>
 
             <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-              <CardHeader>
-                <CardTitle className="text-white">Top Job Matches</CardTitle>
+              <CardHeader className="pb-3 sm:pb-4">
+                <CardTitle className="text-white text-lg sm:text-xl">Top Job Matches</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
+                <div className="space-y-2 sm:space-y-3">
                   {mockCareerData.jobMatches.map((job, index) => (
                     <div key={index} className="flex justify-between items-center">
-                      <span className="text-slate-300">{job.title}</span>
-                      <Badge variant="secondary" className="bg-purple-600 text-white">
+                      <span className="text-slate-300 text-sm sm:text-base">{job.title}</span>
+                      <Badge variant="secondary" className="bg-purple-600 text-white text-xs sm:text-sm">
                         {job.match}% match
                       </Badge>
                     </div>
@@ -276,23 +275,23 @@ const ResumeAnalysis = () => {
           </div>
         </TabsContent>
 
-        <TabsContent value="learning" className="mt-6">
+        <TabsContent value="learning" className="mt-4 sm:mt-6">
           <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-            <CardHeader>
-              <CardTitle className="text-white">Recommended Learning Paths</CardTitle>
+            <CardHeader className="pb-3 sm:pb-4">
+              <CardTitle className="text-white text-lg sm:text-xl">Recommended Learning Paths</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 {mockLearningResources.map((resource, index) => (
                   <Card key={index} className="bg-white/5 border-white/10 hover:bg-white/10 transition-colors">
-                    <CardContent className="p-4">
+                    <CardContent className="p-3 sm:p-4">
                       <div className="flex items-center mb-2">
-                        <BookOpen className="mr-2 h-4 w-4 text-pink-400" />
+                        <BookOpen className="mr-2 h-3 w-3 sm:h-4 sm:w-4 text-pink-400" />
                         <Badge variant="outline" className="text-xs">
                           {resource.type}
                         </Badge>
                       </div>
-                      <h4 className="text-white font-semibold">{resource.title}</h4>
+                      <h4 className="text-white font-semibold text-sm sm:text-base">{resource.title}</h4>
                     </CardContent>
                   </Card>
                 ))}
