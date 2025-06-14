@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -20,7 +21,12 @@ import {
   Zap,
   Mail,
   Phone,
-  MapPin
+  MapPin,
+  Clock,
+  DollarSign,
+  CheckCircle,
+  Camera,
+  Timer
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -150,15 +156,12 @@ const LandingPage = () => {
             </div>
             
             <h1 className="text-5xl md:text-6xl font-bold text-white leading-tight">
-              Build Your Resume 
-              <span className="text-purple-400"> Smarter, Faster,</span>
-              <br />
-              With AI
+              Create a Resume 
+              <span className="text-purple-400"> That Gets Results</span>
             </h1>
             
             <p className="text-xl text-gray-300 leading-relaxed">
-              Create standout resumes in minutes using our AI-powered builder and career tools. 
-              Perfect for professionals seeking their next opportunity.
+              Build a professional resume that lands interviews with our AI-powered tools and expert guidance.
             </p>
 
             {/* Email Form */}
@@ -176,7 +179,7 @@ const LandingPage = () => {
                   className="bg-purple-600 hover:bg-purple-700 text-white px-8"
                   disabled={!agreedToTerms}
                 >
-                  Get started
+                  Choose a template
                 </Button>
               </div>
               
@@ -213,6 +216,124 @@ const LandingPage = () => {
           {/* Right Content - Animated Resume Demo */}
           <div className="relative">
             <AnimatedResumeDemo />
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="container mx-auto px-4 py-20">
+        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <Card className="bg-gray-800/50 border-purple-500/20 p-8 text-center hover:scale-105 transition-transform">
+            <div className="flex justify-center mb-6">
+              <div className="p-4 rounded-full bg-green-500/20 border border-green-500/30">
+                <Camera className="h-8 w-8 text-green-400" />
+              </div>
+            </div>
+            <h3 className="text-xl font-bold text-white mb-4">Recruiter-Approved Resume</h3>
+            <p className="text-gray-300 mb-6">
+              We work with recruiters to design resume templates that format automatically.
+            </p>
+          </Card>
+
+          <Card className="bg-gray-800/50 border-purple-500/20 p-8 text-center hover:scale-105 transition-transform">
+            <div className="flex justify-center mb-6">
+              <div className="p-4 rounded-full bg-blue-500/20 border border-blue-500/30">
+                <Timer className="h-8 w-8 text-blue-400" />
+              </div>
+            </div>
+            <h3 className="text-xl font-bold text-white mb-4">Finish Your Resume in 15 Minutes</h3>
+            <p className="text-gray-300 mb-6">
+              Resume Pro helps you tackle your work experience by reminding you what you did at your job.
+            </p>
+          </Card>
+
+          <Card className="bg-gray-800/50 border-purple-500/20 p-8 text-center hover:scale-105 transition-transform">
+            <div className="flex justify-center mb-6">
+              <div className="p-4 rounded-full bg-orange-500/20 border border-orange-500/30">
+                <Target className="h-8 w-8 text-orange-400" />
+              </div>
+            </div>
+            <h3 className="text-xl font-bold text-white mb-4">Land an Interview</h3>
+            <p className="text-gray-300 mb-6">
+              We suggest the skills you should add. It helped over a million people get interviews.
+            </p>
+          </Card>
+        </div>
+      </section>
+
+      {/* Expert Review Section */}
+      <section className="container mx-auto px-4 py-20">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+            Our resume builder includes a review from one of our experts
+          </h2>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
+          {/* Left Content - Visual */}
+          <div className="relative">
+            <Card className="bg-gradient-to-br from-yellow-400/20 to-orange-400/20 border border-yellow-400/30 p-8">
+              <div className="space-y-4">
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="h-6 w-6 text-green-400" />
+                  <div className="h-3 bg-green-400/50 rounded-full flex-1"></div>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="h-6 w-6 text-green-400" />
+                  <div className="h-3 bg-green-400/50 rounded-full flex-1"></div>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="h-6 w-6 rounded-full bg-orange-400/50 border-2 border-orange-400"></div>
+                  <div className="h-3 bg-orange-400/50 rounded-full flex-1"></div>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="h-6 w-6 rounded-full bg-orange-400/50 border-2 border-orange-400"></div>
+                  <div className="h-3 bg-orange-400/50 rounded-full flex-1"></div>
+                </div>
+              </div>
+            </Card>
+          </div>
+
+          {/* Right Content - Features */}
+          <div className="space-y-8">
+            <div>
+              <h3 className="text-2xl font-bold text-white mb-3">Real feedback from a Resume Analyst</h3>
+              <p className="text-gray-300">We'll read your resume carefully and suggest improvements</p>
+            </div>
+
+            <div>
+              <h3 className="text-2xl font-bold text-white mb-3">Section-by-section suggestions</h3>
+              <p className="text-gray-300">Get detailed feedback on your summary, skills, work history, and education sections</p>
+            </div>
+
+            <div>
+              <h3 className="text-2xl font-bold text-white mb-3">Get answers specific to your resume</h3>
+              <p className="text-gray-300">Submit any questions you have for additional guidance</p>
+            </div>
+
+            <div>
+              <h3 className="text-2xl font-bold text-white mb-3">Quick turnaround</h3>
+              <p className="text-gray-300">Get your review back in just 2-3 business days</p>
+            </div>
+
+            <Button 
+              onClick={() => navigate('/auth')}
+              className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 text-lg"
+            >
+              Choose a template
+            </Button>
+          </div>
+        </div>
+
+        {/* As seen in logos */}
+        <div className="mt-16 text-center">
+          <p className="text-gray-500 text-sm mb-8">As seen in</p>
+          <div className="flex justify-center items-center space-x-12 opacity-60">
+            <span className="text-gray-400 font-bold text-lg">Forbes</span>
+            <span className="text-gray-400 font-bold text-lg">USA TODAY</span>
+            <span className="text-gray-400 font-bold text-lg">CNBC</span>
+            <span className="text-gray-400 font-bold text-lg">The New York Times</span>
+            <span className="text-gray-400 font-bold text-lg">CNET.com</span>
           </div>
         </div>
       </section>
