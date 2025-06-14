@@ -8,8 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
+import AnimatedBackground from '@/components/AnimatedBackground';
 import Header from '@/components/Header';
-import { useTheme } from '@/contexts/ThemeContext';
 
 const AuthPage = () => {
   const [email, setEmail] = useState('');
@@ -18,7 +18,6 @@ const AuthPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { isDark } = useTheme();
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,46 +76,27 @@ const AuthPage = () => {
   };
 
   return (
-    <div className={`min-h-screen relative overflow-hidden transition-all duration-300 ${
-      isDark ? 'bg-gradient-to-br from-[#0f0f23] via-[#1a1a2e] to-[#16213e]' : 'bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50'
-    }`}>
+    <div className="min-h-screen bg-black relative overflow-hidden">
+      <AnimatedBackground />
       <Header />
       
       <div className="relative z-10 pt-20 flex items-center justify-center min-h-[calc(100vh-80px)]">
-        <Card className={`w-full max-w-md backdrop-blur-sm transition-all duration-300 ${
-          isDark 
-            ? 'bg-purple-900/20 border-purple-500/30' 
-            : 'bg-white/70 border-blue-200/40'
-        }`}>
+        <Card className="w-full max-w-md bg-purple-900/20 border-purple-500/30 backdrop-blur-sm">
           <CardHeader>
-            <CardTitle className={`text-center text-2xl transition-colors duration-300 ${
-              isDark ? 'text-white' : 'text-gray-900'
-            }`}>Welcome to ResumePro</CardTitle>
+            <CardTitle className="text-white text-center text-2xl">Welcome to ResumePro</CardTitle>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="signin" className="w-full">
-              <TabsList className={`grid w-full grid-cols-2 border transition-all duration-300 ${
-                isDark 
-                  ? 'bg-purple-900/30 border-purple-500/30' 
-                  : 'bg-blue-50/50 border-blue-200/50'
-              }`}>
+              <TabsList className="grid w-full grid-cols-2 bg-purple-900/30 border border-purple-500/30">
                 <TabsTrigger 
                   value="signin"
-                  className={`transition-all duration-300 ${
-                    isDark 
-                      ? 'data-[state=active]:bg-purple-600 data-[state=active]:text-white' 
-                      : 'data-[state=active]:bg-blue-600 data-[state=active]:text-white'
-                  }`}
+                  className="data-[state=active]:bg-purple-600 data-[state=active]:text-white"
                 >
                   Sign In
                 </TabsTrigger>
                 <TabsTrigger 
                   value="signup"
-                  className={`transition-all duration-300 ${
-                    isDark 
-                      ? 'data-[state=active]:bg-purple-600 data-[state=active]:text-white' 
-                      : 'data-[state=active]:bg-blue-600 data-[state=active]:text-white'
-                  }`}
+                  className="data-[state=active]:bg-purple-600 data-[state=active]:text-white"
                 >
                   Sign Up
                 </TabsTrigger>
@@ -125,46 +105,30 @@ const AuthPage = () => {
               <TabsContent value="signin">
                 <form onSubmit={handleSignIn} className="space-y-4">
                   <div>
-                    <Label htmlFor="email" className={`transition-colors duration-300 ${
-                      isDark ? 'text-white' : 'text-gray-900'
-                    }`}>Email</Label>
+                    <Label htmlFor="email" className="text-white">Email</Label>
                     <Input
                       id="email"
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className={`transition-all duration-300 ${
-                        isDark 
-                          ? 'bg-black/50 border-purple-500/30 text-white' 
-                          : 'bg-white/80 border-blue-200/50 text-gray-900'
-                      }`}
+                      className="bg-black/50 border-purple-500/30 text-white"
                       required
                     />
                   </div>
                   <div>
-                    <Label htmlFor="password" className={`transition-colors duration-300 ${
-                      isDark ? 'text-white' : 'text-gray-900'
-                    }`}>Password</Label>
+                    <Label htmlFor="password" className="text-white">Password</Label>
                     <Input
                       id="password"
                       type="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className={`transition-all duration-300 ${
-                        isDark 
-                          ? 'bg-black/50 border-purple-500/30 text-white' 
-                          : 'bg-white/80 border-blue-200/50 text-gray-900'
-                      }`}
+                      className="bg-black/50 border-purple-500/30 text-white"
                       required
                     />
                   </div>
                   <Button 
                     type="submit" 
-                    className={`w-full transition-all duration-300 ${
-                      isDark 
-                        ? 'bg-purple-600 hover:bg-purple-700' 
-                        : 'bg-blue-600 hover:bg-blue-700'
-                    }`}
+                    className="w-full bg-purple-600 hover:bg-purple-700"
                     disabled={loading}
                   >
                     {loading ? 'Signing In...' : 'Sign In'}
@@ -175,63 +139,41 @@ const AuthPage = () => {
               <TabsContent value="signup">
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <div>
-                    <Label htmlFor="fullName" className={`transition-colors duration-300 ${
-                      isDark ? 'text-white' : 'text-gray-900'
-                    }`}>Full Name</Label>
+                    <Label htmlFor="fullName" className="text-white">Full Name</Label>
                     <Input
                       id="fullName"
                       type="text"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
-                      className={`transition-all duration-300 ${
-                        isDark 
-                          ? 'bg-black/50 border-purple-500/30 text-white' 
-                          : 'bg-white/80 border-blue-200/50 text-gray-900'
-                      }`}
+                      className="bg-black/50 border-purple-500/30 text-white"
                       required
                     />
                   </div>
                   <div>
-                    <Label htmlFor="email" className={`transition-colors duration-300 ${
-                      isDark ? 'text-white' : 'text-gray-900'
-                    }`}>Email</Label>
+                    <Label htmlFor="email" className="text-white">Email</Label>
                     <Input
                       id="email"
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className={`transition-all duration-300 ${
-                        isDark 
-                          ? 'bg-black/50 border-purple-500/30 text-white' 
-                          : 'bg-white/80 border-blue-200/50 text-gray-900'
-                      }`}
+                      className="bg-black/50 border-purple-500/30 text-white"
                       required
                     />
                   </div>
                   <div>
-                    <Label htmlFor="password" className={`transition-colors duration-300 ${
-                      isDark ? 'text-white' : 'text-gray-900'
-                    }`}>Password</Label>
+                    <Label htmlFor="password" className="text-white">Password</Label>
                     <Input
                       id="password"
                       type="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className={`transition-all duration-300 ${
-                        isDark 
-                          ? 'bg-black/50 border-purple-500/30 text-white' 
-                          : 'bg-white/80 border-blue-200/50 text-gray-900'
-                      }`}
+                      className="bg-black/50 border-purple-500/30 text-white"
                       required
                     />
                   </div>
                   <Button 
                     type="submit" 
-                    className={`w-full transition-all duration-300 ${
-                      isDark 
-                        ? 'bg-purple-600 hover:bg-purple-700' 
-                        : 'bg-blue-600 hover:bg-blue-700'
-                    }`}
+                    className="w-full bg-purple-600 hover:bg-purple-700"
                     disabled={loading}
                   >
                     {loading ? 'Creating Account...' : 'Sign Up'}

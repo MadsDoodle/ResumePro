@@ -5,16 +5,15 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useNavigate } from 'react-router-dom';
+import AnimatedBackground from '@/components/AnimatedBackground';
 import Header from '@/components/Header';
 import { Eye, X } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { resumeTemplates, ResumeTemplate } from '@/data/resumeTemplates';
 import TemplatePreview from '@/components/TemplatePreview';
-import { useTheme } from '@/contexts/ThemeContext';
 
 const TemplateSelection = () => {
   const navigate = useNavigate();
-  const { isDark } = useTheme();
   const [previewTemplate, setPreviewTemplate] = useState<ResumeTemplate | null>(null);
   const [filters, setFilters] = useState({
     layout: 'all',
@@ -36,42 +35,25 @@ const TemplateSelection = () => {
   };
 
   return (
-    <div className={`min-h-screen relative overflow-hidden transition-all duration-300 ${
-      isDark 
-        ? 'bg-gradient-to-br from-[#0f0f23] via-[#1a1a2e] to-[#16213e]' 
-        : 'bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50'
-    }`}>
+    <div className="min-h-screen bg-black relative overflow-hidden">
+      <AnimatedBackground />
       <Header />
       
       <div className="relative z-10 pt-20">
         <div className="container mx-auto px-4 py-12 max-w-6xl">
           {/* Header Section */}
           <div className="text-center mb-12">
-            <h1 className={`text-4xl font-bold mb-4 transition-colors duration-300 ${
-              isDark ? 'text-white' : 'text-gray-900'
-            }`}>Templates recommended for you</h1>
-            <p className={`text-lg transition-colors duration-300 ${
-              isDark ? 'text-purple-300' : 'text-blue-600'
-            }`}>You can always change your template later</p>
+            <h1 className="text-4xl font-bold text-white mb-4">Templates recommended for you</h1>
+            <p className="text-purple-300 text-lg">You can always change your template later</p>
           </div>
           
           {/* Filter Section */}
-          <div className={`rounded-lg p-6 mb-8 backdrop-blur-sm transition-all duration-300 ${
-            isDark 
-              ? 'bg-purple-900/20 border border-purple-500/30' 
-              : 'bg-white/70 border border-blue-200/40'
-          }`}>
+          <div className="bg-purple-900/20 border border-purple-500/30 rounded-lg p-6 mb-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className={`text-sm font-medium mb-2 block transition-colors duration-300 ${
-                  isDark ? 'text-white' : 'text-gray-900'
-                }`}>Layout</label>
+                <label className="text-white text-sm font-medium mb-2 block">Layout</label>
                 <Select value={filters.layout} onValueChange={(value) => setFilters(prev => ({ ...prev, layout: value }))}>
-                  <SelectTrigger className={`transition-all duration-300 ${
-                    isDark 
-                      ? 'bg-black/50 border-purple-500/30 text-white' 
-                      : 'bg-white/80 border-blue-200/50 text-gray-900'
-                  }`}>
+                  <SelectTrigger className="bg-black/50 border-purple-500/30 text-white">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -83,15 +65,9 @@ const TemplateSelection = () => {
               </div>
               
               <div>
-                <label className={`text-sm font-medium mb-2 block transition-colors duration-300 ${
-                  isDark ? 'text-white' : 'text-gray-900'
-                }`}>Photo</label>
+                <label className="text-white text-sm font-medium mb-2 block">Photo</label>
                 <Select value={filters.photo} onValueChange={(value) => setFilters(prev => ({ ...prev, photo: value }))}>
-                  <SelectTrigger className={`transition-all duration-300 ${
-                    isDark 
-                      ? 'bg-black/50 border-purple-500/30 text-white' 
-                      : 'bg-white/80 border-blue-200/50 text-gray-900'
-                  }`}>
+                  <SelectTrigger className="bg-black/50 border-purple-500/30 text-white">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -103,15 +79,9 @@ const TemplateSelection = () => {
               </div>
               
               <div>
-                <label className={`text-sm font-medium mb-2 block transition-colors duration-300 ${
-                  isDark ? 'text-white' : 'text-gray-900'
-                }`}>Style</label>
+                <label className="text-white text-sm font-medium mb-2 block">Style</label>
                 <Select value={filters.style} onValueChange={(value) => setFilters(prev => ({ ...prev, style: value }))}>
-                  <SelectTrigger className={`transition-all duration-300 ${
-                    isDark 
-                      ? 'bg-black/50 border-purple-500/30 text-white' 
-                      : 'bg-white/80 border-blue-200/50 text-gray-900'
-                  }`}>
+                  <SelectTrigger className="bg-black/50 border-purple-500/30 text-white">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -130,29 +100,17 @@ const TemplateSelection = () => {
             {filteredTemplates.map((template) => (
               <Card 
                 key={template.id}
-                className={`backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] group overflow-hidden ${
-                  isDark 
-                    ? 'bg-purple-900/20 border-purple-500/30 hover:bg-purple-900/30' 
-                    : 'bg-white/70 border-blue-200/40 hover:bg-white/80'
-                }`}
+                className="bg-purple-900/20 border-purple-500/30 hover:bg-purple-900/30 transition-all duration-300 hover:scale-[1.02] group overflow-hidden"
               >
                 <div className="relative">
                   {template.isRecommended && (
-                    <Badge className={`absolute top-4 left-4 z-10 text-white ${
-                      isDark 
-                        ? 'bg-gradient-to-r from-purple-600 to-pink-600' 
-                        : 'bg-gradient-to-r from-blue-600 to-indigo-600'
-                    }`}>
+                    <Badge className="absolute top-4 left-4 z-10 bg-gradient-to-r from-purple-600 to-pink-600 text-white">
                       Recommended
                     </Badge>
                   )}
                   
                   {/* Template Preview */}
-                  <div className={`aspect-[1.4/1] p-6 relative overflow-hidden ${
-                    isDark 
-                      ? 'bg-gradient-to-br from-purple-900/30 to-purple-700/20' 
-                      : 'bg-gradient-to-br from-blue-100/50 to-indigo-100/30'
-                  }`}>
+                  <div className="aspect-[1.4/1] bg-gradient-to-br from-purple-900/30 to-purple-700/20 p-6 relative overflow-hidden">
                     <TemplatePreview template={template} />
                     
                     {/* Hover overlay */}
@@ -171,35 +129,21 @@ const TemplateSelection = () => {
                 </div>
                 
                 <CardContent className="p-6">
-                  <h3 className={`font-semibold text-lg mb-2 transition-colors duration-300 ${
-                    isDark ? 'text-white' : 'text-gray-900'
-                  }`}>{template.name}</h3>
+                  <h3 className="text-white font-semibold text-lg mb-2">{template.name}</h3>
                   <div className="flex flex-wrap gap-2 mb-4">
-                    <Badge variant="outline" className={`transition-colors duration-300 ${
-                      isDark 
-                        ? 'text-purple-300 border-purple-500/30' 
-                        : 'text-blue-600 border-blue-300'
-                    }`}>
+                    <Badge variant="outline" className="text-purple-300 border-purple-500/30">
                       {template.layout}
                     </Badge>
-                    <Badge variant="outline" className={`transition-colors duration-300 ${
-                      isDark 
-                        ? 'text-purple-300 border-purple-500/30' 
-                        : 'text-blue-600 border-blue-300'
-                    }`}>
+                    <Badge variant="outline" className="text-purple-300 border-purple-500/30">
                       {template.style}
                     </Badge>
-                    <Badge variant="outline" className={`transition-colors duration-300 ${
-                      isDark 
-                        ? 'text-purple-300 border-purple-500/30' 
-                        : 'text-blue-600 border-blue-300'
-                    }`}>
+                    <Badge variant="outline" className="text-purple-300 border-purple-500/30">
                       {template.photo}
                     </Badge>
                   </div>
                   <Button 
                     onClick={() => handleChooseTemplate(template)}
-                    className="w-full text-white transition-all duration-300 hover:shadow-lg"
+                    className="w-full bg-gradient-to-r hover:from-purple-700 hover:to-blue-700 text-white transition-all duration-300 hover:shadow-lg"
                     style={{ 
                       background: `linear-gradient(to right, ${template.primaryColor}, ${template.secondaryColor})`,
                       boxShadow: `0 4px 20px ${template.primaryColor}30`
@@ -216,11 +160,7 @@ const TemplateSelection = () => {
       
       {/* Full Preview Modal */}
       <Dialog open={!!previewTemplate} onOpenChange={() => setPreviewTemplate(null)}>
-        <DialogContent className={`max-w-4xl max-h-[90vh] overflow-y-auto backdrop-blur-sm transition-all duration-300 ${
-          isDark 
-            ? 'bg-purple-900/20 border-purple-500/30 text-white' 
-            : 'bg-white/90 border-blue-200/50 text-gray-900'
-        }`}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-purple-900/20 border-purple-500/30 text-white">
           <DialogHeader>
             <DialogTitle className="flex items-center justify-between">
               <span>{previewTemplate?.name} - Full Preview</span>

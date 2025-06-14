@@ -84,47 +84,6 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
-
-  .light {
-    --background: 255 255 255;
-    --foreground: 15 23 42;
-
-    --card: 255 255 255;
-    --card-foreground: 15 23 42;
-
-    --popover: 255 255 255;
-    --popover-foreground: 15 23 42;
-
-    --primary: 59 130 246;
-    --primary-foreground: 255 255 255;
-
-    --secondary: 241 245 249;
-    --secondary-foreground: 30 41 59;
-
-    --muted: 248 250 252;
-    --muted-foreground: 100 116 139;
-
-    --accent: 241 245 249;
-    --accent-foreground: 30 41 59;
-
-    --destructive: 239 68 68;
-    --destructive-foreground: 255 255 255;
-
-    --border: 226 232 240;
-    --input: 226 232 240;
-    --ring: 59 130 246;
-
-    --radius: 0.5rem;
-
-    --sidebar-background: 248 250 252;
-    --sidebar-foreground: 51 65 85;
-    --sidebar-primary: 59 130 246;
-    --sidebar-primary-foreground: 255 255 255;
-    --sidebar-accent: 241 245 249;
-    --sidebar-accent-foreground: 51 65 85;
-    --sidebar-border: 226 232 240;
-    --sidebar-ring: 59 130 246;
-  }
 }
 
 @layer base {
@@ -133,42 +92,18 @@
   }
 
   body {
-    @apply bg-background text-foreground font-inter transition-colors duration-300;
-  }
-
-  .light {
-    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
-  }
-
-  .dark {
-    background: linear-gradient(135deg, #060315 0%, #1a1a2e 50%, #16213e 100%);
+    @apply bg-background text-foreground font-inter;
   }
 }
 
 @layer utilities {
   /* Glassmorphism utilities */
   .glass-card {
-    @apply backdrop-blur-xl border shadow-glass transition-all duration-300;
-  }
-  
-  .light .glass-card {
-    @apply bg-white/70 border-blue-200/40;
-  }
-  
-  .dark .glass-card {
-    @apply bg-white/10 border-white/20;
+    @apply bg-white/10 backdrop-blur-xl border border-white/20 shadow-glass;
   }
   
   .glass-card-dark {
-    @apply backdrop-blur-xl border shadow-glass transition-all duration-300;
-  }
-  
-  .light .glass-card-dark {
-    @apply bg-gray-100/80 border-gray-300/50;
-  }
-  
-  .dark .glass-card-dark {
-    @apply bg-black/20 border-white/10;
+    @apply bg-black/20 backdrop-blur-xl border border-white/10 shadow-glass;
   }
 
   /* Hover effects */
@@ -178,60 +113,29 @@
 
   /* Premium button styles */
   .btn-premium {
-    @apply relative overflow-hidden font-semibold py-3 px-6 rounded-xl
+    @apply relative overflow-hidden bg-gradient-to-r from-purple-600 via-blue-600 to-purple-600 
+           text-white font-semibold py-3 px-6 rounded-xl
            transition-all duration-300 ease-out
            hover:scale-[1.02] hover:shadow-lg
            active:scale-95;
   }
-  
-  .light .btn-premium {
-    @apply bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white;
-  }
-  
-  .dark .btn-premium {
-    @apply bg-gradient-to-r from-purple-600 via-blue-600 to-purple-600 text-white;
-  }
 
-  /* Gradual glow effect */
+  /* Gradual glow effect - more subtle */
   .gentle-glow {
     @apply transition-all duration-500 ease-out;
-  }
-  
-  .light .gentle-glow {
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
-  }
-  
-  .light .gentle-glow:hover {
-    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
-  }
-  
-  .dark .gentle-glow {
     box-shadow: 0 4px 15px rgba(147, 51, 234, 0.2);
   }
   
-  .dark .gentle-glow:hover {
+  .gentle-glow:hover {
     box-shadow: 0 8px 25px rgba(147, 51, 234, 0.3);
   }
 
-  /* Background patterns */
+  /* Simplified background */
   .bg-abstract {
     position: relative;
   }
   
-  .light .bg-abstract::before {
-    content: '';
-    position: absolute;
-    width: 200px;
-    height: 200px;
-    top: -100px;
-    right: -100px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(99, 102, 241, 0.05));
-    filter: blur(60px);
-    z-index: -1;
-  }
-  
-  .dark .bg-abstract::before {
+  .bg-abstract::before {
     content: '';
     position: absolute;
     width: 200px;
