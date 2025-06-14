@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Eye, Download, Save, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -7,6 +8,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { useToast } from '@/hooks/use-toast';
 import { useCredits } from '@/hooks/useCredits';
 import { useResumeStorage } from '@/hooks/useResumeStorage';
+import { resumeTemplates, ResumeTemplate } from '@/data/resumeTemplates';
 import PersonalInfoForm from '@/components/forms/PersonalInfoForm';
 import SummaryForm from '@/components/forms/SummaryForm';
 import ExperienceForm from '@/components/forms/ExperienceForm';
@@ -16,6 +18,7 @@ import ResumePreview from '@/components/ResumePreview';
 
 const ResumeBuilder = () => {
   const [currentStep, setCurrentStep] = useState(0);
+  const [selectedTemplate, setSelectedTemplate] = useState<ResumeTemplate | null>(null);
   const [formData, setFormData] = useState({
     personalInfo: {},
     summary: '',
@@ -28,6 +31,34 @@ const ResumeBuilder = () => {
   const { credits, deductCredit } = useCredits();
   const { saveResumeToDatabase, uploading } = useResumeStorage();
 
+  // Load selected template and initialize form data
+  useEffect(() => {
+    const savedTemplate = localStorage.getItem('selectedTemplate');
+    if (savedTemplate) {
+      try {
+        const template = JSON.parse(savedTemplate);
+        setSelectedTemplate(template);
+        // Initialize form data with template structure
+        setFormData(template.structure);
+        toast({
+          title: "Template Loaded",
+          description: `${template.name} template has been applied to your resume.`,
+        });
+      } catch (error) {
+        console.error('Failed to load template:', error);
+        // Load default template if parsing fails
+        const defaultTemplate = resumeTemplates[0];
+        setSelectedTemplate(defaultTemplate);
+        setFormData(defaultTemplate.structure);
+      }
+    } else {
+      // Load default template if none selected
+      const defaultTemplate = resumeTemplates[0];
+      setSelectedTemplate(defaultTemplate);
+      setFormData(defaultTemplate.structure);
+    }
+  }, []);
+
   // Auto-save functionality
   useEffect(() => {
     const saveTimer = setTimeout(() => {
@@ -36,23 +67,6 @@ const ResumeBuilder = () => {
 
     return () => clearTimeout(saveTimer);
   }, [formData]);
-
-  // Load saved data on mount
-  useEffect(() => {
-    const savedData = localStorage.getItem('resumeBuilderData');
-    if (savedData) {
-      try {
-        const parsedData = JSON.parse(savedData);
-        setFormData(parsedData);
-        toast({
-          title: "Draft Loaded",
-          description: "Your previous work has been restored.",
-        });
-      } catch (error) {
-        console.error('Failed to load saved data:', error);
-      }
-    }
-  }, []);
 
   const steps = [
     {
@@ -132,11 +146,16 @@ const ResumeBuilder = () => {
       // Generate PDF and save to database
       const resumeTitle = (formData.personalInfo as any)?.fullName || 'Resume';
       
-      // Save to database
-      await saveResumeToDatabase(formData, `${resumeTitle} - ${new Date().toLocaleDateString()}`);
+      // Save to database with template info
+      const resumeDataWithTemplate = {
+        ...formData,
+        template: selectedTemplate
+      };
+      
+      await saveResumeToDatabase(resumeDataWithTemplate, `${resumeTitle} - ${new Date().toLocaleDateString()}`);
 
       // Create downloadable file
-      const resumeContent = JSON.stringify(formData, null, 2);
+      const resumeContent = JSON.stringify(resumeDataWithTemplate, null, 2);
       const blob = new Blob([resumeContent], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -165,6 +184,33 @@ const ResumeBuilder = () => {
   return (
     <TooltipProvider>
       <div className="max-w-7xl mx-auto">
+        {/* Template Info */}
+        {selectedTemplate && (
+          <div className="mb-6 p-4 rounded-lg border" style={{ 
+            borderColor: selectedTemplate.primaryColor + '40',
+            backgroundColor: selectedTemplate.primaryColor + '10'
+          }}>
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-white font-semibold">
+                  Using Template: {selectedTemplate.name}
+                </h3>
+                <p className="text-purple-300 text-sm">
+                  {selectedTemplate.layout} • {selectedTemplate.style} • {selectedTemplate.photo}
+                </p>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => window.location.href = '/templates'}
+                className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10"
+              >
+                Change Template
+              </Button>
+            </div>
+          </div>
+        )}
+
         {/* Credit warning */}
         {credits < 1 && (
           <div className="mb-4 p-4 bg-red-900/20 border border-red-500/30 rounded-lg">
@@ -269,7 +315,7 @@ const ResumeBuilder = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <ResumePreview data={formData} />
+                <ResumePreview data={formData} template={selectedTemplate} />
               </CardContent>
             </Card>
           </div>

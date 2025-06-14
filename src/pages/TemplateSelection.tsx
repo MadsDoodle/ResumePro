@@ -9,88 +9,29 @@ import AnimatedBackground from '@/components/AnimatedBackground';
 import Header from '@/components/Header';
 import { Eye, X } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { resumeTemplates, ResumeTemplate } from '@/data/resumeTemplates';
+import TemplatePreview from '@/components/TemplatePreview';
 
 const TemplateSelection = () => {
   const navigate = useNavigate();
-  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
-  const [previewTemplate, setPreviewTemplate] = useState<string | null>(null);
+  const [previewTemplate, setPreviewTemplate] = useState<ResumeTemplate | null>(null);
   const [filters, setFilters] = useState({
     layout: 'all',
     photo: 'all',
-    style: 'all',
-    color: '#8B5CF6'
+    style: 'all'
   });
 
-  const templates = [
-    {
-      id: 'modern-1',
-      name: 'Modern Professional',
-      layout: '2-column',
-      photo: 'without',
-      style: 'modern',
-      isRecommended: true,
-      preview: '/placeholder.svg'
-    },
-    {
-      id: 'classic-1',
-      name: 'Classic Executive',
-      layout: '1-column',
-      photo: 'with',
-      style: 'classic',
-      isRecommended: false,
-      preview: '/placeholder.svg'
-    },
-    {
-      id: 'creative-1',
-      name: 'Creative Designer',
-      layout: '2-column',
-      photo: 'with',
-      style: 'creative',
-      isRecommended: true,
-      preview: '/placeholder.svg'
-    },
-    {
-      id: 'modern-2',
-      name: 'Minimal Clean',
-      layout: '1-column',
-      photo: 'without',
-      style: 'modern',
-      isRecommended: false,
-      preview: '/placeholder.svg'
-    },
-    {
-      id: 'creative-2',
-      name: 'Bold Creative',
-      layout: '2-column',
-      photo: 'without',
-      style: 'creative',
-      isRecommended: false,
-      preview: '/placeholder.svg'
-    },
-    {
-      id: 'classic-2',
-      name: 'Traditional Format',
-      layout: '1-column',
-      photo: 'without',
-      style: 'classic',
-      isRecommended: false,
-      preview: '/placeholder.svg'
-    }
-  ];
-
-  const colorOptions = [
-    '#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#EC4899', '#6366F1', '#14B8A6'
-  ];
-
-  const filteredTemplates = templates.filter(template => {
+  const filteredTemplates = resumeTemplates.filter(template => {
     return (filters.layout === 'all' || template.layout === filters.layout) &&
            (filters.photo === 'all' || template.photo === filters.photo) &&
            (filters.style === 'all' || template.style === filters.style);
   });
 
-  const handleChooseTemplate = (templateId: string) => {
-    localStorage.setItem('selectedTemplate', templateId);
-    navigate('/resume-builder');
+  const handleChooseTemplate = (template: ResumeTemplate) => {
+    // Save the selected template to localStorage
+    localStorage.setItem('selectedTemplate', JSON.stringify(template));
+    // Navigate to create page where ResumeBuilder will load the template
+    navigate('/create');
   };
 
   return (
@@ -108,7 +49,7 @@ const TemplateSelection = () => {
           
           {/* Filter Section */}
           <div className="bg-purple-900/20 border border-purple-500/30 rounded-lg p-6 mb-8">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="text-white text-sm font-medium mb-2 block">Layout</label>
                 <Select value={filters.layout} onValueChange={(value) => setFilters(prev => ({ ...prev, layout: value }))}>
@@ -151,27 +92,6 @@ const TemplateSelection = () => {
                   </SelectContent>
                 </Select>
               </div>
-              
-              <div>
-                <label className="text-white text-sm font-medium mb-2 block">Theme Color</label>
-                <div className="flex flex-wrap gap-2">
-                  {colorOptions.map((color) => (
-                    <button
-                      key={color}
-                      onClick={() => setFilters(prev => ({ ...prev, color }))}
-                      className={`w-8 h-8 rounded-full border-2 transition-all duration-300 ${
-                        filters.color === color 
-                          ? 'border-white scale-110 shadow-lg' 
-                          : 'border-purple-500/30 hover:border-white/50'
-                      }`}
-                      style={{ 
-                        backgroundColor: color,
-                        boxShadow: filters.color === color ? `0 0 20px ${color}50` : 'none'
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
             </div>
           </div>
           
@@ -191,30 +111,14 @@ const TemplateSelection = () => {
                   
                   {/* Template Preview */}
                   <div className="aspect-[1.4/1] bg-gradient-to-br from-purple-900/30 to-purple-700/20 p-6 relative overflow-hidden">
-                    <div className="w-full h-full bg-white rounded-lg shadow-lg p-4 relative">
-                      {/* Mock resume content */}
-                      <div className="h-3 bg-gray-300 rounded mb-2" style={{ backgroundColor: filters.color, opacity: 0.8 }}></div>
-                      <div className="space-y-1 mb-4">
-                        <div className="h-2 bg-gray-200 rounded w-3/4"></div>
-                        <div className="h-2 bg-gray-200 rounded w-1/2"></div>
-                      </div>
-                      <div className="space-y-2">
-                        <div className="h-1.5 bg-gray-100 rounded"></div>
-                        <div className="h-1.5 bg-gray-100 rounded w-5/6"></div>
-                        <div className="h-1.5 bg-gray-100 rounded w-4/5"></div>
-                      </div>
-                      
-                      {template.photo === 'with' && (
-                        <div className="absolute top-4 right-4 w-12 h-12 bg-gray-300 rounded-full"></div>
-                      )}
-                    </div>
+                    <TemplatePreview template={template} />
                     
                     {/* Hover overlay */}
                     <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => setPreviewTemplate(template.id)}
+                        onClick={() => setPreviewTemplate(template)}
                         className="border-white text-white hover:bg-white hover:text-black"
                       >
                         <Eye className="w-4 h-4 mr-2" />
@@ -238,10 +142,11 @@ const TemplateSelection = () => {
                     </Badge>
                   </div>
                   <Button 
-                    onClick={() => handleChooseTemplate(template.id)}
-                    className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white transition-all duration-300 hover:shadow-lg"
+                    onClick={() => handleChooseTemplate(template)}
+                    className="w-full bg-gradient-to-r hover:from-purple-700 hover:to-blue-700 text-white transition-all duration-300 hover:shadow-lg"
                     style={{ 
-                      boxShadow: `0 4px 20px ${filters.color}30`
+                      background: `linear-gradient(to right, ${template.primaryColor}, ${template.secondaryColor})`,
+                      boxShadow: `0 4px 20px ${template.primaryColor}30`
                     }}
                   >
                     Choose Template
@@ -253,15 +158,31 @@ const TemplateSelection = () => {
         </div>
       </div>
       
-      {/* Preview Modal */}
+      {/* Full Preview Modal */}
       <Dialog open={!!previewTemplate} onOpenChange={() => setPreviewTemplate(null)}>
-        <DialogContent className="max-w-4xl bg-purple-900/20 border-purple-500/30 text-white">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-purple-900/20 border-purple-500/30 text-white">
           <DialogHeader>
-            <DialogTitle>Template Preview</DialogTitle>
+            <DialogTitle className="flex items-center justify-between">
+              <span>{previewTemplate?.name} - Full Preview</span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  if (previewTemplate) {
+                    handleChooseTemplate(previewTemplate);
+                  }
+                }}
+                className="border-green-500 text-green-400 hover:bg-green-500 hover:text-white"
+              >
+                Use This Template
+              </Button>
+            </DialogTitle>
           </DialogHeader>
-          <div className="aspect-[1.4/1] bg-white rounded-lg p-8">
-            <p className="text-black text-center">Full template preview would be displayed here</p>
-          </div>
+          {previewTemplate && (
+            <div className="mt-4">
+              <TemplatePreview template={previewTemplate} isFullPreview={true} />
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>
