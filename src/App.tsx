@@ -20,6 +20,7 @@ import ContactPage from "./pages/ContactPage";
 import ResourcesPage from "./pages/ResourcesPage";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ResumeChat from "./components/ResumeChat";
 
 const queryClient = new QueryClient();
 
@@ -65,6 +66,11 @@ const App = () => (
               <Route path="/chat" element={
                 <ProtectedRoute>
                   <ChatPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/resume-chat" element={
+                <ProtectedRoute>
+                  <ResumeChat />
                 </ProtectedRoute>
               } />
               <Route path="/analyze" element={

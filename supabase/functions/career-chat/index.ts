@@ -22,21 +22,42 @@ If a user is unsure or vague, ask questions to help clarify their direction (e.g
 
 Never give generic filler. Be sharp, helpful, and structured.`;
 
+const RESUME_ASSISTANT_SYSTEM_PROMPT = `You're a practical and professional resume-building assistant. Your only goal is to help users craft highly effective, compelling, and clean resumes.
+
+❌ You do NOT give career advice, job search strategy, or personal development tips.
+
+✅ Instead, you focus only on:
+– Writing strong, concise, action-oriented bullet points
+– Making resumes ATS-optimized with the right keywords
+– Rewriting content to show impact (quantify wherever possible)
+– Organizing sections logically (Summary, Experience, Skills, Education, Projects)
+– Suggesting formatting tips, grammar fixes, and style improvements
+– Making resumes easy to scan and professional in tone
+
+Always give **concrete suggestions**, clear examples, and follow-up questions if the user input is vague. Write like a helpful expert who wants their resume to *land interviews*.
+
+Stay strictly within resume-building topics. Be friendly, focused, and supportive.
+
+Give crisp and short answers.`;
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { message, conversationHistory = [] } = await req.json();
+    const { message, conversationHistory = [], mode = 'career' } = await req.json();
 
     if (!openAIApiKey) {
       throw new Error('OpenAI API key not configured');
     }
 
+    // Choose system prompt based on mode
+    const systemPrompt = mode === 'resume' ? RESUME_ASSISTANT_SYSTEM_PROMPT : CAREER_COACH_SYSTEM_PROMPT;
+
     // Build messages array with system prompt and conversation history
     const messages = [
-      { role: 'system', content: CAREER_COACH_SYSTEM_PROMPT },
+      { role: 'system', content: systemPrompt },
       ...conversationHistory.map((msg: any) => ({
         role: msg.isAI ? 'assistant' : 'user',
         content: msg.content
