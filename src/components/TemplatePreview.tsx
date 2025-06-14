@@ -172,28 +172,127 @@ const TemplatePreview = ({ template, isFullPreview = false }: TemplatePreviewPro
     );
   }
 
-  // Mini preview for template selection
+  // Enhanced mini preview that matches the actual template layout
   return (
-    <div className="aspect-[1.4/1] bg-white rounded-lg shadow-lg p-4 relative overflow-hidden border-2 border-gray-200">
-      <div className="h-3 rounded mb-3 shadow-sm" style={{ backgroundColor: primaryColor }}></div>
-      <div className="space-y-2 mb-4">
-        <div className="h-2 bg-gray-300 rounded w-3/4"></div>
-        <div className="h-1.5 bg-gray-200 rounded w-1/2"></div>
-      </div>
-      <div className="space-y-1.5">
-        <div className="h-1 bg-gray-100 rounded"></div>
-        <div className="h-1 bg-gray-100 rounded w-5/6"></div>
-        <div className="h-1 bg-gray-100 rounded w-4/5"></div>
-      </div>
-      
-      {photo === 'with' && (
-        <div className="absolute top-4 right-4 w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center border-2 border-white shadow-md">
-          <User className="h-5 w-5 text-gray-500" />
+    <div className="aspect-[1.4/1] bg-white rounded-lg shadow-lg overflow-hidden border-2 border-gray-200 relative">
+      {layout === '2-column' ? (
+        <div className="h-full flex">
+          {/* Left sidebar for 2-column */}
+          <div className="w-1/3 p-3 text-white relative" style={{ backgroundColor: primaryColor }}>
+            {photo === 'with' && (
+              <div className="w-8 h-8 rounded-full bg-white/20 mx-auto mb-2 flex items-center justify-center">
+                <User className="h-4 w-4 text-white/70" />
+              </div>
+            )}
+            
+            {/* Name placeholder */}
+            <div className="text-center mb-3">
+              <div className="h-2 bg-white/80 rounded mb-1"></div>
+              <div className="h-1 bg-white/60 rounded w-3/4 mx-auto"></div>
+            </div>
+            
+            {/* Contact info */}
+            <div className="space-y-1 mb-3">
+              <div className="flex items-center gap-1">
+                <Mail className="h-2 w-2 text-white/70" />
+                <div className="h-1 bg-white/60 rounded flex-1"></div>
+              </div>
+              <div className="flex items-center gap-1">
+                <Phone className="h-2 w-2 text-white/70" />
+                <div className="h-1 bg-white/60 rounded flex-1"></div>
+              </div>
+            </div>
+            
+            {/* Skills section */}
+            <div className="border-t border-white/30 pt-2">
+              <div className="h-1.5 bg-white/80 rounded w-2/3 mb-1"></div>
+              <div className="space-y-1">
+                <div className="h-1 bg-white/60 rounded"></div>
+                <div className="h-1 bg-white/60 rounded w-4/5"></div>
+                <div className="h-1 bg-white/60 rounded w-3/4"></div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Right content for 2-column */}
+          <div className="flex-1 p-3">
+            {/* Header bar */}
+            <div className="h-2 rounded mb-2" style={{ backgroundColor: primaryColor }}></div>
+            
+            {/* Summary section */}
+            <div className="mb-3 p-2 bg-gray-50 rounded border border-gray-200">
+              <div className="h-1.5 rounded mb-1" style={{ backgroundColor: `${primaryColor}80`, width: '60%' }}></div>
+              <div className="space-y-0.5">
+                <div className="h-1 bg-gray-300 rounded"></div>
+                <div className="h-1 bg-gray-300 rounded w-5/6"></div>
+              </div>
+            </div>
+            
+            {/* Experience section */}
+            <div className="p-2 bg-gray-50 rounded border border-gray-200">
+              <div className="h-1.5 rounded mb-1" style={{ backgroundColor: `${primaryColor}80`, width: '50%' }}></div>
+              <div className="border-l-2 pl-2 mt-1" style={{ borderColor: primaryColor }}>
+                <div className="h-1 bg-gray-400 rounded w-3/4 mb-1"></div>
+                <div className="h-1 bg-gray-300 rounded w-1/2"></div>
+              </div>
+            </div>
+          </div>
         </div>
-      )}
-      
-      {layout === '2-column' && (
-        <div className="absolute left-0 top-0 bottom-0 w-1/3 rounded-l-lg border-r-2 border-gray-100" style={{ backgroundColor: `${primaryColor}10` }}></div>
+      ) :  (
+        /* Single column layout */
+        <div className="h-full p-4">
+          {/* Header section */}
+          <div className="text-center mb-3 pb-2 border-b-2" style={{ borderColor: primaryColor }}>
+            {photo === 'with' && (
+              <div className="w-8 h-8 rounded-full bg-gray-300 mx-auto mb-2 flex items-center justify-center">
+                <User className="h-4 w-4 text-gray-500" />
+              </div>
+            )}
+            <div className="h-2 rounded mb-1" style={{ backgroundColor: primaryColor, width: '60%', margin: '0 auto' }}></div>
+            
+            {/* Contact badges */}
+            <div className="flex justify-center gap-1 mt-2">
+              <div className="flex items-center gap-1 px-2 py-1 rounded-full border border-gray-200 bg-white">
+                <Mail className="h-2 w-2" />
+                <div className="h-1 bg-gray-300 rounded w-8"></div>
+              </div>
+              <div className="flex items-center gap-1 px-2 py-1 rounded-full border border-gray-200 bg-white">
+                <Phone className="h-2 w-2" />
+                <div className="h-1 bg-gray-300 rounded w-6"></div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Summary section */}
+          <div className="mb-3 p-2 bg-gray-50 rounded border border-gray-200">
+            <div className="h-1.5 rounded mb-1 pb-1 border-b" style={{ backgroundColor: `${primaryColor}80`, borderColor: primaryColor, width: '70%' }}></div>
+            <div className="space-y-0.5 mt-1">
+              <div className="h-1 bg-gray-300 rounded"></div>
+              <div className="h-1 bg-gray-300 rounded w-5/6"></div>
+            </div>
+          </div>
+          
+          {/* Experience section */}
+          <div className="mb-2 p-2 bg-gray-50 rounded border border-gray-200">
+            <div className="h-1.5 rounded mb-1 pb-1 border-b" style={{ backgroundColor: `${primaryColor}80`, borderColor: primaryColor, width: '50%' }}></div>
+            <div className="border-l-2 pl-2" style={{ borderColor: primaryColor }}>
+              <div className="h-1 bg-gray-400 rounded w-3/4 mb-1"></div>
+              <div className="h-1 bg-gray-300 rounded w-1/2"></div>
+            </div>
+          </div>
+          
+          {/* Skills section */}
+          <div className="p-2 bg-gray-50 rounded border border-gray-200">
+            <div className="h-1.5 rounded mb-1 pb-1 border-b" style={{ backgroundColor: `${primaryColor}80`, borderColor: primaryColor, width: '40%' }}></div>
+            <div className="flex flex-wrap gap-1 mt-1">
+              {[1, 2, 3, 4].map((_, i) => (
+                <div key={i} className="px-2 py-1 text-xs rounded-full border" style={{ backgroundColor: `${primaryColor}20`, borderColor: primaryColor }}>
+                  <div className="h-1 rounded" style={{ backgroundColor: primaryColor, width: `${20 + i * 5}px` }}></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
