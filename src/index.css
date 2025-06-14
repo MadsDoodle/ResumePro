@@ -1,4 +1,6 @@
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=SF+Pro+Display:wght@300;400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -90,11 +92,111 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-inter;
   }
 }
 
 @layer utilities {
+  /* Glassmorphism utilities */
+  .glass-card {
+    @apply bg-white/10 backdrop-blur-xl border border-white/20 shadow-glass;
+  }
+  
+  .glass-card-dark {
+    @apply bg-black/20 backdrop-blur-xl border border-white/10 shadow-glass;
+  }
+
+  /* Neumorphic utilities */
+  .neumorphic {
+    @apply shadow-neumorphic;
+  }
+  
+  .neumorphic-inset {
+    @apply shadow-neumorphic-inset;
+  }
+
+  /* Hover effects */
+  .hover-lift {
+    @apply transition-all duration-300 ease-out hover:scale-105 hover:shadow-2xl;
+  }
+  
+  .hover-glow-purple {
+    @apply transition-all duration-300 ease-out hover:shadow-glow-purple;
+  }
+  
+  .hover-glow-blue {
+    @apply transition-all duration-300 ease-out hover:shadow-glow-blue;
+  }
+
+  /* Shimmer effect */
+  .shimmer {
+    @apply relative overflow-hidden;
+  }
+  
+  .shimmer::before {
+    @apply absolute inset-0 bg-shimmer-gradient animate-shimmer;
+    content: '';
+  }
+
+  /* Premium button styles */
+  .btn-premium {
+    @apply relative overflow-hidden bg-gradient-to-r from-purple-600 via-blue-600 to-purple-600 
+           text-white font-semibold py-3 px-6 rounded-xl
+           transition-all duration-300 ease-out
+           hover:scale-105 hover:shadow-glow-purple
+           active:scale-95;
+  }
+  
+  .btn-premium::before {
+    @apply absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full 
+           transition-transform duration-700 ease-out;
+    content: '';
+  }
+  
+  .btn-premium:hover::before {
+    @apply translate-x-full;
+  }
+
+  /* Abstract background shapes */
+  .bg-abstract {
+    position: relative;
+  }
+  
+  .bg-abstract::before,
+  .bg-abstract::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(147, 51, 234, 0.1), rgba(59, 130, 246, 0.1));
+    filter: blur(40px);
+    z-index: -1;
+  }
+  
+  .bg-abstract::before {
+    width: 300px;
+    height: 300px;
+    top: -150px;
+    right: -150px;
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .bg-abstract::after {
+    width: 200px;
+    height: 200px;
+    bottom: -100px;
+    left: -100px;
+    animation: float 6s ease-in-out infinite reverse;
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-20px) rotate(180deg);
+    }
+  }
+
   @keyframes fade-in {
     from {
       opacity: 0;

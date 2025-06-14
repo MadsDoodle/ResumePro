@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import ModernNavigation from '@/components/ModernNavigation';
 import CollapsibleSidebar from '@/components/CollapsibleSidebar';
 import CreditDisplay from '@/components/CreditDisplay';
-import { MessageSquare, BarChart3, FileText, Download, Plus, Zap } from 'lucide-react';
+import { MessageSquare, BarChart3, FileText, Download, Plus, Zap, Sparkles, Target, Brain } from 'lucide-react';
 import { useCredits } from '@/hooks/useCredits';
 import FlowchartCreator from '@/components/FlowchartCreator';
 import ChatInterface from '@/components/ChatInterface';
@@ -25,27 +26,30 @@ const Dashboard = () => {
       icon: MessageSquare,
       title: 'AI Chatbox',
       description: 'Get instant help and guidance for your resume',
-      color: 'bg-blue-600',
-      hoverColor: 'hover:bg-blue-700',
-      route: '/chat'
+      gradient: 'from-blue-500 via-blue-600 to-indigo-600',
+      glowColor: 'shadow-glow-blue',
+      route: '/chat',
+      delay: '0.2s'
     },
     {
       id: 'analyze',
       icon: BarChart3,
       title: 'Analyze Resume',
       description: 'Upload and get AI-powered analysis of your resume',
-      color: 'bg-green-600',
-      hoverColor: 'hover:bg-green-700',
-      route: '/analyze'
+      gradient: 'from-emerald-500 via-green-600 to-teal-600',
+      glowColor: 'shadow-[0_0_20px_rgba(16,185,129,0.3)]',
+      route: '/analyze',
+      delay: '0.4s'
     },
     {
       id: 'create',
       icon: FileText,
       title: 'Create New Resume',
       description: 'Start building your professional resume from scratch',
-      color: 'bg-purple-600',
-      hoverColor: 'hover:bg-purple-700',
-      route: '/create'
+      gradient: 'from-purple-500 via-violet-600 to-purple-700',
+      glowColor: 'shadow-glow-purple',
+      route: '/create',
+      delay: '0.6s'
     }
   ];
 
@@ -68,7 +72,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#181818] via-[#232046] to-[#15152e]">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#0f0f23] via-[#1a1a2e] to-[#16213e] bg-abstract font-inter">
       {/* Fixed Navigation */}
       <div className="fixed top-0 left-0 right-0 z-40">
         <ModernNavigation />
@@ -82,68 +86,94 @@ const Dashboard = () => {
       
       {/* Main Content with top padding to account for fixed nav */}
       <div className="relative z-10 pt-16">
-        <div className="container mx-auto px-4 py-12">
+        <div className="container mx-auto px-4 py-12 space-y-12">
           {/* Welcome Section */}
-          <div className="text-center mb-12 animate-fade-in">
-            <h1 className="text-4xl font-bold text-white mb-4">
-              Welcome back, {user?.user_metadata?.full_name || user?.email}!
-            </h1>
-            <p className="text-purple-300 text-lg">What would you like to do today?</p>
+          <div className="text-center animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+            <div className="mb-6">
+              <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent mb-4 font-sf-pro">
+                Welcome back, {user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0]}!
+              </h1>
+              <div className="flex items-center justify-center gap-2 text-xl text-purple-300">
+                <Sparkles className="h-6 w-6 animate-bounce-icon" />
+                <p>What would you like to create today?</p>
+                <Sparkles className="h-6 w-6 animate-bounce-icon" style={{ animationDelay: '0.5s' }} />
+              </div>
+            </div>
           </div>
           
-          {/* Create Flowchart Card with Gradual Halo Effect */}
-          <div className="max-w-6xl mx-auto mb-8">
+          {/* Create Flowchart Hero Card */}
+          <div className="max-w-4xl mx-auto animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
             <Card 
-              className="bg-purple-900/20 border-purple-500/30 hover:bg-purple-900/30 transition-all duration-300 cursor-pointer group hover:scale-105 backdrop-blur-sm relative overflow-hidden"
+              className="glass-card hover-lift cursor-pointer group relative overflow-hidden animate-pulse-glow"
               onClick={() => setIsFlowchartModalOpen(true)}
             >
-              {/* Gradual Halo Effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-blue-500/20 to-green-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-lg blur-sm"></div>
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-400/10 via-blue-400/10 to-green-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-lg"></div>
+              {/* Animated background gradient */}
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 via-blue-600/20 to-indigo-600/20 opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-400/10 via-blue-400/10 to-indigo-400/10 animate-shimmer"></div>
               
-              <div className="relative">
-                <CardHeader className="text-center">
-                  <div className="flex justify-center mb-4">
-                    <div className="p-6 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_20px_rgba(147,51,234,0.7)]">
-                      <Plus className="h-10 w-10 text-white" />
+              <div className="relative z-10">
+                <CardHeader className="text-center pb-4">
+                  <div className="flex justify-center mb-6">
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full blur-lg opacity-75 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      <div className="relative p-8 rounded-full bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 group-hover:scale-110 transition-transform duration-500 shadow-2xl">
+                        <Plus className="h-12 w-12 text-white" />
+                      </div>
                     </div>
                   </div>
-                  <CardTitle className="text-white text-2xl flex items-center justify-center gap-2">
+                  <CardTitle className="text-white text-3xl md:text-4xl font-sf-pro mb-2 flex items-center justify-center gap-3">
                     Create Flowchart
-                    <Zap className="h-6 w-6 text-yellow-400 animate-pulse" />
+                    <div className="flex gap-1">
+                      <Zap className="h-8 w-8 text-yellow-400 animate-pulse" />
+                      <Target className="h-8 w-8 text-green-400 animate-bounce-icon" style={{ animationDelay: '0.3s' }} />
+                    </div>
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-purple-300 text-center mb-4 text-lg">
-                    Design professional flowcharts with our advanced AI-powered creator
+                <CardContent className="text-center pb-8">
+                  <p className="text-purple-200 text-lg mb-8 max-w-2xl mx-auto leading-relaxed">
+                    Design professional flowcharts with our advanced AI-powered creator. 
+                    <span className="block mt-2 text-blue-300 font-medium">Transform your ideas into visual masterpieces</span>
                   </p>
-                  <Button className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white transition-all duration-300 hover:scale-105 text-lg py-3">
-                    Start Creating
+                  <Button className="btn-premium text-lg py-4 px-8 font-semibold tracking-wide">
+                    <Brain className="h-5 w-5 mr-2" />
+                    Start Creating Magic
                   </Button>
                 </CardContent>
               </div>
             </Card>
           </div>
           
-          {/* Dashboard Options */}
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-20">
-            {dashboardOptions.map(option => (
+          {/* Dashboard Options Grid */}
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {dashboardOptions.map((option, index) => (
               <Card 
                 key={option.id} 
-                className="bg-purple-900/20 border-purple-500/30 hover:bg-purple-900/30 transition-all duration-300 cursor-pointer group hover:scale-105 backdrop-blur-sm" 
+                className="glass-card hover-lift cursor-pointer group relative overflow-hidden animate-fade-in-up" 
+                style={{ animationDelay: option.delay }}
                 onClick={() => handleCardClick(option.route)}
               >
-                <CardHeader className="text-center">
+                {/* Hover gradient overlay */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${option.gradient} opacity-0 group-hover:opacity-10 transition-all duration-500`}></div>
+                
+                <CardHeader className="text-center relative z-10">
                   <div className="flex justify-center mb-4">
-                    <div className={`p-4 rounded-full ${option.color} group-hover:scale-110 transition-transform duration-300`}>
-                      <option.icon className="h-8 w-8 text-white" />
+                    <div className="relative">
+                      <div className={`absolute inset-0 bg-gradient-to-r ${option.gradient} rounded-2xl blur-md opacity-75 group-hover:opacity-100 transition-opacity duration-300`}></div>
+                      <div className={`relative p-6 rounded-2xl bg-gradient-to-r ${option.gradient} group-hover:scale-110 transition-transform duration-300 ${option.glowColor} group-hover:${option.glowColor}`}>
+                        <option.icon className="h-8 w-8 text-white" />
+                      </div>
                     </div>
                   </div>
-                  <CardTitle className="text-white text-xl">{option.title}</CardTitle>
+                  <CardTitle className="text-white text-xl font-sf-pro group-hover:text-purple-200 transition-colors duration-300">
+                    {option.title}
+                  </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-purple-300 text-center mb-4">{option.description}</p>
-                  <Button className={`w-full ${option.color} ${option.hoverColor} text-white transition-all duration-300 hover:scale-105`}>
+                <CardContent className="relative z-10">
+                  <p className="text-purple-300 text-center mb-6 leading-relaxed group-hover:text-purple-200 transition-colors duration-300">
+                    {option.description}
+                  </p>
+                  <Button className={`w-full bg-gradient-to-r ${option.gradient} hover:scale-105 text-white transition-all duration-300 font-medium py-3 rounded-lg shadow-lg hover:shadow-xl`}>
+                    <Sparkles className="h-4 w-4 mr-2" />
                     Get Started
                   </Button>
                 </CardContent>
@@ -152,27 +182,40 @@ const Dashboard = () => {
           </div>
           
           {/* AI Resume Assistant Section */}
-          <div className="max-w-4xl mx-auto">
-            <Card className="bg-purple-900/20 border-purple-500/30 hover:scale-[1.02] transition-transform backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="text-white text-2xl text-center">AI Resume Assistant</CardTitle>
+          <div className="max-w-4xl mx-auto animate-fade-in-up" style={{ animationDelay: '0.8s' }}>
+            <Card className="glass-card hover-lift relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/10 via-purple-600/10 to-pink-600/10 opacity-50"></div>
+              
+              <CardHeader className="relative z-10">
+                <CardTitle className="text-white text-3xl text-center font-sf-pro flex items-center justify-center gap-3">
+                  <Brain className="h-8 w-8 text-purple-400 animate-pulse" />
+                  AI Resume Assistant
+                  <MessageSquare className="h-8 w-8 text-blue-400 animate-bounce-icon" />
+                </CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="text-center text-purple-300 mb-6">
-                  Chat with our AI assistant for personalized resume advice and tips.
+              <CardContent className="relative z-10">
+                <div className="text-center text-purple-300 mb-8 text-lg leading-relaxed">
+                  Chat with our advanced AI assistant for personalized resume advice, 
+                  <span className="block text-blue-300 font-medium mt-1">optimization tips, and career guidance.</span>
                 </div>
-                <div className="bg-black/30 rounded-lg p-6 min-h-[200px] border border-purple-500/20 flex items-center justify-center">
-                  <div className="flex flex-col items-center space-y-4">
+                
+                <div className="glass-card-dark rounded-2xl p-8 min-h-[200px] border border-purple-500/20 flex items-center justify-center relative overflow-hidden">
+                  {/* Animated background elements */}
+                  <div className="absolute top-4 right-4 w-16 h-16 bg-purple-500/20 rounded-full blur-xl animate-pulse"></div>
+                  <div className="absolute bottom-4 left-4 w-12 h-12 bg-blue-500/20 rounded-full blur-xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+                  
+                  <div className="flex flex-col items-center space-y-6 relative z-10">
                     <Button 
                       onClick={() => setIsChatOpen(true)}
-                      className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 text-lg transition-all duration-300 hover:scale-105"
+                      className="btn-premium text-lg px-10 py-4 font-semibold tracking-wide"
                     >
-                      Start Chatting
+                      <MessageSquare className="mr-3 h-5 w-5" />
+                      Start AI Conversation
                     </Button>
                     <Button 
                       onClick={handleDownloadPDF} 
                       variant="outline" 
-                      className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10 hover:border-purple-400 transition-all duration-300 hover:scale-105"
+                      className="border-purple-500/40 bg-white/5 text-purple-300 hover:bg-purple-500/20 hover:border-purple-400 hover:text-white transition-all duration-300 hover:scale-105 px-8 py-3 font-medium"
                     >
                       <Download className="h-4 w-4 mr-2" />
                       Download Resume (PDF)
