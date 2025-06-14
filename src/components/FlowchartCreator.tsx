@@ -24,13 +24,14 @@ import { Download, Save, Plus, Square, Circle, Diamond } from 'lucide-react';
 interface NodeData extends Record<string, unknown> {
   label: string;
   isEditing?: boolean;
+  nodeType?: 'start' | 'process' | 'custom' | 'end';
 }
 
 const initialNodes: Node[] = [
   {
     id: '1',
     type: 'input',
-    data: { label: 'Start', isEditing: false },
+    data: { label: 'Start', isEditing: false, nodeType: 'start' },
     position: { x: 250, y: 25 },
   },
 ];
@@ -56,14 +57,15 @@ const FlowchartCreator = ({ isOpen, onClose }: FlowchartCreatorProps) => {
     [setEdges]
   );
 
-  const addNode = (type: string) => {
+  const addNode = (type: string, nodeType: 'start' | 'process' | 'custom' | 'end') => {
     const nodeId = `${nodes.length + 1}`;
     const newNode: Node = {
       id: nodeId,
       type: type === 'rectangle' ? 'default' : type,
       data: { 
         label: `Node ${nodes.length + 1}`,
-        isEditing: false
+        isEditing: false,
+        nodeType
       },
       position: { x: Math.random() * 400, y: Math.random() * 400 },
     };
@@ -155,6 +157,21 @@ const FlowchartCreator = ({ isOpen, onClose }: FlowchartCreatorProps) => {
     saveFlowchart();
   };
 
+  const getNodeBorderColor = (nodeType?: string) => {
+    switch (nodeType) {
+      case 'start':
+        return '#10B981'; // green
+      case 'process':
+        return '#3B82F6'; // blue
+      case 'custom':
+        return '#F59E0B'; // yellow
+      case 'end':
+        return '#EF4444'; // red
+      default:
+        return '#6B7280'; // gray
+    }
+  };
+
   // Custom node component for editable nodes
   const CustomNode = ({ data, id }: { data: NodeData; id: string }) => {
     const [tempLabel, setTempLabel] = useState(data.label);
@@ -172,9 +189,12 @@ const FlowchartCreator = ({ isOpen, onClose }: FlowchartCreatorProps) => {
       updateNodeLabel(id, tempLabel);
     };
 
+    const borderColor = getNodeBorderColor(data.nodeType);
+
     return (
       <div 
-        className="px-4 py-2 bg-white border-2 border-gray-300 rounded shadow-md hover:shadow-lg transition-shadow cursor-pointer min-w-[80px] text-center"
+        className="px-4 py-2 bg-white rounded shadow-md hover:shadow-lg transition-shadow cursor-pointer min-w-[80px] text-center"
+        style={{ borderWidth: '2px', borderStyle: 'solid', borderColor }}
         onDoubleClick={() => toggleNodeEditing(id)}
       >
         {data.isEditing ? (
@@ -235,7 +255,7 @@ const FlowchartCreator = ({ isOpen, onClose }: FlowchartCreatorProps) => {
           <h3 className="text-sm font-medium text-gray-300 mb-3">Add Nodes</h3>
           <div className="grid grid-cols-2 gap-2">
             <Button
-              onClick={() => addNode('input')}
+              onClick={() => addNode('input', 'start')}
               variant="outline"
               size="sm"
               className="border-green-500/30 text-green-400 hover:bg-green-500/10"
@@ -244,7 +264,7 @@ const FlowchartCreator = ({ isOpen, onClose }: FlowchartCreatorProps) => {
               Start
             </Button>
             <Button
-              onClick={() => addNode('default')}
+              onClick={() => addNode('default', 'process')}
               variant="outline"
               size="sm"
               className="border-blue-500/30 text-blue-400 hover:bg-blue-500/10"
@@ -253,7 +273,7 @@ const FlowchartCreator = ({ isOpen, onClose }: FlowchartCreatorProps) => {
               Process
             </Button>
             <Button
-              onClick={() => addNode('output')}
+              onClick={() => addNode('output', 'end')}
               variant="outline"
               size="sm"
               className="border-red-500/30 text-red-400 hover:bg-red-500/10"
@@ -262,7 +282,7 @@ const FlowchartCreator = ({ isOpen, onClose }: FlowchartCreatorProps) => {
               End
             </Button>
             <Button
-              onClick={() => addNode('default')}
+              onClick={() => addNode('default', 'custom')}
               variant="outline"
               size="sm"
               className="border-yellow-500/30 text-yellow-400 hover:bg-yellow-500/10"
