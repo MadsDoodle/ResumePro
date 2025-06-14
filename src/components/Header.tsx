@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
@@ -59,9 +60,9 @@ const Header = () => {
   ];
 
   const resourceItems = [
-    { name: 'Resume Tips', href: '#' },
-    { name: 'Career Paths', href: '#' },
-    { name: 'Blog', href: '#' },
+    { name: 'Resume Tips', href: '/resources' },
+    { name: 'Career Paths', href: '/resources' },
+    { name: 'Blog', href: '/resources' },
   ];
 
   const DropdownMenu = ({ title, items }: { title: string; items: typeof platformItems }) => {
