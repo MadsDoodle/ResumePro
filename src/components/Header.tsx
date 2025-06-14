@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
@@ -19,11 +20,11 @@ const Header = () => {
     if (user) {
       try {
         await signOut();
-        // Force navigation to landing page after sign out
-        window.location.href = '/';
+        // Navigate to landing page after sign out
+        navigate('/');
       } catch (error) {
         console.error('Sign out error:', error);
-        // Fallback navigation even if sign out fails
+        // Force navigation to landing page even if sign out fails
         navigate('/');
       }
     } else {
@@ -84,19 +85,31 @@ const Header = () => {
         onMouseEnter={() => setIsOpen(true)}
         onMouseLeave={() => setIsOpen(false)}
       >
-        <button className="flex items-center space-x-1 text-white hover:text-purple-300 transition-colors px-4 py-2">
+        <button className={`flex items-center space-x-1 transition-colors px-4 py-2 ${
+          isDark 
+            ? 'text-white hover:text-purple-300' 
+            : 'text-gray-700 hover:text-blue-600'
+        }`}>
           <span>{title}</span>
           <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
         </button>
         
         {isOpen && (
-          <div className="absolute top-full left-0 mt-1 w-64 bg-[#060315]/95 backdrop-blur-sm border border-purple-500/30 rounded-lg shadow-lg z-50 animate-fade-in">
+          <div className={`absolute top-full left-0 mt-1 w-64 backdrop-blur-sm border rounded-lg shadow-lg z-50 animate-fade-in ${
+            isDark 
+              ? 'bg-[#060315]/95 border-purple-500/30' 
+              : 'bg-white/95 border-gray-200'
+          }`}>
             <div className="p-2">
               {items.map((item) => (
                 <button
                   key={item.name}
                   onClick={() => navigate(item.href)}
-                  className="w-full text-left px-4 py-3 text-white hover:bg-purple-500/20 rounded-md transition-colors block"
+                  className={`w-full text-left px-4 py-3 rounded-md transition-colors block ${
+                    isDark 
+                      ? 'text-white hover:bg-purple-500/20' 
+                      : 'text-gray-700 hover:bg-blue-50'
+                  }`}
                 >
                   {item.name}
                 </button>
@@ -127,9 +140,14 @@ const Header = () => {
                   isDark ? 'text-purple-400' : 'text-blue-600'
                 }`} />
               </div>
-              <span className={`text-xl font-bold transition-colors duration-300 ${
-                isDark ? 'text-white' : 'text-gray-900'
-              }`}>ResumePro</span>
+              <button 
+                onClick={() => navigate('/')}
+                className={`text-xl font-bold transition-colors duration-300 ${
+                  isDark ? 'text-white' : 'text-gray-900'
+                }`}
+              >
+                ResumePro
+              </button>
             </div>
             
             <nav className="hidden md:flex items-center space-x-1">
