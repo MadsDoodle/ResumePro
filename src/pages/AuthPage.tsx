@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,7 +8,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
-import AnimatedBackground from '@/components/AnimatedBackground';
 import Header from '@/components/Header';
 import { useTheme } from '@/contexts/ThemeContext';
 
@@ -78,9 +78,8 @@ const AuthPage = () => {
 
   return (
     <div className={`min-h-screen relative overflow-hidden transition-all duration-300 ${
-      isDark ? 'bg-black' : 'bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50'
+      isDark ? 'bg-gradient-to-br from-[#0f0f23] via-[#1a1a2e] to-[#16213e]' : 'bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50'
     }`}>
-      <AnimatedBackground />
       <Header />
       
       <div className="relative z-10 pt-20 flex items-center justify-center min-h-[calc(100vh-80px)]">
