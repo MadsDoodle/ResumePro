@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
@@ -6,7 +5,6 @@ import { useUserSettings } from '@/hooks/useUserSettings';
 import { useNavigate } from 'react-router-dom';
 import { FileText, ChevronDown } from 'lucide-react';
 import TermsModal from './TermsModal';
-import ThemeToggle from './ThemeToggle';
 import { useTheme } from '@/contexts/ThemeContext';
 
 const Header = () => {
@@ -180,8 +178,6 @@ const Header = () => {
           </div>
           
           <div className="flex items-center space-x-4">
-            <ThemeToggle />
-            
             <Button 
               onClick={handleAuthAction}
               variant="outline"
