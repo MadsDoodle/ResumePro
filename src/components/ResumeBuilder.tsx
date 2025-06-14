@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Eye, Download, Save, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -15,9 +14,11 @@ import ExperienceForm from '@/components/forms/ExperienceForm';
 import EducationForm from '@/components/forms/EducationForm';
 import SkillsForm from '@/components/forms/SkillsForm';
 import ResumePreview from '@/components/ResumePreview';
+import PageTransition from '@/components/PageTransition';
 
 const ResumeBuilder = () => {
   const [currentStep, setCurrentStep] = useState(0);
+  const [direction, setDirection] = useState<'forward' | 'backward'>('forward');
   const [selectedTemplate, setSelectedTemplate] = useState<ResumeTemplate | null>(null);
   const [formData, setFormData] = useState({
     personalInfo: {},
@@ -109,12 +110,14 @@ const ResumeBuilder = () => {
 
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
+      setDirection('forward');
       setCurrentStep(currentStep + 1);
     }
   };
 
   const handlePrevious = () => {
     if (currentStep > 0) {
+      setDirection('backward');
       setCurrentStep(currentStep - 1);
     }
   };
@@ -241,34 +244,36 @@ const ResumeBuilder = () => {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
-          {/* Form Section */}
-          <div className="space-y-6">
-            <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    {steps[currentStep].title}
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <HelpCircle className="h-4 w-4 text-purple-400 hover:text-purple-300" />
-                      </TooltipTrigger>
-                      <TooltipContent className="max-w-xs">
-                        <p className="text-sm">{steps[currentStep].tip}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </div>
-                  <span className="text-sm font-normal text-slate-300">
-                    {currentStep + 1}/{steps.length}
-                  </span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CurrentStepComponent data={formData} onUpdate={handleDataUpdate} />
-              </CardContent>
-            </Card>
+          {/* Form Section with Animation */}
+          <div className="space-y-6 relative">
+            <PageTransition currentStep={currentStep} direction={direction}>
+              <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      {steps[currentStep].title}
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <HelpCircle className="h-4 w-4 text-purple-400 hover:text-purple-300" />
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-xs">
+                          <p className="text-sm">{steps[currentStep].tip}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
+                    <span className="text-sm font-normal text-slate-300">
+                      {currentStep + 1}/{steps.length}
+                    </span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CurrentStepComponent data={formData} onUpdate={handleDataUpdate} />
+                </CardContent>
+              </Card>
+            </PageTransition>
 
             {/* Navigation */}
-            <div className="flex justify-between">
+            <div className="flex justify-between mt-12">
               <Button 
                 variant="outline" 
                 onClick={handlePrevious} 
