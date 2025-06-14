@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -6,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useCareerChat } from '@/hooks/useCareerChat';
 import { 
   MessageSquare, 
   X, 
@@ -14,7 +16,12 @@ import {
   Bot, 
   User,
   Minimize2,
-  Maximize2
+  Maximize2,
+  Copy,
+  Bookmark,
+  Briefcase,
+  TrendingUp,
+  FileText
 } from 'lucide-react';
 
 interface Message {
@@ -30,15 +37,31 @@ interface ChatInterfaceProps {
 }
 
 const ChatInterface = ({ isOpen, onClose }: ChatInterfaceProps) => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: '1',
+      content: "Hello! I'm your AI Career Coach. I'm here to help you advance your career, improve your resume, and explore new opportunities. What would you like to work on today?",
+      isAI: true,
+      timestamp: new Date()
+    }
+  ]);
   const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [conversationId] = useState(() => crypto.randomUUID());
   const [sessionId] = useState(() => crypto.randomUUID());
+  const [typingText, setTypingText] = useState('');
+  const [isTypingComplete, setIsTypingComplete] = useState(true);
+  
   const { user } = useAuth();
   const { toast } = useToast();
+  const { sendMessage: sendCareerMessage, isLoading } = useCareerChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const quickSuggestions = [
+    { icon: Briefcase, text: "Show me career options", color: "text-blue-400" },
+    { icon: TrendingUp, text: "Suggest skills for AI roles", color: "text-green-400" },
+    { icon: FileText, text: "Improve this resume section", color: "text-purple-400" }
+  ];
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -47,6 +70,30 @@ const ChatInterface = ({ isOpen, onClose }: ChatInterfaceProps) => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Typing animation effect
+  const typeMessage = (text: string, messageId: string) => {
+    setIsTypingComplete(false);
+    setTypingText('');
+    let currentText = '';
+    let index = 0;
+
+    const typeInterval = setInterval(() => {
+      if (index < text.length) {
+        currentText += text[index];
+        setTypingText(currentText);
+        index++;
+      } else {
+        clearInterval(typeInterval);
+        setIsTypingComplete(true);
+        // Update the actual message content
+        setMessages(prev => prev.map(msg => 
+          msg.id === messageId ? { ...msg, content: text } : msg
+        ));
+        setTypingText('');
+      }
+    }, 30);
+  };
 
   const saveChatMessage = async (content: string, isAI: boolean) => {
     if (!user) return;
@@ -66,12 +113,13 @@ const ChatInterface = ({ isOpen, onClose }: ChatInterfaceProps) => {
     }
   };
 
-  const handleSendMessage = async () => {
-    if (!input.trim() || isLoading) return;
+  const handleSendMessage = async (messageText?: string) => {
+    const messageToSend = messageText || input.trim();
+    if (!messageToSend || isLoading) return;
 
     const userMessage: Message = {
       id: crypto.randomUUID(),
-      content: input.trim(),
+      content: messageToSend,
       isAI: false,
       timestamp: new Date()
     };
@@ -79,25 +127,52 @@ const ChatInterface = ({ isOpen, onClose }: ChatInterfaceProps) => {
     setMessages(prev => [...prev, userMessage]);
     await saveChatMessage(userMessage.content, false);
     setInput('');
-    setIsLoading(true);
 
-    // Simulate AI response (replace with actual AI integration)
-    setTimeout(async () => {
-      const aiResponse: Message = {
+    // Send to career coach
+    const response = await sendCareerMessage(messageToSend, messages);
+    
+    if (response) {
+      const aiMessage: Message = {
         id: crypto.randomUUID(),
-        content: `I understand you're asking about "${userMessage.content}". As your AI resume assistant, I'm here to help you improve your career prospects. Could you provide more details about your specific needs?`,
+        content: '', // Will be filled by typing animation
         isAI: true,
         timestamp: new Date()
       };
       
-      setMessages(prev => [...prev, aiResponse]);
-      await saveChatMessage(aiResponse.content, true);
-      setIsLoading(false);
-    }, 1000);
+      setMessages(prev => [...prev, aiMessage]);
+      typeMessage(response, aiMessage.id);
+      await saveChatMessage(response, true);
+    }
+  };
+
+  const handleQuickSuggestion = (suggestion: string) => {
+    setInput(suggestion);
+    handleSendMessage(suggestion);
+  };
+
+  const copyMessage = (content: string) => {
+    navigator.clipboard.writeText(content);
+    toast({
+      title: "Copied!",
+      description: "Message copied to clipboard"
+    });
+  };
+
+  const bookmarkMessage = async (content: string) => {
+    // This would integrate with a bookmarks system
+    toast({
+      title: "Bookmarked!",
+      description: "Message saved to your bookmarks"
+    });
   };
 
   const clearConversation = async () => {
-    setMessages([]);
+    setMessages([{
+      id: '1',
+      content: "Hello! I'm your AI Career Coach. I'm here to help you advance your career, improve your resume, and explore new opportunities. What would you like to work on today?",
+      isAI: true,
+      timestamp: new Date()
+    }]);
     
     if (user) {
       try {
@@ -139,15 +214,15 @@ const ChatInterface = ({ isOpen, onClose }: ChatInterfaceProps) => {
         exit={{ x: '100%' }}
         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
         className={`fixed right-0 top-0 h-full bg-[#0E0E0E]/95 backdrop-blur-sm border-l border-purple-500/20 z-50 shadow-2xl ${
-          isMinimized ? 'w-80' : 'w-96'
+          isMinimized ? 'w-80' : 'w-[28rem]'
         }`}
       >
         <Card className="h-full bg-transparent border-none shadow-none">
           <CardHeader className="border-b border-purple-500/20 pb-4">
             <div className="flex items-center justify-between">
               <CardTitle className="text-white flex items-center gap-2">
-                <MessageSquare className="h-5 w-5 text-purple-400" />
-                AI Chat Assistant
+                <Briefcase className="h-5 w-5 text-purple-400" />
+                AI Career Coach
               </CardTitle>
               <div className="flex items-center gap-2">
                 <Button
@@ -180,50 +255,89 @@ const ChatInterface = ({ isOpen, onClose }: ChatInterfaceProps) => {
 
           {!isMinimized && (
             <CardContent className="flex flex-col h-[calc(100vh-100px)] p-0">
+              {/* Quick Suggestions */}
+              <div className="p-4 border-b border-purple-500/10">
+                <p className="text-purple-300 text-sm mb-3">Quick suggestions:</p>
+                <div className="space-y-2">
+                  {quickSuggestions.map((suggestion, index) => (
+                    <Button
+                      key={index}
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleQuickSuggestion(suggestion.text)}
+                      className="w-full justify-start border-purple-500/20 text-purple-300 hover:bg-purple-500/10 hover:border-purple-400 text-xs h-8"
+                    >
+                      <suggestion.icon className={`h-3 w-3 mr-2 ${suggestion.color}`} />
+                      {suggestion.text}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
               {/* Messages Container */}
               <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                {messages.length === 0 ? (
-                  <div className="text-center text-gray-400 mt-8">
-                    <Bot className="h-12 w-12 mx-auto mb-4 text-purple-400" />
-                    <p>Hello! I'm your AI resume assistant.</p>
-                    <p className="text-sm mt-2">Ask me anything about resumes, career advice, or job searching!</p>
-                  </div>
-                ) : (
-                  messages.map((message) => (
-                    <motion.div
-                      key={message.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className={`flex ${message.isAI ? 'justify-start' : 'justify-end'}`}
+                {messages.map((message, index) => (
+                  <motion.div
+                    key={message.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={`flex ${message.isAI ? 'justify-start' : 'justify-end'}`}
+                  >
+                    <div
+                      className={`max-w-[85%] rounded-lg px-4 py-3 group relative ${
+                        message.isAI
+                          ? 'bg-gradient-to-br from-purple-900/40 to-blue-900/40 border border-purple-500/30 text-white'
+                          : 'bg-gradient-to-br from-blue-600 to-blue-700 text-white'
+                      }`}
                     >
-                      <div
-                        className={`max-w-[80%] rounded-lg px-4 py-2 ${
-                          message.isAI
-                            ? 'bg-purple-900/30 border border-purple-500/20 text-white'
-                            : 'bg-blue-600 text-white'
-                        }`}
-                      >
-                        <div className="flex items-start gap-2">
-                          {message.isAI ? (
-                            <Bot className="h-4 w-4 mt-1 flex-shrink-0 text-purple-400" />
-                          ) : (
-                            <User className="h-4 w-4 mt-1 flex-shrink-0" />
-                          )}
-                          <div>
-                            <p className="text-sm">{message.content}</p>
-                            <p className="text-xs opacity-70 mt-1">
+                      <div className="flex items-start gap-2">
+                        {message.isAI ? (
+                          <Bot className="h-4 w-4 mt-1 flex-shrink-0 text-purple-400" />
+                        ) : (
+                          <User className="h-4 w-4 mt-1 flex-shrink-0" />
+                        )}
+                        <div className="flex-1">
+                          <div className="text-sm leading-relaxed">
+                            {index === messages.length - 1 && message.isAI && !isTypingComplete && typingText ? (
+                              <span>{typingText}<span className="animate-pulse">|</span></span>
+                            ) : (
+                              message.content
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2 mt-2">
+                            <p className="text-xs opacity-70">
                               {message.timestamp.toLocaleTimeString()}
                             </p>
+                            {message.isAI && (
+                              <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <Button
+                                  onClick={() => copyMessage(message.content)}
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-6 w-6 p-0 text-purple-300 hover:text-white"
+                                >
+                                  <Copy className="h-3 w-3" />
+                                </Button>
+                                <Button
+                                  onClick={() => bookmarkMessage(message.content)}
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-6 w-6 p-0 text-purple-300 hover:text-white"
+                                >
+                                  <Bookmark className="h-3 w-3" />
+                                </Button>
+                              </div>
+                            )}
                           </div>
                         </div>
                       </div>
-                    </motion.div>
-                  ))
-                )}
+                    </div>
+                  </motion.div>
+                ))}
                 
                 {isLoading && (
                   <div className="flex justify-start">
-                    <div className="bg-purple-900/30 border border-purple-500/20 rounded-lg px-4 py-2">
+                    <div className="bg-gradient-to-br from-purple-900/40 to-blue-900/40 border border-purple-500/30 rounded-lg px-4 py-3">
                       <div className="flex items-center gap-2">
                         <Bot className="h-4 w-4 text-purple-400" />
                         <div className="flex space-x-1">
@@ -246,18 +360,21 @@ const ChatInterface = ({ isOpen, onClose }: ChatInterfaceProps) => {
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    placeholder="Ask me anything about resumes..."
+                    placeholder="Ask me about your career goals..."
                     className="flex-1 bg-gray-800/50 border-purple-500/30 text-white placeholder:text-gray-400"
                     disabled={isLoading}
                   />
                   <Button
-                    onClick={handleSendMessage}
+                    onClick={() => handleSendMessage()}
                     disabled={isLoading || !input.trim()}
-                    className="bg-purple-600 hover:bg-purple-700"
+                    className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
                   >
                     <Send className="h-4 w-4" />
                   </Button>
                 </div>
+                <p className="text-xs text-gray-500 mt-2">
+                  Powered by GPT-4o-mini • Career coaching & resume advice
+                </p>
               </div>
             </CardContent>
           )}
