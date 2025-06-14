@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -45,13 +44,13 @@ const Dashboard = () => {
       title: 'Create New Resume',
       description: 'Start building your professional resume from scratch',
       gradient: 'from-purple-500 via-violet-600 to-purple-700',
-      route: '/create',
+      route: '/templates',
       delay: '0.6s'
     }
   ];
 
   const handleCardClick = async (route: string) => {
-    const creditRequiredRoutes = ['/create', '/analyze', '/resume-chat'];
+    const creditRequiredRoutes = ['/templates', '/analyze', '/resume-chat'];
     
     if (creditRequiredRoutes.includes(route)) {
       const userHasCredits = await hasCredits();

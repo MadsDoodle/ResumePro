@@ -30,7 +30,7 @@ const TemplateSelection = () => {
   const handleChooseTemplate = (template: ResumeTemplate) => {
     // Save the selected template to localStorage
     localStorage.setItem('selectedTemplate', JSON.stringify(template));
-    // Navigate to create page where ResumeBuilder will load the template
+    // Navigate to the resume builder component directly
     navigate('/create');
   };
 

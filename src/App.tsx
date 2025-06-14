@@ -11,7 +11,6 @@ import LandingPage from "./pages/LandingPage";
 import AuthPage from "./pages/AuthPage";
 import Dashboard from "./pages/Dashboard";
 import AnalyzePage from "./pages/AnalyzePage";
-import CreatePage from "./pages/CreatePage";
 import TemplateSelection from "./pages/TemplateSelection";
 import ProfilePage from "./pages/ProfilePage";
 import PricingPage from "./pages/PricingPage";
@@ -20,6 +19,9 @@ import ResourcesPage from "./pages/ResourcesPage";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ResumeChat from "./components/ResumeChat";
+import ResumeBuilder from "./components/ResumeBuilder";
+import AnimatedBackground from "@/components/AnimatedBackground";
+import Header from "@/components/Header";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +39,22 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
   }
   
   return <>{children}</>;
+}
+
+// Create a wrapper component for ResumeBuilder
+function CreatePage() {
+  return (
+    <div className="min-h-screen bg-[#060315] relative overflow-hidden">
+      <AnimatedBackground />
+      <Header />
+      
+      <div className="relative z-10 pt-20">
+        <div className="container mx-auto px-4 py-8">
+          <ResumeBuilder />
+        </div>
+      </div>
+    </div>
+  );
 }
 
 const App = () => (
