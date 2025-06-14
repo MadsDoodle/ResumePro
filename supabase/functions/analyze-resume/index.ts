@@ -33,37 +33,36 @@ serve(async (req) => {
       throw new Error('OpenAI API key not configured');
     }
 
-    if (!resumeText) {
-      throw new Error('No resume text provided');
+    if (!resumeText || resumeText.length < 50) {
+      throw new Error('No resume text provided or text too short');
     }
 
-    const analysisPrompt = `
-You are an expert resume analyzer and career consultant. Analyze the following resume text and provide detailed feedback.
+    const analysisPrompt = `You are a professional resume evaluator.
+
+Score the following resume out of 100, considering the following categories:
+- Content Quality (clarity, relevance, conciseness)
+- Action-Oriented Language (impactful verbs, quantifiable results)
+- Structure & Organization (sectioning, layout, readability)
+- ATS Compatibility (keyword usage, formatting)
 
 Resume Content:
 ${resumeText}
 
-Please analyze this resume and provide:
-
-1. SCORES (0-100 scale):
-   - Overall Score: Based on completeness, relevance, and professional presentation
-   - Design Score: Based on structure, formatting, and visual appeal (inferred from text structure)
-   - Clarity Score: Based on how clear and well-written the content is
-   - ATS Score: Based on ATS-friendliness (keywords, formatting, standard sections)
-
-2. RECOMMENDATIONS: Provide 4-6 specific, actionable recommendations to improve this resume.
+Provide:
+1. An overall score out of 100
+2. A breakdown of each category with a subscore (out of 25)
+3. 3–5 concise bullet points explaining the reasoning
 
 Format your response as a JSON object with this exact structure:
 {
   "overallScore": number,
-  "designScore": number, 
-  "clarityScore": number,
-  "atsScore": number,
-  "recommendations": ["recommendation 1", "recommendation 2", ...]
+  "designScore": number (Structure & Organization score), 
+  "clarityScore": number (Content Quality score),
+  "atsScore": number (ATS Compatibility score),
+  "recommendations": ["bullet point 1", "bullet point 2", ...]
 }
 
-Be specific and actionable in your recommendations. Focus on content improvements, keyword optimization, structure enhancements, and ATS compatibility.
-`;
+Be specific and actionable in your recommendations.`;
 
     console.log('Calling OpenAI API...');
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -77,7 +76,7 @@ Be specific and actionable in your recommendations. Focus on content improvement
         messages: [
           { 
             role: 'system', 
-            content: 'You are an expert resume analyzer. Always respond with valid JSON in the exact format requested.' 
+            content: 'You are a professional resume evaluator. Always respond with valid JSON in the exact format requested.' 
           },
           { role: 'user', content: analysisPrompt }
         ],

@@ -54,12 +54,45 @@ const extractTextFromFile = async (file: File): Promise<string> => {
     reader.onload = async (e) => {
       try {
         if (file.type === 'application/pdf') {
-          // For PDF files, we'll extract basic text
-          // In a real implementation, you'd use a PDF parsing library
-          resolve("Sample extracted text from PDF. This would contain the actual resume content in a production environment.");
+          // For PDF files, we need to use a PDF parsing library
+          // Since we can't install pdf-parse in the browser, we'll read as text for now
+          // In a production environment, you'd want to handle PDF parsing server-side
+          const result = e.target?.result;
+          if (result instanceof ArrayBuffer) {
+            // Convert ArrayBuffer to text (this is a simplified approach)
+            const uint8Array = new Uint8Array(result);
+            let text = '';
+            for (let i = 0; i < uint8Array.length; i++) {
+              if (uint8Array[i] >= 32 && uint8Array[i] <= 126) {
+                text += String.fromCharCode(uint8Array[i]);
+              } else if (uint8Array[i] === 10 || uint8Array[i] === 13) {
+                text += ' ';
+              }
+            }
+            // Clean up the extracted text
+            text = text.replace(/\s+/g, ' ').trim();
+            resolve(text || 'Unable to extract text from PDF. Please ensure the PDF contains readable text.');
+          } else {
+            resolve('Unable to extract text from PDF.');
+          }
         } else if (file.type.includes('word') || file.name.endsWith('.docx')) {
-          // For Word documents
-          resolve("Sample extracted text from DOCX. This would contain the actual resume content in a production environment.");
+          // For Word documents, similar approach
+          const result = e.target?.result;
+          if (result instanceof ArrayBuffer) {
+            const uint8Array = new Uint8Array(result);
+            let text = '';
+            for (let i = 0; i < uint8Array.length; i++) {
+              if (uint8Array[i] >= 32 && uint8Array[i] <= 126) {
+                text += String.fromCharCode(uint8Array[i]);
+              } else if (uint8Array[i] === 10 || uint8Array[i] === 13) {
+                text += ' ';
+              }
+            }
+            text = text.replace(/\s+/g, ' ').trim();
+            resolve(text || 'Unable to extract text from DOCX. Please ensure the document contains readable text.');
+          } else {
+            resolve('Unable to extract text from DOCX.');
+          }
         } else {
           // For other text-based files
           resolve(e.target?.result as string || '');
