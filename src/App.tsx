@@ -10,7 +10,6 @@ import { ToastProvider } from "@/hooks/use-toast";
 import LandingPage from "./pages/LandingPage";
 import AuthPage from "./pages/AuthPage";
 import Dashboard from "./pages/Dashboard";
-import ChatPage from "./pages/ChatPage";
 import AnalyzePage from "./pages/AnalyzePage";
 import CreatePage from "./pages/CreatePage";
 import TemplateSelection from "./pages/TemplateSelection";
@@ -61,11 +60,6 @@ const App = () => (
               <Route path="/dashboard" element={
                 <ProtectedRoute>
                   <Dashboard />
-                </ProtectedRoute>
-              } />
-              <Route path="/chat" element={
-                <ProtectedRoute>
-                  <ChatPage />
                 </ProtectedRoute>
               } />
               <Route path="/resume-chat" element={

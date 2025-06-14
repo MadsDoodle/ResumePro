@@ -22,12 +22,12 @@ const Dashboard = () => {
 
   const dashboardOptions = [
     {
-      id: 'chatbox',
+      id: 'resume-chat',
       icon: MessageSquare,
-      title: 'AI Chatbox',
-      description: 'Get instant help and guidance for your resume',
+      title: 'AI Resume Assistant',
+      description: 'Get AI-powered help to build and optimize your resume',
       gradient: 'from-blue-500 via-blue-600 to-indigo-600',
-      route: '/chat',
+      route: '/resume-chat',
       delay: '0.2s'
     },
     {
@@ -51,7 +51,7 @@ const Dashboard = () => {
   ];
 
   const handleCardClick = async (route: string) => {
-    const creditRequiredRoutes = ['/create', '/analyze', '/chat'];
+    const creditRequiredRoutes = ['/create', '/analyze', '/resume-chat'];
     
     if (creditRequiredRoutes.includes(route)) {
       const userHasCredits = await hasCredits();
@@ -164,20 +164,20 @@ const Dashboard = () => {
             ))}
           </div>
           
-          {/* AI Resume Assistant Section */}
+          {/* AI Career Coach Section */}
           <div className="max-w-4xl mx-auto animate-fade-in-up" style={{ animationDelay: '0.8s' }}>
             <Card className="glass-card hover-lift relative overflow-hidden">
               <CardHeader className="relative z-10">
                 <CardTitle className="text-white text-3xl text-center font-sf-pro flex items-center justify-center gap-3">
                   <Brain className="h-8 w-8 text-purple-400" />
-                  AI Resume Assistant
+                  AI Career Coach
                   <MessageSquare className="h-8 w-8 text-blue-400" />
                 </CardTitle>
               </CardHeader>
               <CardContent className="relative z-10">
                 <div className="text-center text-purple-300 mb-8 text-lg leading-relaxed">
-                  Chat with our advanced AI assistant for personalized resume advice, 
-                  <span className="block text-blue-300 font-medium mt-1">optimization tips, and career guidance.</span>
+                  Chat with our advanced AI coach for career guidance, 
+                  <span className="block text-blue-300 font-medium mt-1">job search strategies, and professional development.</span>
                 </div>
                 
                 <div className="glass-card-dark rounded-2xl p-8 min-h-[200px] border border-purple-500/20 flex items-center justify-center relative overflow-hidden">
@@ -187,7 +187,7 @@ const Dashboard = () => {
                       className="btn-premium text-lg px-10 py-4 font-semibold tracking-wide"
                     >
                       <MessageSquare className="mr-3 h-5 w-5" />
-                      Start AI Conversation
+                      Start Career Conversation
                     </Button>
                     <Button 
                       onClick={handleDownloadPDF} 
@@ -211,7 +211,7 @@ const Dashboard = () => {
         onClose={() => setIsFlowchartModalOpen(false)} 
       />
 
-      {/* Chat Interface */}
+      {/* Career Chat Interface */}
       <ChatInterface 
         isOpen={isChatOpen} 
         onClose={() => setIsChatOpen(false)} 
