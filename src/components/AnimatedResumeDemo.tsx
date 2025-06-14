@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { MousePointer2, User, Briefcase, GraduationCap, Award } from 'lucide-react';
+import { MousePointer2, User, Briefcase, GraduationCap, Award, Mail, Phone, MapPin } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 
 const AnimatedResumeDemo = () => {
@@ -77,16 +77,18 @@ const AnimatedResumeDemo = () => {
             <div className="w-20 h-20 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 mx-auto mb-4 flex items-center justify-center">
               <User className="h-10 w-10 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-white mb-4">John Developer</h1>
-            {/* Rounded text blocks for contact info */}
-            <div className="flex justify-center gap-3 flex-wrap">
-              <div className="bg-white/10 text-gray-300 text-sm px-4 py-2 rounded-full border border-white/20">
+            <h1 className="text-2xl font-bold text-white mb-2">John Developer</h1>
+            <div className="flex justify-center gap-4 text-sm text-gray-300">
+              <div className="flex items-center gap-1">
+                <Mail className="h-4 w-4" />
                 john@example.com
               </div>
-              <div className="bg-white/10 text-gray-300 text-sm px-4 py-2 rounded-full border border-white/20">
+              <div className="flex items-center gap-1">
+                <Phone className="h-4 w-4" />
                 (555) 123-4567
               </div>
-              <div className="bg-white/10 text-gray-300 text-sm px-4 py-2 rounded-full border border-white/20">
+              <div className="flex items-center gap-1">
+                <MapPin className="h-4 w-4" />
                 San Francisco, CA
               </div>
             </div>
