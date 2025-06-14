@@ -195,7 +195,7 @@ const ResumeBuilder = () => {
 
   return (
     <TooltipProvider>
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto relative">
         {/* Template Info */}
         {selectedTemplate && (
           <div className="mb-6 p-4 rounded-lg border" style={{ 
