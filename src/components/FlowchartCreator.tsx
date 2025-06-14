@@ -1,4 +1,3 @@
-
 import React, { useCallback, useState, useRef } from 'react';
 import {
   ReactFlow,
@@ -12,6 +11,8 @@ import {
   Edge,
   Node,
   BackgroundVariant,
+  Handle,
+  Position,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { Button } from '@/components/ui/button';
@@ -172,7 +173,7 @@ const FlowchartCreator = ({ isOpen, onClose }: FlowchartCreatorProps) => {
     }
   };
 
-  // Custom node component for editable nodes
+  // Custom node component for editable nodes with connection handles
   const CustomNode = ({ data, id }: { data: NodeData; id: string }) => {
     const [tempLabel, setTempLabel] = useState(data.label);
 
@@ -193,10 +194,32 @@ const FlowchartCreator = ({ isOpen, onClose }: FlowchartCreatorProps) => {
 
     return (
       <div 
-        className="px-4 py-2 bg-white rounded shadow-md hover:shadow-lg transition-shadow cursor-pointer min-w-[80px] text-center"
+        className="px-4 py-2 bg-white rounded shadow-md hover:shadow-lg transition-shadow cursor-pointer min-w-[80px] text-center relative"
         style={{ borderWidth: '2px', borderStyle: 'solid', borderColor }}
         onDoubleClick={() => toggleNodeEditing(id)}
       >
+        {/* Connection Handles */}
+        <Handle 
+          type="target" 
+          position={Position.Top} 
+          className="w-3 h-3 bg-gray-400 border-2 border-white rounded-full"
+        />
+        <Handle 
+          type="source" 
+          position={Position.Bottom} 
+          className="w-3 h-3 bg-gray-400 border-2 border-white rounded-full"
+        />
+        <Handle 
+          type="source" 
+          position={Position.Left} 
+          className="w-3 h-3 bg-gray-400 border-2 border-white rounded-full"
+        />
+        <Handle 
+          type="source" 
+          position={Position.Right} 
+          className="w-3 h-3 bg-gray-400 border-2 border-white rounded-full"
+        />
+
         {data.isEditing ? (
           <Input
             value={tempLabel}
@@ -246,8 +269,12 @@ const FlowchartCreator = ({ isOpen, onClose }: FlowchartCreatorProps) => {
 
         {/* Instructions */}
         <div className="mb-6 p-3 bg-purple-900/20 border border-purple-500/30 rounded-lg">
-          <h4 className="text-sm font-medium text-purple-300 mb-2">How to Edit Nodes:</h4>
-          <p className="text-xs text-purple-400">Double-click any node to edit its text. Press Enter to save or Escape to cancel.</p>
+          <h4 className="text-sm font-medium text-purple-300 mb-2">How to Use:</h4>
+          <ul className="text-xs text-purple-400 space-y-1">
+            <li>• Double-click any node to edit text</li>
+            <li>• Drag from connection points to connect nodes</li>
+            <li>• Press Enter to save or Escape to cancel</li>
+          </ul>
         </div>
 
         {/* Node Tools */}
@@ -325,6 +352,11 @@ const FlowchartCreator = ({ isOpen, onClose }: FlowchartCreatorProps) => {
           nodeTypes={nodeTypes}
           fitView
           className="bg-[#1a1a1a]"
+          connectionLineStyle={{ stroke: '#fff', strokeWidth: 2 }}
+          defaultEdgeOptions={{
+            style: { stroke: '#fff', strokeWidth: 2 },
+            type: 'smoothstep',
+          }}
         >
           <Controls className="bg-gray-800 border-gray-700" />
           <MiniMap className="bg-gray-800 border-gray-700" />
