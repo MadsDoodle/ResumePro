@@ -15,16 +15,22 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Download, Save, Plus, Square, Circle, Diamond } from 'lucide-react';
 
+interface NodeData extends Record<string, unknown> {
+  label: string;
+  isEditing?: boolean;
+}
+
 const initialNodes: Node[] = [
   {
     id: '1',
     type: 'input',
-    data: { label: 'Start' },
+    data: { label: 'Start', isEditing: false },
     position: { x: 250, y: 25 },
   },
 ];
@@ -51,26 +57,49 @@ const FlowchartCreator = ({ isOpen, onClose }: FlowchartCreatorProps) => {
   );
 
   const addNode = (type: string) => {
+    const nodeId = `${nodes.length + 1}`;
     const newNode: Node = {
-      id: `${nodes.length + 1}`,
+      id: nodeId,
       type: type === 'rectangle' ? 'default' : type,
-      data: { label: `Node ${nodes.length + 1}` },
+      data: { 
+        label: `Node ${nodes.length + 1}`,
+        isEditing: false
+      },
       position: { x: Math.random() * 400, y: Math.random() * 400 },
     };
     setNodes((nds) => [...nds, newNode]);
   };
+
+  const updateNodeLabel = useCallback((nodeId: string, newLabel: string) => {
+    setNodes((nds) =>
+      nds.map((node) =>
+        node.id === nodeId
+          ? { ...node, data: { ...node.data, label: newLabel, isEditing: false } }
+          : node
+      )
+    );
+  }, [setNodes]);
+
+  const toggleNodeEditing = useCallback((nodeId: string) => {
+    setNodes((nds) =>
+      nds.map((node) =>
+        node.id === nodeId
+          ? { ...node, data: { ...node.data, isEditing: !node.data.isEditing } }
+          : { ...node, data: { ...node.data, isEditing: false } }
+      )
+    );
+  }, [setNodes]);
 
   const saveFlowchart = async () => {
     if (!user) return;
     
     setIsLoading(true);
     try {
-      // Convert the flowchart data to a proper JSON format
       const flowchartData = {
         nodes: nodes.map(node => ({
           id: node.id,
           type: node.type || 'default',
-          data: node.data,
+          data: { ...node.data, isEditing: false },
           position: node.position,
           style: node.style || {}
         })),
@@ -123,15 +152,58 @@ const FlowchartCreator = ({ isOpen, onClose }: FlowchartCreatorProps) => {
     linkElement.setAttribute('download', exportFileDefaultName);
     linkElement.click();
 
-    // Also save to database
     saveFlowchart();
+  };
+
+  // Custom node component for editable nodes
+  const CustomNode = ({ data, id }: { data: NodeData; id: string }) => {
+    const [tempLabel, setTempLabel] = useState(data.label);
+
+    const handleKeyPress = (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        updateNodeLabel(id, tempLabel);
+      } else if (e.key === 'Escape') {
+        setTempLabel(data.label);
+        toggleNodeEditing(id);
+      }
+    };
+
+    const handleBlur = () => {
+      updateNodeLabel(id, tempLabel);
+    };
+
+    return (
+      <div 
+        className="px-4 py-2 bg-white border-2 border-gray-300 rounded shadow-md hover:shadow-lg transition-shadow cursor-pointer min-w-[80px] text-center"
+        onDoubleClick={() => toggleNodeEditing(id)}
+      >
+        {data.isEditing ? (
+          <Input
+            value={tempLabel}
+            onChange={(e) => setTempLabel(e.target.value)}
+            onKeyDown={handleKeyPress}
+            onBlur={handleBlur}
+            className="border-none p-0 text-center bg-transparent"
+            autoFocus
+          />
+        ) : (
+          <div className="text-sm font-medium">{data.label}</div>
+        )}
+      </div>
+    );
+  };
+
+  const nodeTypes = {
+    default: CustomNode,
+    input: CustomNode,
+    output: CustomNode,
   };
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex">
-      {/* Sidebar - Removed navigation collision by positioning independently */}
+      {/* Sidebar */}
       <div className="w-80 bg-[#0E0E0E] border-r border-gray-800 p-4 flex flex-col">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-white">Flowchart Creator</h2>
@@ -145,12 +217,17 @@ const FlowchartCreator = ({ isOpen, onClose }: FlowchartCreatorProps) => {
           <label className="block text-sm font-medium text-gray-300 mb-2">
             Title
           </label>
-          <input
-            type="text"
+          <Input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-purple-500"
           />
+        </div>
+
+        {/* Instructions */}
+        <div className="mb-6 p-3 bg-purple-900/20 border border-purple-500/30 rounded-lg">
+          <h4 className="text-sm font-medium text-purple-300 mb-2">How to Edit Nodes:</h4>
+          <p className="text-xs text-purple-400">Double-click any node to edit its text. Press Enter to save or Escape to cancel.</p>
         </div>
 
         {/* Node Tools */}
@@ -225,6 +302,7 @@ const FlowchartCreator = ({ isOpen, onClose }: FlowchartCreatorProps) => {
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
+          nodeTypes={nodeTypes}
           fitView
           className="bg-[#1a1a1a]"
         >
