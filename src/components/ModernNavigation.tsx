@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -40,9 +39,9 @@ const ModernNavigation = () => {
   ];
 
   const resourceItems = [
-    { name: 'Resume Tips', href: '/auth', icon: BookOpen },
-    { name: 'Career Paths', href: '/auth', icon: Briefcase },
-    { name: 'Blog', href: '/auth', icon: FileText },
+    { name: 'Resume Tips', href: '/resources', icon: BookOpen },
+    { name: 'Career Paths', href: '/resources', icon: Briefcase },
+    { name: 'Blog', href: '/resources', icon: FileText },
   ];
 
   const handleNavigation = (href: string) => {
@@ -163,7 +162,7 @@ const ModernNavigation = () => {
             />
             
             <button 
-              onClick={() => handleNavigation('#pricing')}
+              onClick={() => handleNavigation('/pricing')}
               className="text-gray-300 hover:text-white transition-all duration-300 px-4 py-2 group"
             >
               <span className="relative">
@@ -238,7 +237,7 @@ const ModernNavigation = () => {
             className="md:hidden bg-[#0D0D0D] border-t border-gray-800"
           >
             <div className="px-4 py-4 space-y-2">
-              {platformItems.map((item) => (
+              {[...platformItems, ...resourceItems].map((item) => (
                 <button
                   key={item.name}
                   onClick={() => {
