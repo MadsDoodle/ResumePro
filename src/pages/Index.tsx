@@ -8,6 +8,7 @@ import ParticleBackground from '@/components/ParticleBackground';
 import FloatingIcons from '@/components/FloatingIcons';
 import ResumeAnalysis from '@/components/ResumeAnalysis';
 import ResumeBuilder from '@/components/ResumeBuilder';
+import AnimatedResumeDemo from '@/components/AnimatedResumeDemo';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('analyze');
@@ -31,8 +32,13 @@ const Index = () => {
               Powered by AI.
             </p>
             
+            {/* Interactive Resume Demo */}
+            <div className="mb-16 animate-fade-in" style={{ animationDelay: '0.4s' }}>
+              <AnimatedResumeDemo />
+            </div>
+            
             {/* Interactive CTA Tabs */}
-            <div className="flex flex-col md:flex-row gap-6 justify-center items-center mb-20 animate-fade-in" style={{ animationDelay: '0.4s' }}>
+            <div className="flex flex-col md:flex-row gap-6 justify-center items-center mb-20 animate-fade-in" style={{ animationDelay: '0.6s' }}>
               <Button
                 size="lg"
                 className={`group h-16 px-12 text-lg font-semibold transition-all duration-300 hover:scale-105 border-2 ${
@@ -178,7 +184,6 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Footer */}
         <footer className="container mx-auto px-4 py-12 border-t border-slate-800">
           <div className="text-center">
             <p className="text-slate-500 text-sm">
