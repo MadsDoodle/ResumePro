@@ -1,31 +1,66 @@
 
 import { useState } from 'react';
-import { Upload, FileText, BarChart3, TrendingUp, Download, ArrowLeft, Home, CheckCircle } from 'lucide-react';
+import { Upload, FileText, BarChart3, TrendingUp, Download, ArrowLeft, Home, CheckCircle, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useNavigate } from 'react-router-dom';
 import AnimatedBackground from '@/components/AnimatedBackground';
 import Header from '@/components/Header';
+import { analyzeResumeWithAI } from '@/services/resumeAnalysisService';
+import { useToast } from '@/hooks/use-toast';
+
+interface AnalysisData {
+  overallScore: number;
+  designScore: number;
+  clarityScore: number;
+  atsScore: number;
+  recommendations: string[];
+}
 
 const AnalyzePage = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisComplete, setAnalysisComplete] = useState(false);
+  const [analysisData, setAnalysisData] = useState<AnalysisData | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       setUploadedFile(file);
       setIsAnalyzing(true);
+      setError(null);
       
-      // Simulate analysis
-      setTimeout(() => {
-        setIsAnalyzing(false);
+      try {
+        const result = await analyzeResumeWithAI(file);
+        setAnalysisData({
+          overallScore: result.overallScore,
+          designScore: result.designScore,
+          clarityScore: result.clarityScore,
+          atsScore: result.atsScore,
+          recommendations: result.recommendations
+        });
         setAnalysisComplete(true);
-      }, 3000);
+        toast({
+          title: "Analysis Complete",
+          description: "Your resume has been analyzed successfully!",
+        });
+      } catch (error) {
+        console.error('Analysis failed:', error);
+        setError('Failed to analyze resume. Please try again.');
+        toast({
+          title: "Analysis Failed",
+          description: "There was an error analyzing your resume. Please try again.",
+          variant: "destructive"
+        });
+      } finally {
+        setIsAnalyzing(false);
+      }
     }
   };
 
@@ -33,19 +68,21 @@ const AnalyzePage = () => {
     setUploadedFile(null);
     setAnalysisComplete(false);
     setIsAnalyzing(false);
+    setAnalysisData(null);
+    setError(null);
   };
 
-  const mockAnalysisData = {
-    designScore: 92,
-    clarityScore: 78,
-    atsScore: 85,
-    overallScore: 85,
-    recommendations: [
-      'Add more quantifiable achievements with specific numbers',
-      'Improve consistency in formatting and spacing',
-      'Include more industry-relevant keywords',
-      'Optimize for ATS compatibility by using standard section headers'
-    ]
+  const getScoreColor = (score: number) => {
+    if (score >= 80) return 'text-green-400';
+    if (score >= 60) return 'text-yellow-400';
+    return 'text-red-400';
+  };
+
+  const getScoreDescription = (score: number) => {
+    if (score >= 80) return 'Excellent';
+    if (score >= 60) return 'Good';
+    if (score >= 40) return 'Needs improvement';
+    return 'Requires attention';
   };
 
   if (!uploadedFile && !analysisComplete) {
@@ -67,7 +104,7 @@ const AnalyzePage = () => {
                 Back to Dashboard
               </Button>
               
-              <h1 className="text-3xl font-bold text-white">Resume Analysis</h1>
+              <h1 className="text-3xl font-bold text-white">AI Resume Analysis</h1>
               
               <Button 
                 onClick={() => navigate('/')}
@@ -83,10 +120,10 @@ const AnalyzePage = () => {
               <Card className="bg-purple-900/20 border-purple-500/30">
                 <CardHeader className="text-center">
                   <CardTitle className="text-2xl text-white mb-4">
-                    Upload Your Resume for Analysis
+                    Upload Your Resume for AI Analysis
                   </CardTitle>
                   <p className="text-purple-300">
-                    Get AI-powered insights and recommendations to improve your resume
+                    Get AI-powered insights and personalized recommendations to improve your resume
                   </p>
                 </CardHeader>
                 <CardContent>
@@ -113,6 +150,15 @@ const AnalyzePage = () => {
                       Supports PDF, DOC, and DOCX files up to 10MB
                     </p>
                   </div>
+                  
+                  {error && (
+                    <Alert className="mt-4 bg-red-500/10 border-red-500/20">
+                      <AlertCircle className="h-4 w-4" />
+                      <AlertDescription className="text-red-400">
+                        {error}
+                      </AlertDescription>
+                    </Alert>
+                  )}
                 </CardContent>
               </Card>
             </div>
@@ -134,8 +180,9 @@ const AnalyzePage = () => {
               <Card className="bg-purple-900/20 border-purple-500/30">
                 <CardContent className="text-center py-16">
                   <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-purple-500 mx-auto mb-6"></div>
-                  <h3 className="text-2xl font-semibold text-white mb-4">Analyzing Your Resume</h3>
-                  <p className="text-purple-300">Our AI is evaluating your resume for optimization opportunities...</p>
+                  <h3 className="text-2xl font-semibold text-white mb-4">Analyzing Your Resume with AI</h3>
+                  <p className="text-purple-300">Our AI is evaluating your resume content, structure, and ATS compatibility...</p>
+                  <p className="text-purple-400 text-sm mt-2">This may take 30-60 seconds</p>
                 </CardContent>
               </Card>
             </div>
@@ -164,7 +211,7 @@ const AnalyzePage = () => {
             </Button>
             
             <div className="flex items-center space-x-4">
-              <h1 className="text-3xl font-bold text-white">Analysis Results</h1>
+              <h1 className="text-3xl font-bold text-white">AI Analysis Results</h1>
               <Badge className="bg-green-600 text-white">
                 <CheckCircle className="h-3 w-3 mr-1" />
                 Complete
@@ -209,94 +256,107 @@ const AnalyzePage = () => {
             </div>
 
             {/* Analysis Scores */}
-            <div className="grid md:grid-cols-4 gap-6 mb-8">
-              <Card className="bg-purple-900/20 border-purple-500/30">
-                <CardHeader className="text-center">
-                  <CardTitle className="text-white">Overall Score</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-green-400 mb-2">{mockAnalysisData.overallScore}/100</div>
-                    <Progress value={mockAnalysisData.overallScore} className="mb-2" />
-                    <p className="text-purple-300 text-sm">Great performance!</p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-purple-900/20 border-purple-500/30">
-                <CardHeader className="text-center">
-                  <CardTitle className="text-white">Design</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-blue-400 mb-2">{mockAnalysisData.designScore}/100</div>
-                    <Progress value={mockAnalysisData.designScore} className="mb-2" />
-                    <p className="text-purple-300 text-sm">Excellent design</p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-purple-900/20 border-purple-500/30">
-                <CardHeader className="text-center">
-                  <CardTitle className="text-white">Clarity</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-yellow-400 mb-2">{mockAnalysisData.clarityScore}/100</div>
-                    <Progress value={mockAnalysisData.clarityScore} className="mb-2" />
-                    <p className="text-purple-300 text-sm">Room for improvement</p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-purple-900/20 border-purple-500/30">
-                <CardHeader className="text-center">
-                  <CardTitle className="text-white">ATS Score</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-green-400 mb-2">{mockAnalysisData.atsScore}/100</div>
-                    <Progress value={mockAnalysisData.atsScore} className="mb-2" />
-                    <p className="text-purple-300 text-sm">ATS friendly</p>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Recommendations */}
-            <Card className="bg-purple-900/20 border-purple-500/30 mb-8">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center">
-                  <TrendingUp className="mr-2 h-5 w-5" />
-                  Improvement Recommendations
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-4">
-                  {mockAnalysisData.recommendations.map((rec, index) => (
-                    <li key={index} className="flex items-start space-x-3">
-                      <div className="w-6 h-6 rounded-full bg-green-600 text-white flex items-center justify-center text-sm font-bold mt-0.5">
-                        {index + 1}
+            {analysisData && (
+              <>
+                <div className="grid md:grid-cols-4 gap-6 mb-8">
+                  <Card className="bg-purple-900/20 border-purple-500/30">
+                    <CardHeader className="text-center">
+                      <CardTitle className="text-white">Overall Score</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-center">
+                        <div className={`text-3xl font-bold mb-2 ${getScoreColor(analysisData.overallScore)}`}>
+                          {analysisData.overallScore}/100
+                        </div>
+                        <Progress value={analysisData.overallScore} className="mb-2" />
+                        <p className="text-purple-300 text-sm">{getScoreDescription(analysisData.overallScore)}</p>
                       </div>
-                      <p className="text-purple-300">{rec}</p>
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-6 flex space-x-4">
-                  <Button className="bg-green-600 hover:bg-green-700 text-white transition-all duration-300 hover:scale-105">
-                    <Download className="mr-2 h-4 w-4" />
-                    Download Improved Resume
-                  </Button>
-                  <Button 
-                    variant="outline"
-                    onClick={() => navigate('/create')}
-                    className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10 hover:border-purple-400"
-                  >
-                    Create New Resume
-                  </Button>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-purple-900/20 border-purple-500/30">
+                    <CardHeader className="text-center">
+                      <CardTitle className="text-white">Design</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-center">
+                        <div className={`text-3xl font-bold mb-2 ${getScoreColor(analysisData.designScore)}`}>
+                          {analysisData.designScore}/100
+                        </div>
+                        <Progress value={analysisData.designScore} className="mb-2" />
+                        <p className="text-purple-300 text-sm">{getScoreDescription(analysisData.designScore)}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-purple-900/20 border-purple-500/30">
+                    <CardHeader className="text-center">
+                      <CardTitle className="text-white">Clarity</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-center">
+                        <div className={`text-3xl font-bold mb-2 ${getScoreColor(analysisData.clarityScore)}`}>
+                          {analysisData.clarityScore}/100
+                        </div>
+                        <Progress value={analysisData.clarityScore} className="mb-2" />
+                        <p className="text-purple-300 text-sm">{getScoreDescription(analysisData.clarityScore)}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-purple-900/20 border-purple-500/30">
+                    <CardHeader className="text-center">
+                      <CardTitle className="text-white">ATS Score</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-center">
+                        <div className={`text-3xl font-bold mb-2 ${getScoreColor(analysisData.atsScore)}`}>
+                          {analysisData.atsScore}/100
+                        </div>
+                        <Progress value={analysisData.atsScore} className="mb-2" />
+                        <p className="text-purple-300 text-sm">{getScoreDescription(analysisData.atsScore)}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
                 </div>
-              </CardContent>
-            </Card>
+
+                {/* AI Recommendations */}
+                <Card className="bg-purple-900/20 border-purple-500/30 mb-8">
+                  <CardHeader>
+                    <CardTitle className="text-white flex items-center">
+                      <TrendingUp className="mr-2 h-5 w-5" />
+                      AI-Powered Recommendations
+                    </CardTitle>
+                    <p className="text-purple-300 text-sm">Personalized suggestions based on your resume analysis</p>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-4">
+                      {analysisData.recommendations.map((rec, index) => (
+                        <li key={index} className="flex items-start space-x-3">
+                          <div className="w-6 h-6 rounded-full bg-green-600 text-white flex items-center justify-center text-sm font-bold mt-0.5 flex-shrink-0">
+                            {index + 1}
+                          </div>
+                          <p className="text-purple-300">{rec}</p>
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="mt-6 flex space-x-4">
+                      <Button className="bg-green-600 hover:bg-green-700 text-white transition-all duration-300 hover:scale-105">
+                        <Download className="mr-2 h-4 w-4" />
+                        Download Analysis Report
+                      </Button>
+                      <Button 
+                        variant="outline"
+                        onClick={() => navigate('/create')}
+                        className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10 hover:border-purple-400"
+                      >
+                        Create Improved Resume
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </>
+            )}
           </div>
         </div>
       </div>
