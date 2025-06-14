@@ -13,9 +13,10 @@ const Header = () => {
   const navigate = useNavigate();
   const [showTermsModal, setShowTermsModal] = useState(false);
 
-  const handleAuthAction = () => {
+  const handleAuthAction = async () => {
     if (user) {
-      signOut();
+      await signOut();
+      navigate('/'); // Redirect to landing page after sign out
     } else {
       navigate('/auth');
     }
