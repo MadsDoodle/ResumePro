@@ -15,8 +15,15 @@ const Header = () => {
 
   const handleAuthAction = async () => {
     if (user) {
-      await signOut();
-      navigate('/'); // Redirect to landing page after sign out
+      try {
+        await signOut();
+        // Force navigation to landing page after sign out
+        window.location.href = '/';
+      } catch (error) {
+        console.error('Sign out error:', error);
+        // Fallback navigation even if sign out fails
+        navigate('/');
+      }
     } else {
       navigate('/auth');
     }
