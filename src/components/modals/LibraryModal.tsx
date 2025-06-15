@@ -1,5 +1,5 @@
+
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Download, Trash2, FileText, GitBranch } from 'lucide-react';
@@ -9,11 +9,10 @@ import { usePDFGeneration } from '@/hooks/usePDFGeneration';
 import { useToast } from '@/hooks/use-toast';
 
 interface LibraryModalProps {
-  isOpen: boolean;
   onClose: () => void;
 }
 
-const LibraryModal = ({ isOpen, onClose }: LibraryModalProps) => {
+const LibraryModal = ({ onClose }: LibraryModalProps) => {
   const [filter, setFilter] = useState<'all' | 'resumes' | 'flowcharts'>('all');
   const { flowcharts, loading, deleteFlowchart } = useFlowcharts();
   const { getUserResumes } = useResumeStorage();
@@ -22,14 +21,12 @@ const LibraryModal = ({ isOpen, onClose }: LibraryModalProps) => {
   const [resumes, setResumes] = useState<any[]>([]);
 
   React.useEffect(() => {
-    if (isOpen) {
-      const fetchResumes = async () => {
-        const userResumes = await getUserResumes();
-        setResumes(userResumes);
-      };
-      fetchResumes();
-    }
-  }, [isOpen]);
+    const fetchResumes = async () => {
+      const userResumes = await getUserResumes();
+      setResumes(userResumes);
+    };
+    fetchResumes();
+  }, []);
 
   const handleDownloadFlowchart = async (flowchart: any) => {
     try {
@@ -140,116 +137,105 @@ const LibraryModal = ({ isOpen, onClose }: LibraryModalProps) => {
   const filteredResumes = filter === 'all' || filter === 'resumes' ? resumes : [];
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-6xl max-h-[80vh] overflow-y-auto bg-gray-900 border-gray-700">
-        <DialogHeader>
-          <DialogTitle className="text-white flex items-center">
-            <FileText className="mr-2 h-5 w-5 text-purple-400" />
-            My Library
-          </DialogTitle>
-        </DialogHeader>
-        
-        <div className="space-y-6">
-          {/* Filter Controls */}
-          <div className="flex space-x-2">
-            {(['all', 'resumes', 'flowcharts'] as const).map((filterType) => (
-              <Button
-                key={filterType}
-                onClick={() => setFilter(filterType)}
-                variant={filter === filterType ? 'default' : 'outline'}
-                size="sm"
-                className={filter === filterType ? 'bg-purple-600 hover:bg-purple-700' : 'border-purple-500/30 text-purple-400 hover:bg-purple-500/10'}
-              >
-                {filterType.charAt(0).toUpperCase() + filterType.slice(1)}
-              </Button>
-            ))}
-          </div>
+    <div className="space-y-6">
+      {/* Filter Controls */}
+      <div className="flex space-x-2">
+        {(['all', 'resumes', 'flowcharts'] as const).map((filterType) => (
+          <Button
+            key={filterType}
+            onClick={() => setFilter(filterType)}
+            variant={filter === filterType ? 'default' : 'outline'}
+            size="sm"
+            className={filter === filterType ? 'bg-purple-600 hover:bg-purple-700' : 'border-purple-500/30 text-purple-400 hover:bg-purple-500/10'}
+          >
+            {filterType.charAt(0).toUpperCase() + filterType.slice(1)}
+          </Button>
+        ))}
+      </div>
 
-          {/* Items Grid */}
-          {loading ? (
-            <div className="text-center text-gray-400 py-8">Loading...</div>
-          ) : (filteredFlowcharts.length === 0 && filteredResumes.length === 0) ? (
-            <div className="text-center text-gray-400 py-8">
-              <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p>No items found</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {/* Flowcharts */}
-              {filteredFlowcharts.map((item) => (
-                <Card key={item.id} className="bg-gray-800/50 border-purple-500/20 hover:border-purple-500/40 transition-all">
-                  <CardHeader className="pb-2">
-                    <div className="w-full h-32 bg-gradient-to-br from-purple-900/30 to-blue-900/30 rounded-lg flex items-center justify-center mb-3">
-                      <GitBranch className="h-8 w-8 text-purple-400" />
-                    </div>
-                    <CardTitle className="text-white text-sm line-clamp-2">{item.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <p className="text-gray-400 text-xs line-clamp-3 mb-4">
-                      {item.description || 'No description available'}
-                    </p>
-                    <div className="flex space-x-2">
-                      <Button
-                        onClick={() => handleDownloadFlowchart(item)}
-                        size="sm"
-                        variant="outline"
-                        className="flex-1 border-green-500/30 text-green-400 hover:bg-green-500/10 text-xs"
-                      >
-                        <Download className="h-3 w-3 mr-1" />
-                        PDF
-                      </Button>
-                      <Button
-                        onClick={() => handleDeleteFlowchart(item.id)}
-                        size="sm"
-                        variant="outline"
-                        className="border-red-500/30 text-red-400 hover:bg-red-500/10"
-                      >
-                        <Trash2 className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-
-              {/* Resumes */}
-              {filteredResumes.map((item) => (
-                <Card key={item.id} className="bg-gray-800/50 border-purple-500/20 hover:border-purple-500/40 transition-all">
-                  <CardHeader className="pb-2">
-                    <div className="w-full h-32 bg-gradient-to-br from-green-900/30 to-blue-900/30 rounded-lg flex items-center justify-center mb-3">
-                      <FileText className="h-8 w-8 text-green-400" />
-                    </div>
-                    <CardTitle className="text-white text-sm line-clamp-2">{item.resume_title}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <p className="text-gray-400 text-xs line-clamp-3 mb-4">
-                      Created: {new Date(item.created_at).toLocaleDateString()}
-                    </p>
-                    <div className="flex space-x-2">
-                      <Button
-                        onClick={() => handleDownloadResume(item)}
-                        size="sm"
-                        variant="outline"
-                        className="flex-1 border-green-500/30 text-green-400 hover:bg-green-500/10 text-xs"
-                      >
-                        <Download className="h-3 w-3 mr-1" />
-                        PDF
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="border-red-500/30 text-red-400 hover:bg-red-500/10"
-                      >
-                        <Trash2 className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
+      {/* Items Grid */}
+      {loading ? (
+        <div className="text-center text-gray-400 py-8">Loading...</div>
+      ) : (filteredFlowcharts.length === 0 && filteredResumes.length === 0) ? (
+        <div className="text-center text-gray-400 py-8">
+          <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
+          <p>No items found</p>
         </div>
-      </DialogContent>
-    </Dialog>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* Flowcharts */}
+          {filteredFlowcharts.map((item) => (
+            <Card key={item.id} className="bg-gray-800/50 border-purple-500/20 hover:border-purple-500/40 transition-all">
+              <CardHeader className="pb-2">
+                <div className="w-full h-32 bg-gradient-to-br from-purple-900/30 to-blue-900/30 rounded-lg flex items-center justify-center mb-3">
+                  <GitBranch className="h-8 w-8 text-purple-400" />
+                </div>
+                <CardTitle className="text-white text-sm line-clamp-2">{item.title}</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <p className="text-gray-400 text-xs line-clamp-3 mb-4">
+                  {item.description || 'No description available'}
+                </p>
+                <div className="flex space-x-2">
+                  <Button
+                    onClick={() => handleDownloadFlowchart(item)}
+                    size="sm"
+                    variant="outline"
+                    className="flex-1 border-green-500/30 text-green-400 hover:bg-green-500/10 text-xs"
+                  >
+                    <Download className="h-3 w-3 mr-1" />
+                    PDF
+                  </Button>
+                  <Button
+                    onClick={() => handleDeleteFlowchart(item.id)}
+                    size="sm"
+                    variant="outline"
+                    className="border-red-500/30 text-red-400 hover:bg-red-500/10"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+
+          {/* Resumes */}
+          {filteredResumes.map((item) => (
+            <Card key={item.id} className="bg-gray-800/50 border-purple-500/20 hover:border-purple-500/40 transition-all">
+              <CardHeader className="pb-2">
+                <div className="w-full h-32 bg-gradient-to-br from-green-900/30 to-blue-900/30 rounded-lg flex items-center justify-center mb-3">
+                  <FileText className="h-8 w-8 text-green-400" />
+                </div>
+                <CardTitle className="text-white text-sm line-clamp-2">{item.resume_title}</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <p className="text-gray-400 text-xs line-clamp-3 mb-4">
+                  Created: {new Date(item.created_at).toLocaleDateString()}
+                </p>
+                <div className="flex space-x-2">
+                  <Button
+                    onClick={() => handleDownloadResume(item)}
+                    size="sm"
+                    variant="outline"
+                    className="flex-1 border-green-500/30 text-green-400 hover:bg-green-500/10 text-xs"
+                  >
+                    <Download className="h-3 w-3 mr-1" />
+                    PDF
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="border-red-500/30 text-red-400 hover:bg-red-500/10"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+    </div>
   );
 };
 

@@ -9,7 +9,6 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import FileUpload from '@/components/FileUpload';
 import { analyzeResumeWithAI } from '@/services/resumeAnalysisService';
 import { useToast } from '@/hooks/use-toast';
-import { useResumeAnalysis } from '@/hooks/useResumeAnalysis';
 
 interface AnalysisData {
   overallScore: number;
@@ -21,7 +20,6 @@ interface AnalysisData {
 
 const ResumeAnalysis = () => {
   const { toast } = useToast();
-  const { saveAnalysisResult, saving } = useResumeAnalysis();
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisComplete, setAnalysisComplete] = useState(false);
@@ -35,26 +33,17 @@ const ResumeAnalysis = () => {
     
     try {
       const result = await analyzeResumeWithAI(file);
-      const analysisResults = {
+      setAnalysisData({
         overallScore: result.overallScore,
         designScore: result.designScore,
         clarityScore: result.clarityScore,
         atsScore: result.atsScore,
         recommendations: result.recommendations
-      };
-      
-      setAnalysisData(analysisResults);
+      });
       setAnalysisComplete(true);
-      
-      // Save analysis results to database
-      await saveAnalysisResult({
-        ...result,
-        extractedText: result.extractedText || ''
-      }, undefined, file.name);
-      
       toast({
         title: "Analysis Complete",
-        description: "Your resume has been analyzed and saved to your library!",
+        description: "Your resume has been analyzed successfully!",
       });
     } catch (error) {
       console.error('Analysis failed:', error);
@@ -64,7 +53,6 @@ const ResumeAnalysis = () => {
         description: "There was an error analyzing your resume. Please try again.",
         variant: "destructive"
       });
-    } finally {
       setIsAnalyzing(false);
     }
   };
@@ -135,9 +123,6 @@ const ResumeAnalysis = () => {
             <h3 className="text-xl sm:text-2xl font-semibold text-white mb-2 sm:mb-4">AI is Analyzing Your Resume</h3>
             <p className="text-slate-300 text-sm sm:text-base">Our AI is evaluating your resume content, structure, and ATS compatibility...</p>
             <p className="text-slate-400 text-xs sm:text-sm mt-2">This may take 30-60 seconds</p>
-            {saving && (
-              <p className="text-purple-400 text-xs sm:text-sm mt-2">Saving results to your library...</p>
-            )}
           </CardContent>
         </Card>
       </div>
@@ -149,7 +134,7 @@ const ResumeAnalysis = () => {
       <div className="mb-6 sm:mb-8 text-center">
         <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2 sm:mb-4">AI Analysis Results</h2>
         <Badge variant="secondary" className="bg-green-600 text-white text-xs sm:text-sm">
-          Analysis Complete & Saved
+          Analysis Complete
         </Badge>
       </div>
 

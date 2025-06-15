@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Upload, FileText, BarChart3, TrendingUp, Download, ArrowLeft, Home, CheckCircle, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -10,7 +11,6 @@ import AnimatedBackground from '@/components/AnimatedBackground';
 import Header from '@/components/Header';
 import { analyzeResumeWithAI } from '@/services/resumeAnalysisService';
 import { useToast } from '@/hooks/use-toast';
-import { useResumeAnalysis } from '@/hooks/useResumeAnalysis';
 
 interface AnalysisData {
   overallScore: number;
@@ -23,7 +23,6 @@ interface AnalysisData {
 const AnalyzePage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { saveAnalysisResult, saving } = useResumeAnalysis();
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisComplete, setAnalysisComplete] = useState(false);
@@ -39,26 +38,17 @@ const AnalyzePage = () => {
       
       try {
         const result = await analyzeResumeWithAI(file);
-        const analysisResults = {
+        setAnalysisData({
           overallScore: result.overallScore,
           designScore: result.designScore,
           clarityScore: result.clarityScore,
           atsScore: result.atsScore,
           recommendations: result.recommendations
-        };
-        
-        setAnalysisData(analysisResults);
+        });
         setAnalysisComplete(true);
-        
-        // Save analysis results to database
-        await saveAnalysisResult({
-          ...result,
-          extractedText: result.extractedText || ''
-        }, undefined, file.name);
-        
         toast({
           title: "Analysis Complete",
-          description: "Your resume has been analyzed and saved to your library!",
+          description: "Your resume has been analyzed successfully!",
         });
       } catch (error) {
         console.error('Analysis failed:', error);
@@ -193,9 +183,6 @@ const AnalyzePage = () => {
                   <h3 className="text-2xl font-semibold text-white mb-4">Analyzing Your Resume with AI</h3>
                   <p className="text-purple-300">Our AI is evaluating your resume content, structure, and ATS compatibility...</p>
                   <p className="text-purple-400 text-sm mt-2">This may take 30-60 seconds</p>
-                  {saving && (
-                    <p className="text-green-400 text-sm mt-2">Saving results to your library...</p>
-                  )}
                 </CardContent>
               </Card>
             </div>
@@ -227,7 +214,7 @@ const AnalyzePage = () => {
               <h1 className="text-3xl font-bold text-white">AI Analysis Results</h1>
               <Badge className="bg-green-600 text-white">
                 <CheckCircle className="h-3 w-3 mr-1" />
-                Complete & Saved
+                Complete
               </Badge>
             </div>
             
