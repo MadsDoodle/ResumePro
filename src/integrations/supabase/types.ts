@@ -243,6 +243,59 @@ export type Database = {
         }
         Relationships: []
       }
+      resume_analysis: {
+        Row: {
+          analysis_date: string
+          analysis_summary: string | null
+          ats_score: number | null
+          created_at: string
+          id: string
+          improvements: Json | null
+          overall_score: number | null
+          resume_id: string | null
+          strengths: Json | null
+          suggestions: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          analysis_date?: string
+          analysis_summary?: string | null
+          ats_score?: number | null
+          created_at?: string
+          id?: string
+          improvements?: Json | null
+          overall_score?: number | null
+          resume_id?: string | null
+          strengths?: Json | null
+          suggestions?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          analysis_date?: string
+          analysis_summary?: string | null
+          ats_score?: number | null
+          created_at?: string
+          id?: string
+          improvements?: Json | null
+          overall_score?: number | null
+          resume_id?: string | null
+          strengths?: Json | null
+          suggestions?: Json | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resume_analysis_resume_id_fkey"
+            columns: ["resume_id"]
+            isOneToOne: false
+            referencedRelation: "created_resume"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_settings: {
         Row: {
           account_status: string | null
@@ -269,6 +322,36 @@ export type Database = {
           last_login?: string | null
           terms_accepted?: boolean | null
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      voice_conversations: {
+        Row: {
+          audio_url: string | null
+          conversation_id: string
+          created_at: string
+          id: string
+          message_content: string
+          message_type: string
+          user_id: string
+        }
+        Insert: {
+          audio_url?: string | null
+          conversation_id: string
+          created_at?: string
+          id?: string
+          message_content: string
+          message_type: string
+          user_id: string
+        }
+        Update: {
+          audio_url?: string | null
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          message_content?: string
+          message_type?: string
           user_id?: string
         }
         Relationships: []

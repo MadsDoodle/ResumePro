@@ -6,12 +6,13 @@ import { useNavigate } from 'react-router-dom';
 import ModernNavigation from '@/components/ModernNavigation';
 import CollapsibleSidebar from '@/components/CollapsibleSidebar';
 import CreditDisplay from '@/components/CreditDisplay';
-import { MessageSquare, BarChart3, FileText, Download, Plus, Sparkles, Target, Brain } from 'lucide-react';
+import { MessageSquare, BarChart3, FileText, Download, Plus, Sparkles, Target, Brain, Mic } from 'lucide-react';
 import { useCredits } from '@/hooks/useCredits';
 import FlowchartCreator from '@/components/FlowchartCreator';
 import ChatInterface from '@/components/ChatInterface';
 import OnboardingCarousel from '@/components/OnboardingCarousel';
 import { useOnboarding } from '@/hooks/useOnboarding';
+import VoiceModal from '@/components/modals/VoiceModal';
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -19,6 +20,7 @@ const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isFlowchartModalOpen, setIsFlowchartModalOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
   const { hasCredits } = useCredits();
   const { responses, isCompleted, setResponses, markCompleted } = useOnboarding();
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -54,6 +56,15 @@ const Dashboard = () => {
       delay: '0.2s'
     },
     {
+      id: 'voice-assistant',
+      icon: Mic,
+      title: 'Voice Assistant',
+      description: 'Talk to AI and get voice responses for your ideas',
+      gradient: 'from-green-500 via-emerald-600 to-teal-600',
+      action: () => setIsVoiceModalOpen(true),
+      delay: '0.3s'
+    },
+    {
       id: 'analyze',
       icon: BarChart3,
       title: 'Analyze Resume',
@@ -73,7 +84,13 @@ const Dashboard = () => {
     }
   ];
 
-  const handleCardClick = async (route: string) => {
+  const handleCardClick = async (option: any) => {
+    if (option.action) {
+      option.action();
+      return;
+    }
+
+    const route = option.route;
     const creditRequiredRoutes = ['/templates', '/analyze', '/resume-chat'];
     
     if (creditRequiredRoutes.includes(route)) {
@@ -161,13 +178,13 @@ const Dashboard = () => {
           </div>
           
           {/* Dashboard Options Grid */}
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
             {dashboardOptions.map((option, index) => (
               <Card 
                 key={option.id} 
                 className="glass-card hover-lift cursor-pointer group relative overflow-hidden animate-fade-in-up" 
                 style={{ animationDelay: option.delay }}
-                onClick={() => handleCardClick(option.route)}
+                onClick={() => handleCardClick(option)}
               >
                 <CardHeader className="text-center relative z-10">
                   <div className="flex justify-center mb-4">
@@ -250,6 +267,12 @@ const Dashboard = () => {
       <ChatInterface 
         isOpen={isChatOpen} 
         onClose={() => setIsChatOpen(false)} 
+      />
+
+      {/* Voice Assistant Modal */}
+      <VoiceModal 
+        isOpen={isVoiceModalOpen} 
+        onClose={() => setIsVoiceModalOpen(false)} 
       />
     </div>
   );
