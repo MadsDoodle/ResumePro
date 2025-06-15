@@ -208,9 +208,12 @@ const VoiceInterface = () => {
       }
 
       console.log('Sending message to voice-chat function...');
-      // Get AI response
+      // Get AI response with conversation history
       const { data: chatData, error: chatError } = await supabase.functions.invoke('voice-chat', {
-        body: { message: messageText }
+        body: { 
+          message: messageText,
+          conversationHistory: messages // Send conversation history for context
+        }
       });
 
       if (chatError) {
@@ -254,16 +257,15 @@ const VoiceInterface = () => {
 
       if (speechError) {
         console.error('Text-to-speech error:', speechError);
-        throw new Error(`Speech generation failed: ${speechError.message}`);
+        toast({
+          title: "Warning",
+          description: "Response received but audio generation failed",
+          variant: "destructive"
+        });
+      } else if (speechData?.audioContent) {
+        console.log('Audio content received, playing...');
+        playAudio(speechData.audioContent);
       }
-
-      if (!speechData || !speechData.audioContent) {
-        throw new Error('No audio content received');
-      }
-
-      console.log('Audio content received, playing...');
-      // Play the audio
-      playAudio(speechData.audioContent);
 
     } catch (error) {
       console.error('sendMessage error:', error);
