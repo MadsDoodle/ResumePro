@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
@@ -10,6 +10,8 @@ import { MessageSquare, BarChart3, FileText, Download, Plus, Sparkles, Target, B
 import { useCredits } from '@/hooks/useCredits';
 import FlowchartCreator from '@/components/FlowchartCreator';
 import ChatInterface from '@/components/ChatInterface';
+import OnboardingCarousel from '@/components/OnboardingCarousel';
+import { useOnboarding } from '@/hooks/useOnboarding';
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -18,6 +20,28 @@ const Dashboard = () => {
   const [isFlowchartModalOpen, setIsFlowchartModalOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const { hasCredits } = useCredits();
+  const { responses, isCompleted, setResponses, markCompleted } = useOnboarding();
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
+  // Show onboarding for new users
+  useEffect(() => {
+    if (user && !isCompleted) {
+      // Small delay to let the dashboard load first
+      const timer = setTimeout(() => {
+        setShowOnboarding(true);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [user, isCompleted]);
+
+  const handleOnboardingComplete = (onboardingResponses: any) => {
+    setResponses(onboardingResponses);
+    markCompleted();
+    setShowOnboarding(false);
+    
+    // Show a personalized welcome message based on responses
+    console.log('Welcome! Your preferences have been saved:', onboardingResponses);
+  };
 
   const dashboardOptions = [
     {
@@ -91,7 +115,12 @@ const Dashboard = () => {
               </h1>
               <div className="flex items-center justify-center gap-2 text-xl text-purple-300">
                 <Sparkles className="h-6 w-6" />
-                <p>What would you like to create today?</p>
+                <p>
+                  {responses?.purpose === 'resume' ? 'Ready to build that impressive resume?' :
+                   responses?.purpose === 'tools' ? 'Let\'s explore some AI career tools!' :
+                   responses?.purpose === 'jobs' ? 'Time to land that perfect opportunity!' :
+                   'What would you like to create today?'}
+                </p>
                 <Sparkles className="h-6 w-6" />
               </div>
             </div>
@@ -203,6 +232,13 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Onboarding Carousel */}
+      <OnboardingCarousel 
+        isOpen={showOnboarding}
+        onClose={() => setShowOnboarding(false)}
+        onComplete={handleOnboardingComplete}
+      />
 
       {/* Flowchart Creator Modal */}
       <FlowchartCreator 

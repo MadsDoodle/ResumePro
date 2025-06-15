@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -22,6 +21,7 @@ import ResumeChat from "./components/ResumeChat";
 import ResumeBuilder from "./components/ResumeBuilder";
 import AnimatedBackground from "@/components/AnimatedBackground";
 import Header from "@/components/Header";
+import { OnboardingProvider } from "@/hooks/useOnboarding";
 
 const queryClient = new QueryClient();
 
@@ -64,50 +64,52 @@ const App = () => (
         <Toaster />
         <Sonner />
         <AuthProvider>
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/pricing" element={<PricingPage />} />
-              <Route path="/contact" element={<ContactPage />} />
-              <Route path="/resources" element={<ResourcesPage />} />
-              <Route path="/auth" element={
-                <PublicRoute>
-                  <AuthPage />
-                </PublicRoute>
-              } />
-              <Route path="/dashboard" element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              } />
-              <Route path="/resume-chat" element={
-                <ProtectedRoute>
-                  <ResumeChat />
-                </ProtectedRoute>
-              } />
-              <Route path="/analyze" element={
-                <ProtectedRoute>
-                  <AnalyzePage />
-                </ProtectedRoute>
-              } />
-              <Route path="/create" element={
-                <ProtectedRoute>
-                  <CreatePage />
-                </ProtectedRoute>
-              } />
-              <Route path="/templates" element={
-                <ProtectedRoute>
-                  <TemplateSelection />
-                </ProtectedRoute>
-              } />
-              <Route path="/profile" element={
-                <ProtectedRoute>
-                  <ProfilePage />
-                </ProtectedRoute>
-              } />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
+          <OnboardingProvider>
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/pricing" element={<PricingPage />} />
+                <Route path="/contact" element={<ContactPage />} />
+                <Route path="/resources" element={<ResourcesPage />} />
+                <Route path="/auth" element={
+                  <PublicRoute>
+                    <AuthPage />
+                  </PublicRoute>
+                } />
+                <Route path="/dashboard" element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                } />
+                <Route path="/resume-chat" element={
+                  <ProtectedRoute>
+                    <ResumeChat />
+                  </ProtectedRoute>
+                } />
+                <Route path="/analyze" element={
+                  <ProtectedRoute>
+                    <AnalyzePage />
+                  </ProtectedRoute>
+                } />
+                <Route path="/create" element={
+                  <ProtectedRoute>
+                    <CreatePage />
+                  </ProtectedRoute>
+                } />
+                <Route path="/templates" element={
+                  <ProtectedRoute>
+                    <TemplateSelection />
+                  </ProtectedRoute>
+                } />
+                <Route path="/profile" element={
+                  <ProtectedRoute>
+                    <ProfilePage />
+                  </ProtectedRoute>
+                } />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </OnboardingProvider>
         </AuthProvider>
       </ToastProvider>
     </TooltipProvider>
