@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -143,37 +144,42 @@ const Dashboard = () => {
             </div>
           </div>
           
-          {/* Create Flowchart Hero Card */}
+          {/* AI Career Coach Section - Now at the top */}
           <div className="max-w-4xl mx-auto animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-            <Card 
-              className="glass-card hover-lift cursor-pointer group relative overflow-hidden gentle-glow"
-              onClick={() => setIsFlowchartModalOpen(true)}
-            >
-              <div className="relative z-10">
-                <CardHeader className="text-center pb-4">
-                  <div className="flex justify-center mb-6">
-                    <div className="relative">
-                      <div className="p-8 rounded-full bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 group-hover:scale-105 transition-transform duration-300 shadow-lg">
-                        <Plus className="h-12 w-12 text-white" />
-                      </div>
-                    </div>
+            <Card className="glass-card hover-lift relative overflow-hidden">
+              <CardHeader className="relative z-10">
+                <CardTitle className="text-white text-3xl text-center font-sf-pro flex items-center justify-center gap-3">
+                  <Brain className="h-8 w-8 text-purple-400" />
+                  AI Career Coach
+                  <MessageSquare className="h-8 w-8 text-blue-400" />
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="relative z-10">
+                <div className="text-center text-purple-300 mb-8 text-lg leading-relaxed">
+                  Chat with our advanced AI coach for career guidance, 
+                  <span className="block text-blue-300 font-medium mt-1">job search strategies, and professional development.</span>
+                </div>
+                
+                <div className="glass-card-dark rounded-2xl p-8 min-h-[200px] border border-purple-500/20 flex items-center justify-center relative overflow-hidden">
+                  <div className="flex flex-col items-center space-y-6 relative z-10">
+                    <Button 
+                      onClick={() => setIsChatOpen(true)}
+                      className="btn-premium text-lg px-10 py-4 font-semibold tracking-wide"
+                    >
+                      <MessageSquare className="mr-3 h-5 w-5" />
+                      Start Career Conversation
+                    </Button>
+                    <Button 
+                      onClick={handleDownloadPDF} 
+                      variant="outline" 
+                      className="border-purple-500/40 bg-white/5 text-purple-300 hover:bg-purple-500/20 hover:border-purple-400 hover:text-white transition-all duration-300 hover:scale-[1.02] px-8 py-3 font-medium"
+                    >
+                      <Download className="h-4 w-4 mr-2" />
+                      Download Resume (PDF)
+                    </Button>
                   </div>
-                  <CardTitle className="text-white text-3xl md:text-4xl font-sf-pro mb-2 flex items-center justify-center gap-3">
-                    Create Flowchart
-                    <Target className="h-8 w-8 text-green-400" />
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="text-center pb-8">
-                  <p className="text-purple-200 text-lg mb-8 max-w-2xl mx-auto leading-relaxed">
-                    Design professional flowcharts with our advanced AI-powered creator. 
-                    <span className="block mt-2 text-blue-300 font-medium">Transform your ideas into visual masterpieces</span>
-                  </p>
-                  <Button className="btn-premium text-lg py-4 px-8 font-semibold tracking-wide">
-                    <Brain className="h-5 w-5 mr-2" />
-                    Start Creating
-                  </Button>
-                </CardContent>
-              </div>
+                </div>
+              </CardContent>
             </Card>
           </div>
           
@@ -209,42 +215,37 @@ const Dashboard = () => {
             ))}
           </div>
           
-          {/* AI Career Coach Section */}
+          {/* Create Flowchart Hero Card - Now at the bottom */}
           <div className="max-w-4xl mx-auto animate-fade-in-up" style={{ animationDelay: '0.8s' }}>
-            <Card className="glass-card hover-lift relative overflow-hidden">
-              <CardHeader className="relative z-10">
-                <CardTitle className="text-white text-3xl text-center font-sf-pro flex items-center justify-center gap-3">
-                  <Brain className="h-8 w-8 text-purple-400" />
-                  AI Career Coach
-                  <MessageSquare className="h-8 w-8 text-blue-400" />
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="relative z-10">
-                <div className="text-center text-purple-300 mb-8 text-lg leading-relaxed">
-                  Chat with our advanced AI coach for career guidance, 
-                  <span className="block text-blue-300 font-medium mt-1">job search strategies, and professional development.</span>
-                </div>
-                
-                <div className="glass-card-dark rounded-2xl p-8 min-h-[200px] border border-purple-500/20 flex items-center justify-center relative overflow-hidden">
-                  <div className="flex flex-col items-center space-y-6 relative z-10">
-                    <Button 
-                      onClick={() => setIsChatOpen(true)}
-                      className="btn-premium text-lg px-10 py-4 font-semibold tracking-wide"
-                    >
-                      <MessageSquare className="mr-3 h-5 w-5" />
-                      Start Career Conversation
-                    </Button>
-                    <Button 
-                      onClick={handleDownloadPDF} 
-                      variant="outline" 
-                      className="border-purple-500/40 bg-white/5 text-purple-300 hover:bg-purple-500/20 hover:border-purple-400 hover:text-white transition-all duration-300 hover:scale-[1.02] px-8 py-3 font-medium"
-                    >
-                      <Download className="h-4 w-4 mr-2" />
-                      Download Resume (PDF)
-                    </Button>
+            <Card 
+              className="glass-card hover-lift cursor-pointer group relative overflow-hidden gentle-glow"
+              onClick={() => setIsFlowchartModalOpen(true)}
+            >
+              <div className="relative z-10">
+                <CardHeader className="text-center pb-4">
+                  <div className="flex justify-center mb-6">
+                    <div className="relative">
+                      <div className="p-8 rounded-full bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 group-hover:scale-105 transition-transform duration-300 shadow-lg">
+                        <Plus className="h-12 w-12 text-white" />
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </CardContent>
+                  <CardTitle className="text-white text-3xl md:text-4xl font-sf-pro mb-2 flex items-center justify-center gap-3">
+                    Create Flowchart
+                    <Target className="h-8 w-8 text-green-400" />
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="text-center pb-8">
+                  <p className="text-purple-200 text-lg mb-8 max-w-2xl mx-auto leading-relaxed">
+                    Design professional flowcharts with our advanced AI-powered creator. 
+                    <span className="block mt-2 text-blue-300 font-medium">Transform your ideas into visual masterpieces</span>
+                  </p>
+                  <Button className="btn-premium text-lg py-4 px-8 font-semibold tracking-wide">
+                    <Brain className="h-5 w-5 mr-2" />
+                    Start Creating
+                  </Button>
+                </CardContent>
+              </div>
             </Card>
           </div>
         </div>
