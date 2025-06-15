@@ -1,5 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { MessageSquare, Bot, User, Trash2 } from 'lucide-react';
@@ -8,6 +8,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 
 interface ChatHistoryModalProps {
+  isOpen: boolean;
   onClose: () => void;
 }
 
@@ -26,7 +27,7 @@ interface Conversation {
   lastTimestamp: string;
 }
 
-const ChatHistoryModal = ({ onClose }: ChatHistoryModalProps) => {
+const ChatHistoryModal = ({ isOpen, onClose }: ChatHistoryModalProps) => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -34,8 +35,10 @@ const ChatHistoryModal = ({ onClose }: ChatHistoryModalProps) => {
   const { toast } = useToast();
 
   useEffect(() => {
-    fetchChatHistory();
-  }, [user]);
+    if (isOpen) {
+      fetchChatHistory();
+    }
+  }, [user, isOpen]);
 
   const fetchChatHistory = async () => {
     if (!user) return;
@@ -116,100 +119,111 @@ const ChatHistoryModal = ({ onClose }: ChatHistoryModalProps) => {
     : [];
 
   return (
-    <div className="flex h-[60vh]">
-      {/* Conversations Sidebar */}
-      <div className="w-1/3 border-r border-purple-500/20 pr-4">
-        <h3 className="text-white font-medium mb-4">Chat Conversations</h3>
-        {loading ? (
-          <div className="text-gray-400 text-center py-4">Loading...</div>
-        ) : conversations.length === 0 ? (
-          <div className="text-gray-400 text-center py-4">
-            <MessageSquare className="h-8 w-8 mx-auto mb-2 opacity-50" />
-            <p className="text-sm">No chat history found</p>
-          </div>
-        ) : (
-          <div className="space-y-2 max-h-full overflow-y-auto">
-            {conversations.map((conversation) => (
-              <Card
-                key={conversation.id}
-                className={`cursor-pointer transition-all ${
-                  selectedConversation === conversation.id
-                    ? 'bg-purple-600/30 border-purple-500/50'
-                    : 'bg-gray-800/30 border-purple-500/20 hover:border-purple-500/40'
-                }`}
-                onClick={() => setSelectedConversation(conversation.id)}
-              >
-                <CardContent className="p-3">
-                  <div className="flex justify-between items-start mb-2">
-                    <p className="text-white text-sm line-clamp-2">{conversation.lastMessage}</p>
-                    <Button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeleteConversation(conversation.id);
-                      }}
-                      size="sm"
-                      variant="ghost"
-                      className="text-red-400 hover:text-red-300 hover:bg-red-500/10 p-1"
-                    >
-                      <Trash2 className="h-3 w-3" />
-                    </Button>
-                  </div>
-                  <p className="text-gray-400 text-xs">
-                    {new Date(conversation.lastTimestamp).toLocaleDateString()}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Chat Messages */}
-      <div className="w-2/3 pl-4">
-        {selectedConversation ? (
-          <div className="h-full flex flex-col">
-            <h3 className="text-white font-medium mb-4">Chat Messages</h3>
-            <div className="flex-1 overflow-y-auto space-y-3">
-              {selectedMessages.map((message) => (
-                <div
-                  key={message.id}
-                  className={`flex ${message.message_type === 'user' ? 'justify-end' : 'justify-start'}`}
-                >
-                  <div
-                    className={`max-w-[80%] rounded-lg px-4 py-2 ${
-                      message.message_type === 'user'
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-purple-900/30 border border-purple-500/20 text-white'
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-6xl max-h-[80vh] overflow-hidden bg-gray-900 border-gray-700">
+        <DialogHeader>
+          <DialogTitle className="text-white flex items-center">
+            <MessageSquare className="mr-2 h-5 w-5 text-purple-400" />
+            Chat History
+          </DialogTitle>
+        </DialogHeader>
+        
+        <div className="flex h-[60vh]">
+          {/* Conversations Sidebar */}
+          <div className="w-1/3 border-r border-purple-500/20 pr-4">
+            <h3 className="text-white font-medium mb-4">Chat Conversations</h3>
+            {loading ? (
+              <div className="text-gray-400 text-center py-4">Loading...</div>
+            ) : conversations.length === 0 ? (
+              <div className="text-gray-400 text-center py-4">
+                <MessageSquare className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                <p className="text-sm">No chat history found</p>
+              </div>
+            ) : (
+              <div className="space-y-2 max-h-full overflow-y-auto">
+                {conversations.map((conversation) => (
+                  <Card
+                    key={conversation.id}
+                    className={`cursor-pointer transition-all ${
+                      selectedConversation === conversation.id
+                        ? 'bg-purple-600/30 border-purple-500/50'
+                        : 'bg-gray-800/30 border-purple-500/20 hover:border-purple-500/40'
                     }`}
+                    onClick={() => setSelectedConversation(conversation.id)}
                   >
-                    <div className="flex items-start gap-2">
-                      {message.message_type === 'ai' ? (
-                        <Bot className="h-4 w-4 mt-1 flex-shrink-0 text-purple-400" />
-                      ) : (
-                        <User className="h-4 w-4 mt-1 flex-shrink-0" />
-                      )}
-                      <div>
-                        <p className="text-sm">{message.message_content}</p>
-                        <p className="text-xs opacity-70 mt-1">
-                          {new Date(message.created_at).toLocaleTimeString()}
-                        </p>
+                    <CardContent className="p-3">
+                      <div className="flex justify-between items-start mb-2">
+                        <p className="text-white text-sm line-clamp-2">{conversation.lastMessage}</p>
+                        <Button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteConversation(conversation.id);
+                          }}
+                          size="sm"
+                          variant="ghost"
+                          className="text-red-400 hover:text-red-300 hover:bg-red-500/10 p-1"
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
+                      </div>
+                      <p className="text-gray-400 text-xs">
+                        {new Date(conversation.lastTimestamp).toLocaleDateString()}
+                      </p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Chat Messages */}
+          <div className="w-2/3 pl-4">
+            {selectedConversation ? (
+              <div className="h-full flex flex-col">
+                <h3 className="text-white font-medium mb-4">Chat Messages</h3>
+                <div className="flex-1 overflow-y-auto space-y-3">
+                  {selectedMessages.map((message) => (
+                    <div
+                      key={message.id}
+                      className={`flex ${message.message_type === 'user' ? 'justify-end' : 'justify-start'}`}
+                    >
+                      <div
+                        className={`max-w-[80%] rounded-lg px-4 py-2 ${
+                          message.message_type === 'user'
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-purple-900/30 border border-purple-500/20 text-white'
+                        }`}
+                      >
+                        <div className="flex items-start gap-2">
+                          {message.message_type === 'ai' ? (
+                            <Bot className="h-4 w-4 mt-1 flex-shrink-0 text-purple-400" />
+                          ) : (
+                            <User className="h-4 w-4 mt-1 flex-shrink-0" />
+                          )}
+                          <div>
+                            <p className="text-sm">{message.message_content}</p>
+                            <p className="text-xs opacity-70 mt-1">
+                              {new Date(message.created_at).toLocaleTimeString()}
+                            </p>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </div>
+            ) : (
+              <div className="h-full flex items-center justify-center text-gray-400">
+                <div className="text-center">
+                  <MessageSquare className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>Select a conversation to view messages</p>
+                </div>
+              </div>
+            )}
           </div>
-        ) : (
-          <div className="h-full flex items-center justify-center text-gray-400">
-            <div className="text-center">
-              <MessageSquare className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p>Select a conversation to view messages</p>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 
