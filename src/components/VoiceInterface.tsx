@@ -70,6 +70,11 @@ const VoiceInterface = () => {
 
       recognitionRef.current.onerror = (event: any) => {
         console.error('Speech recognition error:', event.error);
+        toast({
+          title: "Speech Recognition Error",
+          description: `Error: ${event.error}`,
+          variant: "destructive"
+        });
       };
     }
 
@@ -79,7 +84,7 @@ const VoiceInterface = () => {
         audioRef.current = null;
       }
     };
-  }, []);
+  }, [toast]);
 
   const startRecording = async () => {
     try {
@@ -135,19 +140,30 @@ const VoiceInterface = () => {
       const arrayBuffer = await audioBlob.arrayBuffer();
       const base64Audio = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
 
+      console.log('Sending audio to speech-to-text function...');
+
       // Send to speech-to-text function
       const { data, error } = await supabase.functions.invoke('speech-to-text', {
         body: { audio: base64Audio }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Speech-to-text error:', error);
+        throw new Error(`Speech-to-text failed: ${error.message}`);
+      }
 
+      if (!data || !data.text) {
+        throw new Error('No text returned from speech-to-text');
+      }
+
+      console.log('Transcription received:', data.text);
       setTranscript(data.text);
       setEditableTranscript(data.text);
     } catch (error) {
+      console.error('processAudio error:', error);
       toast({
         title: "Error",
-        description: "Failed to process audio",
+        description: `Failed to process audio: ${error.message}`,
         variant: "destructive"
       });
     } finally {
@@ -157,7 +173,14 @@ const VoiceInterface = () => {
 
   const sendMessage = async (textToSend?: string) => {
     const messageText = textToSend || editableTranscript || transcript;
-    if (!messageText.trim() || !user) return;
+    if (!messageText.trim() || !user) {
+      toast({
+        title: "Error",
+        description: "No message to send or user not authenticated",
+        variant: "destructive"
+      });
+      return;
+    }
 
     setIsProcessing(true);
     const userMessage: VoiceMessage = {
@@ -170,20 +193,36 @@ const VoiceInterface = () => {
     setMessages(prev => [...prev, userMessage]);
 
     try {
+      console.log('Saving user message to database...');
       // Save user message to database
-      await supabase.from('voice_conversations').insert({
+      const { error: saveError } = await supabase.from('voice_conversations').insert({
         user_id: user.id,
         conversation_id: conversationIdRef.current,
         message_content: messageText,
         message_type: 'user'
       });
 
+      if (saveError) {
+        console.error('Error saving user message:', saveError);
+        throw new Error(`Failed to save message: ${saveError.message}`);
+      }
+
+      console.log('Sending message to voice-chat function...');
       // Get AI response
       const { data: chatData, error: chatError } = await supabase.functions.invoke('voice-chat', {
         body: { message: messageText }
       });
 
-      if (chatError) throw chatError;
+      if (chatError) {
+        console.error('Voice-chat error:', chatError);
+        throw new Error(`Chat failed: ${chatError.message}`);
+      }
+
+      if (!chatData || !chatData.response) {
+        throw new Error('No response received from AI');
+      }
+
+      console.log('AI response received:', chatData.response);
 
       const aiMessage: VoiceMessage = {
         id: crypto.randomUUID(),
@@ -196,27 +235,41 @@ const VoiceInterface = () => {
       setAiSpeechText(chatData.response);
 
       // Save AI message to database
-      await supabase.from('voice_conversations').insert({
+      const { error: saveAiError } = await supabase.from('voice_conversations').insert({
         user_id: user.id,
         conversation_id: conversationIdRef.current,
         message_content: chatData.response,
         message_type: 'ai'
       });
 
+      if (saveAiError) {
+        console.error('Error saving AI message:', saveAiError);
+      }
+
+      console.log('Converting AI response to speech...');
       // Convert AI response to speech
       const { data: speechData, error: speechError } = await supabase.functions.invoke('text-to-speech', {
         body: { text: chatData.response }
       });
 
-      if (speechError) throw speechError;
+      if (speechError) {
+        console.error('Text-to-speech error:', speechError);
+        throw new Error(`Speech generation failed: ${speechError.message}`);
+      }
 
+      if (!speechData || !speechData.audioContent) {
+        throw new Error('No audio content received');
+      }
+
+      console.log('Audio content received, playing...');
       // Play the audio
       playAudio(speechData.audioContent);
 
     } catch (error) {
+      console.error('sendMessage error:', error);
       toast({
         title: "Error",
-        description: "Failed to send message",
+        description: `Failed to send message: ${error.message}`,
         variant: "destructive"
       });
     } finally {
