@@ -4,7 +4,8 @@
 
 ![ResumePro Dashboard Preview](./assets/dashboard.png)
 ---
-
+![ResumePro Landing Page](./assets/landing_page.png)
+---
 ## 🚀 Features
 
 ### 🧠 1. AI Career Coach
@@ -24,17 +25,20 @@ Start from scratch by selecting from pre-made templates:
 - Choose photo/no-photo, color schemes, columns, etc.
 - Real-time live preview while editing.
 - Export options: `.json` or `.pdf`.
+![ResumePro Resume Builder](./assets/Resume_Builder.png)
 
 ### 🔁 5. Flowchart Builder
 A Whimsical-style interactive flowchart builder:
 - Drag-and-drop elements.
 - Export as image or `.json`.
+![ResumePro Flowchart Builder](./assets/Flowchart_Builder.png)
 
 ### 📚 6. Resources Section
 Informational guides and blogs:
 - Resume writing tips.
 - Detailed career path roadmaps with scope and resources.
 - General career development articles.
+![ResumePro Resources Hub](./assets/Resources_Hub.png)
 
 ### 🪙 7. Token-Based Access System
 Users receive tokens for LLM interactions. Each API usage (e.g., LLM chat, voice assistant) deducts tokens. Upon exhaustion, users are prompted to upgrade to a premium plan.
