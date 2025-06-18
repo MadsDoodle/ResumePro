@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -37,34 +38,13 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 const LandingPage = () => {
-  const [email, setEmail] = useState('madhavsukla.baidya.chy22@itbhu.ac.in');
+  const [email, setEmail] = useState('');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [showServices, setShowServices] = useState(false);
   const [activeContactTab, setActiveContactTab] = useState('email');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [scrollY, setScrollY] = useState(0);
   const navigate = useNavigate();
   const { user } = useAuth();
-
-  // Mouse tracking for wave animation
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('scroll', handleScroll);
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
 
   const handleGetStarted = () => {
     if (!agreedToTerms) {
@@ -93,41 +73,13 @@ const LandingPage = () => {
   };
 
   const contactTabs = [
-    { id: 'email', label: 'Email', icon: Mail, content: 'madhavsukla.baidya.chy22@itbhu.ac.in' },
+    { id: 'email', label: 'Email', icon: Mail, content: 'moodiedoodler29@gmail.com' },
     { id: 'phone', label: 'Phone', icon: Phone, content: '+91 6900541047' },
-    { id: 'address', label: 'Address', icon: MapPin, content: 'IIT(BHU) Varanasi, Uttar Pradesh, India' }
+    { id: 'address', label: 'Address', icon: MapPin, content: 'H/NO- 94, Sribhumi Nagar, Guwahati, Assam- 781034, India' }
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-purple-900 relative overflow-hidden">
-      {/* Animated Wave Background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div 
-          className="absolute w-full h-full opacity-10"
-          style={{
-            background: `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.1) 25%, transparent 50%)`,
-            transform: `translateY(${scrollY * 0.1}px)`,
-            transition: 'background 0.3s ease-out'
-          }}
-        />
-        <svg 
-          className="absolute bottom-0 w-full h-64 opacity-20"
-          viewBox="0 0 1200 200"
-          preserveAspectRatio="none"
-        >
-          <path
-            d={`M0,100 Q300,${50 + Math.sin(mousePosition.x * 0.01) * 20} 600,100 T1200,100 L1200,200 L0,200 Z`}
-            fill="rgba(255,255,255,0.1)"
-            className="transition-all duration-500"
-          />
-          <path
-            d={`M0,120 Q300,${70 + Math.cos(mousePosition.x * 0.01) * 15} 600,120 T1200,120 L1200,200 L0,200 Z`}
-            fill="rgba(255,255,255,0.05)"
-            className="transition-all duration-700"
-          />
-        </svg>
-      </div>
-
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-purple-900">
       {/* Header */}
       <header className="sticky top-0 z-50 bg-gray-900/95 backdrop-blur-sm border-b border-purple-500/20">
         <div className="container mx-auto px-4 py-4">
@@ -192,11 +144,11 @@ const LandingPage = () => {
               </button>
             </div>
 
-            {/* Desktop CTA Buttons - Enhanced Auth Button */}
+            {/* Desktop CTA Buttons */}
             <div className="hidden md:flex items-center space-x-4">
               <Button 
                 variant="outline" 
-                className="border-white/30 text-white bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all duration-300 shadow-lg"
+                className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10"
                 onClick={() => navigate('/auth')}
               >
                 Sign in
@@ -232,7 +184,7 @@ const LandingPage = () => {
                 <div className="flex flex-col space-y-2 pt-4 border-t border-purple-500/20">
                   <Button 
                     variant="outline" 
-                    className="border-white/30 text-white bg-white/10 backdrop-blur-md hover:bg-white/20 w-full"
+                    className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10 w-full"
                     onClick={() => navigate('/auth')}
                   >
                     Sign in
@@ -250,18 +202,12 @@ const LandingPage = () => {
         </div>
       </header>
 
-      {/* Hero Section with Zoom Effect */}
-      <section 
-        className="container mx-auto px-4 py-10 sm:py-20 relative z-10"
-        style={{
-          transform: `scale(${1 + scrollY * 0.0001})`,
-          opacity: Math.max(0.3, 1 - scrollY * 0.001)
-        }}
-      >
+      {/* Hero Section */}
+      <section className="container mx-auto px-4 py-10 sm:py-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           {/* Left Content */}
           <div className="space-y-6 sm:space-y-8 text-center lg:text-left">
-            <div className="inline-flex items-center bg-purple-600/20 border border-purple-500/30 rounded-full px-3 sm:px-4 py-2 text-xs sm:text-sm text-purple-300 backdrop-blur-sm">
+            <div className="inline-flex items-center bg-purple-600/20 border border-purple-500/30 rounded-full px-3 sm:px-4 py-2 text-xs sm:text-sm text-purple-300">
               <Zap className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
               AI-driven resume builder for professionals
             </div>
@@ -283,11 +229,11 @@ const LandingPage = () => {
                   placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="flex-1 bg-gray-800/50 border-purple-500/30 text-white placeholder:text-gray-400 h-12 backdrop-blur-sm"
+                  className="flex-1 bg-gray-800/50 border-purple-500/30 text-white placeholder:text-gray-400 h-12"
                 />
                 <Button 
                   onClick={handleGetStarted}
-                  className="bg-purple-600 hover:bg-purple-700 text-white px-6 sm:px-8 h-12 whitespace-nowrap transform hover:scale-105 transition-all duration-300"
+                  className="bg-purple-600 hover:bg-purple-700 text-white px-6 sm:px-8 h-12 whitespace-nowrap"
                   disabled={!agreedToTerms}
                 >
                   Choose a template
@@ -309,9 +255,9 @@ const LandingPage = () => {
             {/* Social Proof */}
             <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4 pt-6 sm:pt-8">
               <div className="flex -space-x-2">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 border-2 border-gray-900 flex items-center justify-center text-white text-xs sm:text-sm font-bold">M</div>
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-400 border-2 border-gray-900 flex items-center justify-center text-white text-xs sm:text-sm font-bold">S</div>
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-green-400 to-blue-400 border-2 border-gray-900 flex items-center justify-center text-white text-xs sm:text-sm font-bold">B</div>
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 border-2 border-gray-900 flex items-center justify-center text-white text-xs sm:text-sm font-bold">J</div>
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-400 border-2 border-gray-900 flex items-center justify-center text-white text-xs sm:text-sm font-bold">A</div>
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-green-400 to-blue-400 border-2 border-gray-900 flex items-center justify-center text-white text-xs sm:text-sm font-bold">M</div>
               </div>
               <div className="text-center sm:text-left">
                 <div className="flex items-center justify-center sm:justify-start text-yellow-400">
@@ -326,61 +272,247 @@ const LandingPage = () => {
 
           {/* Right Content - Animated Resume Demo */}
           <div className="relative order-first lg:order-last">
-            <div 
-              className="scale-75 sm:scale-90 lg:scale-100 transform transition-all duration-1000"
-              style={{
-                transform: `scale(${0.75 + scrollY * 0.0002}) rotateY(${scrollY * 0.05}deg)`,
-              }}
-            >
+            <div className="scale-75 sm:scale-90 lg:scale-100">
               <AnimatedResumeDemo />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section with Scroll Animations */}
-      <section 
-        className="container mx-auto px-4 py-16 sm:py-20 relative z-10"
-        style={{
-          transform: `translateY(${Math.max(0, scrollY * 0.1 - 100)}px)`,
-          opacity: scrollY > 100 ? Math.min(1, (scrollY - 100) * 0.01) : 0
-        }}
-      >
+      {/* Features Section */}
+      <section className="container mx-auto px-4 py-16 sm:py-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto">
-          {[
-            { icon: Camera, color: 'green', title: 'Recruiter-Approved Resume', desc: 'We work with recruiters to design resume templates that format automatically.' },
-            { icon: Timer, color: 'blue', title: 'Finish Your Resume in 15 Minutes', desc: 'Resume Pro helps you tackle your work experience by reminding you what you did at your job.' },
-            { icon: Target, color: 'orange', title: 'Land an Interview', desc: 'We suggest the skills you should add. It helped over a million people get interviews.' }
-          ].map((feature, index) => (
-            <Card 
-              key={index}
-              className="bg-gray-800/50 border-purple-500/20 p-6 sm:p-8 text-center hover:scale-105 transition-all duration-500 backdrop-blur-sm"
-              style={{
-                transform: `translateY(${Math.max(0, scrollY * 0.05 - index * 50)}px)`,
-                opacity: scrollY > 200 + index * 100 ? 1 : 0.3
-              }}
-            >
-              <div className="flex justify-center mb-4 sm:mb-6">
-                <div className={`p-3 sm:p-4 rounded-full bg-${feature.color}-500/20 border border-${feature.color}-500/30`}>
-                  <feature.icon className={`h-6 w-6 sm:h-8 sm:w-8 text-${feature.color}-400`} />
-                </div>
+          <Card className="bg-gray-800/50 border-purple-500/20 p-6 sm:p-8 text-center hover:scale-105 transition-transform">
+            <div className="flex justify-center mb-4 sm:mb-6">
+              <div className="p-3 sm:p-4 rounded-full bg-green-500/20 border border-green-500/30">
+                <Camera className="h-6 w-6 sm:h-8 sm:w-8 text-green-400" />
               </div>
-              <h3 className="text-lg sm:text-xl font-bold text-white mb-3 sm:mb-4">{feature.title}</h3>
-              <p className="text-sm sm:text-base text-gray-300 mb-4 sm:mb-6">{feature.desc}</p>
-            </Card>
-          ))}
+            </div>
+            <h3 className="text-lg sm:text-xl font-bold text-white mb-3 sm:mb-4">Recruiter-Approved Resume</h3>
+            <p className="text-sm sm:text-base text-gray-300 mb-4 sm:mb-6">
+              We work with recruiters to design resume templates that format automatically.
+            </p>
+          </Card>
+
+          <Card className="bg-gray-800/50 border-purple-500/20 p-6 sm:p-8 text-center hover:scale-105 transition-transform">
+            <div className="flex justify-center mb-4 sm:mb-6">
+              <div className="p-3 sm:p-4 rounded-full bg-blue-500/20 border border-blue-500/30">
+                <Timer className="h-6 w-6 sm:h-8 sm:w-8 text-blue-400" />
+              </div>
+            </div>
+            <h3 className="text-lg sm:text-xl font-bold text-white mb-3 sm:mb-4">Finish Your Resume in 15 Minutes</h3>
+            <p className="text-sm sm:text-base text-gray-300 mb-4 sm:mb-6">
+              Resume Pro helps you tackle your work experience by reminding you what you did at your job.
+            </p>
+          </Card>
+
+          <Card className="bg-gray-800/50 border-purple-500/20 p-6 sm:p-8 text-center hover:scale-105 transition-transform md:col-span-2 lg:col-span-1">
+            <div className="flex justify-center mb-4 sm:mb-6">
+              <div className="p-3 sm:p-4 rounded-full bg-orange-500/20 border border-orange-500/30">
+                <Target className="h-6 w-6 sm:h-8 sm:w-8 text-orange-400" />
+              </div>
+            </div>
+            <h3 className="text-lg sm:text-xl font-bold text-white mb-3 sm:mb-4">Land an Interview</h3>
+            <p className="text-sm sm:text-base text-gray-300 mb-4 sm:mb-6">
+              We suggest the skills you should add. It helped over a million people get interviews.
+            </p>
+          </Card>
         </div>
       </section>
 
-      {/* Contact Section with Updated Details */}
-      <section 
-        id="contact" 
-        className="container mx-auto px-4 py-12 sm:py-16 relative z-10"
-        style={{
-          transform: `translateY(${Math.max(0, scrollY * 0.02 - 200)}px)`,
-          opacity: scrollY > 800 ? 1 : 0.5
-        }}
-      >
+      {/* Expert Review Section */}
+      <section className="container mx-auto px-4 py-16 sm:py-20">
+        <div className="text-center mb-12 sm:mb-16">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6 leading-tight">
+            Our resume builder includes a review from one of our experts
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center max-w-6xl mx-auto">
+          {/* Left Content - Visual */}
+          <div className="relative order-last lg:order-first">
+            <Card className="bg-gradient-to-br from-yellow-400/20 to-orange-400/20 border border-yellow-400/30 p-6 sm:p-8">
+              <div className="space-y-3 sm:space-y-4">
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 text-green-400 flex-shrink-0" />
+                  <div className="h-2 sm:h-3 bg-green-400/50 rounded-full flex-1"></div>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 text-green-400 flex-shrink-0" />
+                  <div className="h-2 sm:h-3 bg-green-400/50 rounded-full flex-1"></div>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="h-5 w-5 sm:h-6 sm:w-6 rounded-full bg-orange-400/50 border-2 border-orange-400 flex-shrink-0"></div>
+                  <div className="h-2 sm:h-3 bg-orange-400/50 rounded-full flex-1"></div>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="h-5 w-5 sm:h-6 sm:w-6 rounded-full bg-orange-400/50 border-2 border-orange-400 flex-shrink-0"></div>
+                  <div className="h-2 sm:h-3 bg-orange-400/50 rounded-full flex-1"></div>
+                </div>
+              </div>
+            </Card>
+          </div>
+
+          {/* Right Content - Features */}
+          <div className="space-y-6 sm:space-y-8">
+            <div>
+              <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 sm:mb-3">Real feedback from a Resume Analyst</h3>
+              <p className="text-sm sm:text-base text-gray-300">We'll read your resume carefully and suggest improvements</p>
+            </div>
+
+            <div>
+              <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 sm:mb-3">Section-by-section suggestions</h3>
+              <p className="text-sm sm:text-base text-gray-300">Get detailed feedback on your summary, skills, work history, and education sections</p>
+            </div>
+
+            <div>
+              <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 sm:mb-3">Get answers specific to your resume</h3>
+              <p className="text-sm sm:text-base text-gray-300">Submit any questions you have for additional guidance</p>
+            </div>
+
+            <div>
+              <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 sm:mb-3">Quick turnaround</h3>
+              <p className="text-sm sm:text-base text-gray-300">Get your review back in just 2-3 business days</p>
+            </div>
+
+            <Button 
+              onClick={() => navigate('/auth')}
+              className="bg-purple-600 hover:bg-purple-700 text-white px-6 sm:px-8 py-2 sm:py-3 text-base sm:text-lg w-full sm:w-auto"
+            >
+              Choose a template
+            </Button>
+          </div>
+        </div>
+
+        {/* As seen in logos */}
+        <div className="mt-12 sm:mt-16 text-center">
+          <p className="text-gray-500 text-xs sm:text-sm mb-6 sm:mb-8">As seen in</p>
+          <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-6 lg:gap-12 opacity-60">
+            <span className="text-gray-400 font-bold text-sm sm:text-lg">Forbes</span>
+            <span className="text-gray-400 font-bold text-sm sm:text-lg">USA TODAY</span>
+            <span className="text-gray-400 font-bold text-sm sm:text-lg">CNBC</span>
+            <span className="text-gray-400 font-bold text-sm sm:text-lg">The New York Times</span>
+            <span className="text-gray-400 font-bold text-sm sm:text-lg">CNET.com</span>
+          </div>
+        </div>
+      </section>
+
+      {/* Services Toggle Section */}
+      <section className="container mx-auto px-4 py-12 sm:py-16">
+        <div className="text-center mb-8 sm:mb-12">
+          <button
+            onClick={() => setShowServices(!showServices)}
+            className="inline-flex items-center bg-purple-600/20 border border-purple-500/30 rounded-full px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base text-purple-300 hover:bg-purple-600/30 transition-colors"
+          >
+            <span className="mr-2">More from us</span>
+            <ChevronDown className={`h-4 w-4 transition-transform ${showServices ? 'rotate-180' : ''}`} />
+          </button>
+        </div>
+
+        {showServices && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 animate-fade-in">
+            <Card className="bg-gray-800/50 border-purple-500/20 hover:border-purple-500/40 transition-colors hover:scale-105">
+              <CardHeader>
+                <CardTitle className="flex items-center text-white text-sm sm:text-base">
+                  <BarChart3 className="h-4 w-4 sm:h-5 sm:w-5 mr-2 text-purple-400" />
+                  AI Resume Analyzer
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-xs sm:text-sm text-gray-300">Upload + feedback</p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gray-800/50 border-purple-500/20 hover:border-purple-500/40 transition-colors hover:scale-105">
+              <CardHeader>
+                <CardTitle className="flex items-center text-white text-sm sm:text-base">
+                  <FileText className="h-4 w-4 sm:h-5 sm:w-5 mr-2 text-purple-400" />
+                  Cover Letter Generator
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-xs sm:text-sm text-gray-300">AI-tailored letters</p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gray-800/50 border-purple-500/20 hover:border-purple-500/40 transition-colors hover:scale-105">
+              <CardHeader>
+                <CardTitle className="flex items-center text-white text-sm sm:text-base">
+                  <MessageSquare className="h-4 w-4 sm:h-5 sm:w-5 mr-2 text-purple-400" />
+                  Interview Prep Bot
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-xs sm:text-sm text-gray-300">Practice + scoring</p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gray-800/50 border-purple-500/20 hover:border-purple-500/40 transition-colors hover:scale-105">
+              <CardHeader>
+                <CardTitle className="flex items-center text-white text-sm sm:text-base">
+                  <Target className="h-4 w-4 sm:h-5 sm:w-5 mr-2 text-purple-400" />
+                  Career Path Finder
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-xs sm:text-sm text-gray-300">Skills-based suggestions</p>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+      </section>
+
+      {/* Pricing Section */}
+      <section id="pricing" className="container mx-auto px-4 py-12 sm:py-16">
+        <div className="text-center mb-8 sm:mb-12">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4">Choose Your Plan</h2>
+          <p className="text-lg sm:text-xl text-gray-300">Start building your career today</p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto">
+          <Card className="bg-gray-800/50 border-purple-500/20 p-6 sm:p-8 hover:scale-105 transition-transform">
+            <CardHeader>
+              <CardTitle className="text-xl sm:text-2xl text-white">Professional</CardTitle>
+              <div className="text-2xl sm:text-3xl font-bold text-purple-400">₹499<span className="text-base sm:text-lg text-gray-400">/month</span></div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-3">
+                {['Resume Builder', 'ATS Validation', 'Smart Suggestions', 'Unlimited Revisions'].map((feature) => (
+                  <div key={feature} className="flex items-center text-gray-300">
+                    <Check className="h-4 w-4 sm:h-5 sm:w-5 text-green-400 mr-3 flex-shrink-0" />
+                    <span className="text-sm sm:text-base">{feature}</span>
+                  </div>
+                ))}
+              </div>
+              <Button onClick={() => navigate('/auth')} className="w-full bg-purple-600 hover:bg-purple-700">Start Plan</Button>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-purple-900/50 to-blue-900/50 border-purple-400/50 p-6 sm:p-8 relative hover:scale-105 transition-transform">
+            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+              <span className="bg-purple-600 text-white px-3 sm:px-4 py-1 rounded-full text-xs sm:text-sm font-medium">Recommended</span>
+            </div>
+            <CardHeader>
+              <CardTitle className="text-xl sm:text-2xl text-white">Ultimate</CardTitle>
+              <div className="text-2xl sm:text-3xl font-bold text-purple-400">₹1299<span className="text-base sm:text-lg text-gray-400">/month</span></div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-3">
+                {['All Professional features', 'Resume Analyzer', 'Career Path Generator', 'Priority Support', 'Multiple Downloads'].map((feature) => (
+                  <div key={feature} className="flex items-center text-gray-300">
+                    <Check className="h-4 w-4 sm:h-5 sm:w-5 text-green-400 mr-3 flex-shrink-0" />
+                    <span className="text-sm sm:text-base">{feature}</span>
+                  </div>
+                ))}
+              </div>
+              <Button onClick={() => navigate('/auth')} className="w-full bg-purple-600 hover:bg-purple-700">Start Plan</Button>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="container mx-auto px-4 py-12 sm:py-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12">
           <div>
             <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4 sm:mb-6">Get in Touch</h2>
@@ -389,20 +521,19 @@ const LandingPage = () => {
             <div className="space-y-4">
               <Input
                 placeholder="Your Name"
-                className="bg-gray-800/50 border-purple-500/30 text-white placeholder:text-gray-400 h-12 backdrop-blur-sm"
+                className="bg-gray-800/50 border-purple-500/30 text-white placeholder:text-gray-400 h-12"
               />
               <Input
                 type="email"
                 placeholder="Your Email"
-                value="madhavsukla.baidya.chy22@itbhu.ac.in"
-                className="bg-gray-800/50 border-purple-500/30 text-white placeholder:text-gray-400 h-12 backdrop-blur-sm"
+                className="bg-gray-800/50 border-purple-500/30 text-white placeholder:text-gray-400 h-12"
               />
               <textarea
                 placeholder="Your Message"
                 rows={4}
-                className="w-full p-3 bg-gray-800/50 border border-purple-500/30 rounded-md text-white placeholder:text-gray-400 focus:border-purple-500 focus:outline-none resize-none backdrop-blur-sm"
+                className="w-full p-3 bg-gray-800/50 border border-purple-500/30 rounded-md text-white placeholder:text-gray-400 focus:border-purple-500 focus:outline-none resize-none"
               />
-              <Button className="w-full bg-purple-600 hover:bg-purple-700 h-12 transform hover:scale-105 transition-all duration-300">Send Message</Button>
+              <Button className="w-full bg-purple-600 hover:bg-purple-700 h-12">Send Message</Button>
             </div>
           </div>
 
@@ -415,7 +546,7 @@ const LandingPage = () => {
                   <button
                     key={tab.id}
                     onClick={() => setActiveContactTab(tab.id)}
-                    className={`px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors backdrop-blur-sm ${
+                    className={`px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                       activeContactTab === tab.id 
                         ? 'bg-purple-600 text-white' 
                         : 'bg-gray-800/50 text-gray-400 hover:text-white'
@@ -426,7 +557,7 @@ const LandingPage = () => {
                   </button>
                 ))}
               </div>
-              <div className="bg-gray-800/50 border border-purple-500/30 rounded-lg p-4 backdrop-blur-sm">
+              <div className="bg-gray-800/50 border border-purple-500/30 rounded-lg p-4">
                 <p className="text-xs sm:text-sm text-gray-300 break-words">
                   {contactTabs.find(tab => tab.id === activeContactTab)?.content}
                 </p>
@@ -451,8 +582,8 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Footer with Enhanced Glass Effect */}
-      <footer className="border-t border-purple-500/20 bg-gray-900/50 backdrop-blur-sm relative z-10">
+      {/* Footer */}
+      <footer className="border-t border-purple-500/20 bg-gray-900/50">
         <div className="container mx-auto px-4 py-8 sm:py-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
             <div className="col-span-2 md:col-span-1">
