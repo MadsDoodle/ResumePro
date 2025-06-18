@@ -223,7 +223,7 @@ const ContactPage = () => {
                         <Mail className="h-6 w-6 text-purple-400" />
                         <div>
                           <h3 className="text-white font-medium">Email Address</h3>
-                          <p className="text-purple-300">support@resumegenius.com</p>
+                          <p className="text-purple-300">madhavsukla.baidya.chy22@itbhu.ac.in</p>
                         </div>
                       </div>
                     </CardContent>
@@ -235,7 +235,7 @@ const ContactPage = () => {
                         <Phone className="h-6 w-6 text-purple-400" />
                         <div>
                           <h3 className="text-white font-medium">Phone Number</h3>
-                          <p className="text-purple-300">+1 (555) 123-4567</p>
+                          <p className="text-purple-300">+91 6900541047</p>
                         </div>
                       </div>
                     </CardContent>
@@ -247,7 +247,7 @@ const ContactPage = () => {
                         <MapPin className="h-6 w-6 text-purple-400" />
                         <div>
                           <h3 className="text-white font-medium">Office Address</h3>
-                          <p className="text-purple-300">123 Business Ave, Suite 100<br />New York, NY 10001</p>
+                          <p className="text-purple-300">IIT(BHU) Varanasi, India</p>
                         </div>
                       </div>
                     </CardContent>
@@ -298,7 +298,7 @@ const ContactPage = () => {
                           </div>
                         </div>
                         <p className="text-purple-400 text-sm">
-                          Our team has helped over 50,000 professionals land their dream jobs.
+                          We are assisting out clients acheive their career goals with personalized resume solutions.
                         </p>
                       </div>
                     </div>

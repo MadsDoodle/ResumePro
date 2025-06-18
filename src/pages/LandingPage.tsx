@@ -73,9 +73,9 @@ const LandingPage = () => {
   };
 
   const contactTabs = [
-    { id: 'email', label: 'Email', icon: Mail, content: 'moodiedoodler29@gmail.com' },
+    { id: 'email', label: 'Email', icon: Mail, content: 'madhavsukla.baidya.chy22@itbhu.ac.in' },
     { id: 'phone', label: 'Phone', icon: Phone, content: '+91 6900541047' },
-    { id: 'address', label: 'Address', icon: MapPin, content: 'H/NO- 94, Sribhumi Nagar, Guwahati, Assam- 781034, India' }
+    { id: 'address', label: 'Address', icon: MapPin, content: 'IIT(BHU) Varanasi' }
   ];
 
   return (
