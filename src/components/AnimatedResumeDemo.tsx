@@ -77,19 +77,19 @@ const AnimatedResumeDemo = () => {
             <div className="w-20 h-20 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 mx-auto mb-4 flex items-center justify-center">
               <User className="h-10 w-10 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-white mb-2">John Developer</h1>
+            <h1 className="text-2xl font-bold text-white mb-2">Madhav S Baidya</h1>
             <div className="flex justify-center gap-4 text-sm text-gray-300">
               <div className="flex items-center gap-1">
                 <Mail className="h-4 w-4" />
-                john@example.com
+                madhavsukla.baidya.chy22@itbhu.ac.in
               </div>
               <div className="flex items-center gap-1">
                 <Phone className="h-4 w-4" />
-                (555) 123-4567
+                6900541047
               </div>
               <div className="flex items-center gap-1">
                 <MapPin className="h-4 w-4" />
-                San Francisco, CA
+                IIT(BHU) Varanasi
               </div>
             </div>
           </div>
@@ -104,8 +104,8 @@ const AnimatedResumeDemo = () => {
               Professional Summary
             </h2>
             <p className="text-gray-300 text-sm leading-relaxed">
-              Experienced full-stack developer with 5+ years of expertise in React, Node.js, and cloud technologies. 
-              Passionate about creating scalable solutions and leading development teams.
+              Aspiring software engineer and student at IIT(BHU) with expertise in modern web technologies. 
+              Passionate about creating innovative solutions and contributing to impactful projects.
             </p>
           </div>
 
@@ -116,31 +116,31 @@ const AnimatedResumeDemo = () => {
           >
             <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
               <Briefcase className="h-5 w-5 text-purple-400" />
-              Work Experience
+              Projects & Experience
             </h2>
             <div className="space-y-3">
               <div className="p-3 rounded bg-white/5">
                 <div className="flex justify-between items-start mb-2">
                   <div>
-                    <h3 className="font-medium text-white">Senior Software Engineer</h3>
-                    <p className="text-purple-300 text-sm">TechCorp Inc.</p>
+                    <h3 className="font-medium text-white">Software Development Intern</h3>
+                    <p className="text-purple-300 text-sm">Tech Company</p>
                   </div>
-                  <span className="text-gray-400 text-sm">2021 - Present</span>
+                  <span className="text-gray-400 text-sm">2024 - Present</span>
                 </div>
                 <p className="text-gray-400 text-xs">
-                  Led development of microservices architecture, improved system performance by 40%
+                  Developed web applications using React and Node.js, contributed to team projects
                 </p>
               </div>
               <div className="p-3 rounded bg-white/5">
                 <div className="flex justify-between items-start mb-2">
                   <div>
-                    <h3 className="font-medium text-white">Full Stack Developer</h3>
-                    <p className="text-purple-300 text-sm">StartupXYZ</p>
+                    <h3 className="font-medium text-white">Full Stack Project</h3>
+                    <p className="text-purple-300 text-sm">Personal Project</p>
                   </div>
-                  <span className="text-gray-400 text-sm">2019 - 2021</span>
+                  <span className="text-gray-400 text-sm">2023 - 2024</span>
                 </div>
                 <p className="text-gray-400 text-xs">
-                  Built responsive web applications using React and Express.js
+                  Built responsive web applications using modern frameworks
                 </p>
               </div>
             </div>
@@ -158,10 +158,10 @@ const AnimatedResumeDemo = () => {
             <div className="p-3 rounded bg-white/5">
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="font-medium text-white">Bachelor of Computer Science</h3>
-                  <p className="text-purple-300 text-sm">University of Technology</p>
+                  <h3 className="font-medium text-white">Bachelor of Technology</h3>
+                  <p className="text-purple-300 text-sm">IIT(BHU) Varanasi</p>
                 </div>
-                <span className="text-gray-400 text-sm">2015 - 2019</span>
+                <span className="text-gray-400 text-sm">2022 - 2026</span>
               </div>
             </div>
           </div>
@@ -176,7 +176,7 @@ const AnimatedResumeDemo = () => {
               Skills
             </h2>
             <div className="flex flex-wrap gap-2">
-              {['React', 'Node.js', 'TypeScript', 'Python', 'AWS', 'Docker', 'GraphQL', 'MongoDB'].map((skill, index) => (
+              {['React', 'Node.js', 'TypeScript', 'Python', 'JavaScript', 'HTML/CSS', 'Git', 'MongoDB'].map((skill, index) => (
                 <span
                   key={skill}
                   className={`px-3 py-1 text-xs rounded-full border transition-all duration-300 ${
