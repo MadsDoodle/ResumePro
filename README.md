@@ -1,5 +1,8 @@
 # ResumePro-Your Professional Resume Builder and Career Assistant
 
+## link(as deployed on vercel): https://resume-pro-moodlerz.vercel.app/
+Site is being deployed on vercel with supabase backend setup which automatically deactivates if not in use.. so in case authntication isnt active yet - kindly reach me thru the emailid mentioned on my github profile or in my portfolio webpage
+
 **ResumePro** is a full-stack AI-powered resume builder and career assistant platform. It allows users to build personalized resumes from scratch, receive AI-enhanced feedback, and explore career insights—seamlessly integrated into a rich and interactive UI.
 
 ![ResumePro Dashboard Preview](./assets/dashboard.png)
